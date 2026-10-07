@@ -1,0 +1,3635 @@
+{
+"後來的我們 五月天": [
+{
+"id": 422104138,
+"name": "后来的我们",
+"artists": [
+{
+"name": "五月天"
+}
+],
+"duration": 346282,
+"alias": [],
+"album": {
+"name": "自传"
+}
+},
+{
+"id": 3384013639,
+"name": "后来的我们",
+"artists": [
+{
+"name": "陈与默"
+}
+],
+"duration": 185821,
+"alias": [
+"亲爱的回忆我们走过的曲折"
+],
+"album": {
+"name": "后来的我们"
+}
+},
+{
+"id": 553310243,
+"name": "后来的我们",
+"artists": [
+{
+"name": "五月天"
+}
+],
+"duration": 285033,
+"alias": [
+"电影《后来的我们》片名曲"
+],
+"album": {
+"name": "后来的我们 (眼泪未干版)"
+}
+},
+{
+"id": 2147002425,
+"name": "后来的我们（翻唱完整版）",
+"artists": [
+{
+"name": "Emo避难所"
+}
+],
+"duration": 346281,
+"alias": [],
+"album": {
+"name": "神仙翻唱合集3"
+}
+},
+{
+"id": 1897964065,
+"name": "知足",
+"artists": [
+{
+"name": "五月天"
+}
+],
+"duration": 256626,
+"alias": [
+"电视剧《无神之地不下雨》插曲"
+],
+"album": {
+"name": "《无神之地不下雨》电视原声带"
+}
+},
+{
+"id": 3384077314,
+"name": "后来的我们",
+"artists": [
+{
+"name": "宋子西"
+}
+],
+"duration": 211000,
+"alias": [
+"抖音mix"
+],
+"album": {
+"name": "后来的我们"
+}
+},
+{
+"id": 1803516409,
+"name": "后来的我们",
+"artists": [
+{
+"name": "辰啊辰"
+}
+],
+"duration": 207988,
+"alias": [],
+"album": {
+"name": "后来的我们"
+}
+},
+{
+"id": 1367144157,
+"name": "后来的我们 (Life Live)",
+"artists": [
+{
+"name": "五月天"
+}
+],
+"duration": 307402,
+"alias": [],
+"album": {
+"name": "五月天 人生无限公司 Life Live 完整收录篇"
+}
+},
+{
+"id": 385965,
+"name": "知足",
+"artists": [
+{
+"name": "五月天"
+}
+],
+"duration": 256692,
+"alias": [
+"电视剧《无神之地不下雨》插曲"
+],
+"album": {
+"name": "知足 最真杰作选"
+}
+},
+{
+"id": 3389063773,
+"name": "后来的我们",
+"artists": [
+{
+"name": "洛米"
+}
+],
+"duration": 313600,
+"alias": [
+"同学，我们没有下学期了"
+],
+"album": {
+"name": "后来的我们"
+}
+}
+],
+"後來的我們": [
+{
+"id": 422104138,
+"name": "后来的我们",
+"artists": [
+{
+"name": "五月天"
+}
+],
+"duration": 346282,
+"alias": [],
+"album": {
+"name": "自传"
+}
+},
+{
+"id": 3384013639,
+"name": "后来的我们",
+"artists": [
+{
+"name": "陈与默"
+}
+],
+"duration": 185821,
+"alias": [
+"亲爱的回忆我们走过的曲折"
+],
+"album": {
+"name": "后来的我们"
+}
+},
+{
+"id": 2147002425,
+"name": "后来的我们（翻唱完整版）",
+"artists": [
+{
+"name": "Emo避难所"
+}
+],
+"duration": 346281,
+"alias": [],
+"album": {
+"name": "神仙翻唱合集3"
+}
+},
+{
+"id": 1803516409,
+"name": "后来的我们",
+"artists": [
+{
+"name": "辰啊辰"
+}
+],
+"duration": 207988,
+"alias": [],
+"album": {
+"name": "后来的我们"
+}
+},
+{
+"id": 553310243,
+"name": "后来的我们",
+"artists": [
+{
+"name": "五月天"
+}
+],
+"duration": 285033,
+"alias": [
+"电影《后来的我们》片名曲"
+],
+"album": {
+"name": "后来的我们 (眼泪未干版)"
+}
+},
+{
+"id": 551816010,
+"name": "我们",
+"artists": [
+{
+"name": "陈奕迅"
+}
+],
+"duration": 260878,
+"alias": [
+"电影《后来的我们》主题曲"
+],
+"album": {
+"name": "我们"
+}
+},
+{
+"id": 3389063773,
+"name": "后来的我们",
+"artists": [
+{
+"name": "洛米"
+}
+],
+"duration": 313600,
+"alias": [
+"同学，我们没有下学期了"
+],
+"album": {
+"name": "后来的我们"
+}
+},
+{
+"id": 3384077314,
+"name": "后来的我们",
+"artists": [
+{
+"name": "宋子西"
+}
+],
+"duration": 211000,
+"alias": [
+"抖音mix"
+],
+"album": {
+"name": "后来的我们"
+}
+},
+{
+"id": 1952330526,
+"name": "后来的我们（DJ版）",
+"artists": [
+{
+"name": "xH2"
+}
+],
+"duration": 229552,
+"alias": [],
+"album": {
+"name": "落败的花"
+}
+},
+{
+"id": 3387447404,
+"name": "后来的我们",
+"artists": [
+{
+"name": "弹吉他的猫"
+}
+],
+"duration": 303542,
+"alias": [
+"吉他弹唱版"
+],
+"album": {
+"name": "后来的我们"
+}
+}
+],
+"兄弟 五月天": [
+{
+"id": 422094254,
+"name": "兄弟",
+"artists": [
+{
+"name": "五月天"
+}
+],
+"duration": 248373,
+"alias": [],
+"album": {
+"name": "自传"
+}
+},
+{
+"id": 1367144209,
+"name": "兄弟 (Life Live)",
+"artists": [
+{
+"name": "五月天"
+}
+],
+"duration": 245066,
+"alias": [],
+"album": {
+"name": "五月天 人生无限公司 Life Live 完整收录篇"
+}
+},
+{
+"id": 33941997,
+"name": "兄弟",
+"artists": [
+{
+"name": "龙井说唱 孙旭"
+}
+],
+"duration": 248084,
+"alias": [],
+"album": {
+"name": "热门华语275"
+}
+},
+{
+"id": 422104138,
+"name": "后来的我们",
+"artists": [
+{
+"name": "五月天"
+}
+],
+"duration": 346282,
+"alias": [],
+"album": {
+"name": "自传"
+}
+},
+{
+"id": 28181103,
+"name": "步步",
+"artists": [
+{
+"name": "五月天"
+}
+],
+"duration": 273946,
+"alias": [
+"电视剧《步步惊情》主题曲"
+],
+"album": {
+"name": "步步 自选作品辑"
+}
+},
+{
+"id": 506191584,
+"name": "兄弟(索扎个人版本）",
+"artists": [
+{
+"name": "索扎"
+}
+],
+"duration": 218181,
+"alias": [],
+"album": {
+"name": "兄弟BROTHER"
+}
+},
+{
+"id": 1353530194,
+"name": "兄弟",
+"artists": [
+{
+"name": "旦曲阿帝"
+},
+{
+"name": "白玛旦增"
+}
+],
+"duration": 297000,
+"alias": [],
+"album": {
+"name": "兄弟"
+}
+},
+{
+"id": 385781,
+"name": "突然好想你",
+"artists": [
+{
+"name": "五月天"
+}
+],
+"duration": 265866,
+"alias": [],
+"album": {
+"name": "后青春期的诗"
+}
+},
+{
+"id": 417953659,
+"name": "如果我们不曾相遇",
+"artists": [
+{
+"name": "五月天"
+}
+],
+"duration": 202388,
+"alias": [],
+"album": {
+"name": "自传"
+}
+},
+{
+"id": 386538,
+"name": "温柔",
+"artists": [
+{
+"name": "五月天"
+}
+],
+"duration": 269800,
+"alias": [],
+"album": {
+"name": "我们是五月天"
+}
+}
+],
+"兄弟": [
+{
+"id": 144307,
+"name": "兄弟",
+"artists": [
+{
+"name": "任贤齐"
+}
+],
+"duration": 301213,
+"alias": [
+"电视剧《武状元苏灿》主题曲"
+],
+"album": {
+"name": "天使兄弟小白脸"
+}
+},
+{
+"id": 65487,
+"name": "兄弟",
+"artists": [
+{
+"name": "陈奕迅"
+},
+{
+"name": "刘德华"
+}
+],
+"duration": 247173,
+"alias": [
+"电影《兄弟》主题曲"
+],
+"album": {
+"name": "Listen to Eason Chan"
+}
+},
+{
+"id": 1418055994,
+"name": "我的好兄弟",
+"artists": [
+{
+"name": "Abduwaris-Abla"
+}
+],
+"duration": 275408,
+"alias": [
+"翻自 小沈阳"
+],
+"album": {
+"name": "我的好兄弟"
+}
+},
+{
+"id": 33941997,
+"name": "兄弟",
+"artists": [
+{
+"name": "龙井说唱 孙旭"
+}
+],
+"duration": 248084,
+"alias": [],
+"album": {
+"name": "热门华语275"
+}
+},
+{
+"id": 144150,
+"name": "兄弟",
+"artists": [
+{
+"name": "任贤齐"
+}
+],
+"duration": 295666,
+"alias": [
+"《武状元苏灿》主题曲"
+],
+"album": {
+"name": "情义 新歌+精选 光耀全纪录"
+}
+},
+{
+"id": 144287,
+"name": "兄弟(Live)",
+"artists": [
+{
+"name": "任贤齐"
+},
+{
+"name": "品冠"
+},
+{
+"name": "光良"
+},
+{
+"name": "黄品源"
+},
+{
+"name": "阿牛"
+}
+],
+"duration": 276000,
+"alias": [
+"任贤齐FRIENDS演唱PARY现场版"
+],
+"album": {
+"name": "任贤齐 & friends"
+}
+},
+{
+"id": 26545127,
+"name": "兄弟难当",
+"artists": [
+{
+"name": "杜歌"
+}
+],
+"duration": 251811,
+"alias": [],
+"album": {
+"name": "兄弟难当"
+}
+},
+{
+"id": 2616384626,
+"name": "兄弟",
+"artists": [
+{
+"name": "Ash-1"
+},
+{
+"name": "KenRobb"
+}
+],
+"duration": 187000,
+"alias": [],
+"album": {
+"name": "兄弟"
+}
+},
+{
+"id": 3392929385,
+"name": "兄弟",
+"artists": [
+{
+"name": "睡眠火山"
+}
+],
+"duration": 234083,
+"alias": [
+"雷鬼版"
+],
+"album": {
+"name": "兄弟"
+}
+},
+{
+"id": 506191584,
+"name": "兄弟(索扎个人版本）",
+"artists": [
+{
+"name": "索扎"
+}
+],
+"duration": 218181,
+"alias": [],
+"album": {
+"name": "兄弟BROTHER"
+}
+}
+],
+"人生有限公司 五月天": [
+{
+"id": 422104164,
+"name": "人生有限公司",
+"artists": [
+{
+"name": "五月天"
+}
+],
+"duration": 217806,
+"alias": [],
+"album": {
+"name": "自传"
+}
+},
+{
+"id": 1367142331,
+"name": "人生有限公司 (Life Live)",
+"artists": [
+{
+"name": "五月天"
+}
+],
+"duration": 154685,
+"alias": [],
+"album": {
+"name": "五月天 人生无限公司 Life Live 完整收录篇"
+}
+},
+{
+"id": 422104138,
+"name": "后来的我们",
+"artists": [
+{
+"name": "五月天"
+}
+],
+"duration": 346282,
+"alias": [],
+"album": {
+"name": "自传"
+}
+},
+{
+"id": 385781,
+"name": "突然好想你",
+"artists": [
+{
+"name": "五月天"
+}
+],
+"duration": 265866,
+"alias": [],
+"album": {
+"name": "后青春期的诗"
+}
+},
+{
+"id": 28181103,
+"name": "步步",
+"artists": [
+{
+"name": "五月天"
+}
+],
+"duration": 273946,
+"alias": [
+"电视剧《步步惊情》主题曲"
+],
+"album": {
+"name": "步步 自选作品辑"
+}
+},
+{
+"id": 386175,
+"name": "倔强",
+"artists": [
+{
+"name": "五月天"
+}
+],
+"duration": 261618,
+"alias": [],
+"album": {
+"name": "神的孩子都在跳舞"
+}
+},
+{
+"id": 417953659,
+"name": "如果我们不曾相遇",
+"artists": [
+{
+"name": "五月天"
+}
+],
+"duration": 202388,
+"alias": [],
+"album": {
+"name": "自传"
+}
+},
+{
+"id": 386538,
+"name": "温柔",
+"artists": [
+{
+"name": "五月天"
+}
+],
+"duration": 269800,
+"alias": [],
+"album": {
+"name": "我们是五月天"
+}
+},
+{
+"id": 385554,
+"name": "我不愿让你一个人",
+"artists": [
+{
+"name": "五月天"
+}
+],
+"duration": 265650,
+"alias": [],
+"album": {
+"name": "第二人生 (末日版)"
+}
+},
+{
+"id": 386542,
+"name": "拥抱",
+"artists": [
+{
+"name": "五月天"
+}
+],
+"duration": 252960,
+"alias": [
+"电视剧《想见你》插曲"
+],
+"album": {
+"name": "我们是五月天"
+}
+}
+],
+"人生有限公司": [
+{
+"id": 422104164,
+"name": "人生有限公司",
+"artists": [
+{
+"name": "五月天"
+}
+],
+"duration": 217806,
+"alias": [],
+"album": {
+"name": "自传"
+}
+},
+{
+"id": 1367142331,
+"name": "人生有限公司 (Life Live)",
+"artists": [
+{
+"name": "五月天"
+}
+],
+"duration": 154685,
+"alias": [],
+"album": {
+"name": "五月天 人生无限公司 Life Live 完整收录篇"
+}
+},
+{
+"id": 1413374093,
+"name": "那些小学课本教我的事",
+"artists": [
+{
+"name": "崔轼玄"
+}
+],
+"duration": 217779,
+"alias": [],
+"album": {
+"name": "人生有限公司"
+}
+},
+{
+"id": 571339133,
+"name": "不完美的人生",
+"artists": [
+{
+"name": "崔轼玄"
+}
+],
+"duration": 305454,
+"alias": [],
+"album": {
+"name": "人生有限公司"
+}
+},
+{
+"id": 1885079130,
+"name": "才华有限公司",
+"artists": [
+{
+"name": "5个静雯"
+}
+],
+"duration": 263523,
+"alias": [],
+"album": {
+"name": "人生有限公司"
+}
+},
+{
+"id": 1325711619,
+"name": "哥俩好",
+"artists": [
+{
+"name": "崔轼玄"
+},
+{
+"name": "方天雷"
+}
+],
+"duration": 231272,
+"alias": [],
+"album": {
+"name": "人生有限公司"
+}
+},
+{
+"id": 1415756916,
+"name": "小崔",
+"artists": [
+{
+"name": "崔轼玄"
+}
+],
+"duration": 315882,
+"alias": [],
+"album": {
+"name": "人生有限公司"
+}
+},
+{
+"id": 1444687524,
+"name": "蚂蚁河",
+"artists": [
+{
+"name": "崔轼玄"
+}
+],
+"duration": 283731,
+"alias": [],
+"album": {
+"name": "人生有限公司"
+}
+},
+{
+"id": 1439379390,
+"name": "情歌年代",
+"artists": [
+{
+"name": "崔轼玄"
+}
+],
+"duration": 380000,
+"alias": [],
+"album": {
+"name": "人生有限公司"
+}
+},
+{
+"id": 1452033418,
+"name": "人生有限公司",
+"artists": [
+{
+"name": "崔轼玄"
+}
+],
+"duration": 279560,
+"alias": [],
+"album": {
+"name": "人生有限公司"
+}
+}
+],
+"稻香 周杰伦": [
+{
+"id": 2651425710,
+"name": "稻香(深情版)",
+"artists": [
+{
+"name": "Lucky小爱"
+}
+],
+"duration": 231609,
+"alias": [],
+"album": {
+"name": "稻香(深情版)"
+}
+},
+{
+"id": 3381542797,
+"name": "稻香(治愈版)",
+"artists": [
+{
+"name": "周杰伦."
+},
+{
+"name": "街道办GDC/欧阳耀莹."
+}
+],
+"duration": 120022,
+"alias": [],
+"album": {
+"name": "终究意难平"
+}
+},
+{
+"id": 3441643322,
+"name": "稻香",
+"artists": [
+{
+"name": "Jay"
+}
+],
+"duration": 198013,
+"alias": [],
+"album": {
+"name": "稻香"
+}
+},
+{
+"id": 2742150885,
+"name": "稻香(正式版)",
+"artists": [
+{
+"name": "沈幼楚"
+}
+],
+"duration": 54031,
+"alias": [],
+"album": {
+"name": "我心破碎零散"
+}
+},
+{
+"id": 3356938736,
+"name": "稻香",
+"artists": [
+{
+"name": "何兵兵"
+}
+],
+"duration": 121599,
+"alias": [],
+"album": {
+"name": "说好了不见面"
+}
+},
+{
+"id": 3399425846,
+"name": "稻香",
+"artists": [
+{
+"name": "纸飞机"
+}
+],
+"duration": 203102,
+"alias": [],
+"album": {
+"name": "稻香"
+}
+},
+{
+"id": 2104034295,
+"name": "《稻香》童声",
+"artists": [
+{
+"name": "卡罗尔"
+}
+],
+"duration": 211707,
+"alias": [],
+"album": {
+"name": "《悬溺》+《空心》+《没有泪点》"
+}
+},
+{
+"id": 1945895725,
+"name": "稻香 (钢琴版) [原唱: 周杰伦]",
+"artists": [
+{
+"name": "纪钧瀚 (Bryan Chi)"
+}
+],
+"duration": 196094,
+"alias": [],
+"album": {
+"name": "钢琴放松轻听 流行轻音乐 华语经典"
+}
+},
+{
+"id": 1379930857,
+"name": "稻香",
+"artists": [
+{
+"name": "itmusicstudio"
+}
+],
+"duration": 213978,
+"alias": [],
+"album": {
+"name": "日和 花盛 阳光雨"
+}
+},
+{
+"id": 3372049929,
+"name": "稻香",
+"artists": [
+{
+"name": "Lie"
+}
+],
+"duration": 196623,
+"alias": [],
+"album": {
+"name": "稻香"
+}
+}
+],
+"稻香": [
+{
+"id": 2651425710,
+"name": "稻香(深情版)",
+"artists": [
+{
+"name": "Lucky小爱"
+}
+],
+"duration": 231609,
+"alias": [],
+"album": {
+"name": "稻香(深情版)"
+}
+},
+{
+"id": 3372049929,
+"name": "稻香",
+"artists": [
+{
+"name": "Lie"
+}
+],
+"duration": 196623,
+"alias": [],
+"album": {
+"name": "稻香"
+}
+},
+{
+"id": 2104034295,
+"name": "《稻香》童声",
+"artists": [
+{
+"name": "卡罗尔"
+}
+],
+"duration": 211707,
+"alias": [],
+"album": {
+"name": "《悬溺》+《空心》+《没有泪点》"
+}
+},
+{
+"id": 1947584923,
+"name": "稻香 (女声版)",
+"artists": [
+{
+"name": "余不不"
+}
+],
+"duration": 190975,
+"alias": [],
+"album": {
+"name": "稻香 (女声版)"
+}
+},
+{
+"id": 1945895725,
+"name": "稻香 (钢琴版) [原唱: 周杰伦]",
+"artists": [
+{
+"name": "纪钧瀚 (Bryan Chi)"
+}
+],
+"duration": 196094,
+"alias": [],
+"album": {
+"name": "钢琴放松轻听 流行轻音乐 华语经典"
+}
+},
+{
+"id": 3441643322,
+"name": "稻香",
+"artists": [
+{
+"name": "Jay"
+}
+],
+"duration": 198013,
+"alias": [],
+"album": {
+"name": "稻香"
+}
+},
+{
+"id": 3381542797,
+"name": "稻香(治愈版)",
+"artists": [
+{
+"name": "周杰伦."
+},
+{
+"name": "街道办GDC/欧阳耀莹."
+}
+],
+"duration": 120022,
+"alias": [],
+"album": {
+"name": "终究意难平"
+}
+},
+{
+"id": 3399425846,
+"name": "稻香",
+"artists": [
+{
+"name": "纸飞机"
+}
+],
+"duration": 203102,
+"alias": [],
+"album": {
+"name": "稻香"
+}
+},
+{
+"id": 2135106643,
+"name": "《稻香》童声",
+"artists": [
+{
+"name": "连麻Swimming"
+}
+],
+"duration": 120501,
+"alias": [],
+"album": {
+"name": "000作废"
+}
+},
+{
+"id": 2146737748,
+"name": "稻香 (钢琴版) (原唱：周杰伦)",
+"artists": [
+{
+"name": "酷客音乐"
+}
+],
+"duration": 205000,
+"alias": [
+"Rice Field(Piano Instrumental)(Originally Performed By Jay Chou)"
+],
+"album": {
+"name": "流行轻音乐 沉睡催眠钢琴曲"
+}
+}
+],
+"不完美小孩 TFBOYS": [
+{
+"id": 2144601872,
+"name": "不完美小孩",
+"artists": [
+{
+"name": "TF家族四代练习生"
+}
+],
+"duration": 256940,
+"alias": [
+"2023 TF少年梦工厂-立夏公演现场"
+],
+"album": {
+"name": ""
+}
+},
+{
+"id": 2112276979,
+"name": "剩下的盛夏",
+"artists": [
+{
+"name": "TFBOYS"
+}
+],
+"duration": 237096,
+"alias": [
+"2016 TFBOYS三周年广州粉丝见面会现场"
+],
+"album": {
+"name": ""
+}
+},
+{
+"id": 415793869,
+"name": "不完美女孩",
+"artists": [
+{
+"name": "周冬雨"
+}
+],
+"duration": 257018,
+"alias": [
+"原曲 : TFBOYS《不完美小孩》"
+],
+"album": {
+"name": "热门华语262"
+}
+},
+{
+"id": 2097514912,
+"name": "不完美小孩 (Live)",
+"artists": [
+{
+"name": "TF家族练习生"
+}
+],
+"duration": 267363,
+"alias": [],
+"album": {
+"name": ""
+}
+},
+{
+"id": 2108548279,
+"name": "不完美小孩",
+"artists": [
+{
+"name": "马嘉祺"
+},
+{
+"name": "宋亚轩"
+},
+{
+"name": "张真源"
+},
+{
+"name": "刘耀文"
+},
+{
+"name": "贺峻霖"
+},
+{
+"name": "丁程鑫"
+},
+{
+"name": "敖子逸"
+},
+{
+"name": "陈玺达"
+},
+{
+"name": "李天泽"
+},
+{
+"name": "陈泗旭"
+}
+],
+"duration": 238236,
+"alias": [
+"2017TF家族冬日嘉年华现场"
+],
+"album": {
+"name": ""
+}
+},
+{
+"id": 2121906238,
+"name": "不完美小孩 (Live)",
+"artists": [
+{
+"name": "TOP登陆少年-朱志鑫"
+},
+{
+"name": "TF家族-张泽禹"
+},
+{
+"name": "TOP登陆少年-张极"
+},
+{
+"name": "TOP登陆少年-左航"
+},
+{
+"name": "TOP登陆少年-苏新皓"
+},
+{
+"name": "张峻豪SHUN"
+},
+{
+"name": "余宇涵"
+},
+{
+"name": "陈天润"
+},
+{
+"name": "童禹坤"
+}
+],
+"duration": 263340,
+"alias": [],
+"album": {
+"name": ""
+}
+},
+{
+"id": 3436137147,
+"name": "不完美小孩（袁一琦）",
+"artists": [
+{
+"name": "17"
+}
+],
+"duration": 238053,
+"alias": [],
+"album": {
+"name": "袁一琦"
+}
+},
+{
+"id": 3399847050,
+"name": "不完美小孩",
+"artists": [
+{
+"name": "严子礼"
+}
+],
+"duration": 264920,
+"alias": [
+"Cover TFBOYS"
+],
+"album": {
+"name": "不完美小孩"
+}
+},
+{
+"id": 29366922,
+"name": "开学第一课",
+"artists": [
+{
+"name": "TFBOYS"
+}
+],
+"duration": 199933,
+"alias": [],
+"album": {
+"name": "开学第一课"
+}
+},
+{
+"id": 1423181667,
+"name": "不完美小孩",
+"artists": [
+{
+"name": "七可"
+}
+],
+"duration": 260952,
+"alias": [],
+"album": {
+"name": "不完美小孩"
+}
+}
+],
+"不完美小孩": [
+{
+"id": 2144601872,
+"name": "不完美小孩",
+"artists": [
+{
+"name": "TF家族四代练习生"
+}
+],
+"duration": 256940,
+"alias": [
+"2023 TF少年梦工厂-立夏公演现场"
+],
+"album": {
+"name": ""
+}
+},
+{
+"id": 415793869,
+"name": "不完美女孩",
+"artists": [
+{
+"name": "周冬雨"
+}
+],
+"duration": 257018,
+"alias": [
+"原曲 : TFBOYS《不完美小孩》"
+],
+"album": {
+"name": "热门华语262"
+}
+},
+{
+"id": 2121906238,
+"name": "不完美小孩 (Live)",
+"artists": [
+{
+"name": "TOP登陆少年-朱志鑫"
+},
+{
+"name": "TF家族-张泽禹"
+},
+{
+"name": "TOP登陆少年-张极"
+},
+{
+"name": "TOP登陆少年-左航"
+},
+{
+"name": "TOP登陆少年-苏新皓"
+},
+{
+"name": "张峻豪SHUN"
+},
+{
+"name": "余宇涵"
+},
+{
+"name": "陈天润"
+},
+{
+"name": "童禹坤"
+}
+],
+"duration": 263340,
+"alias": [],
+"album": {
+"name": ""
+}
+},
+{
+"id": 1982241779,
+"name": "不完美小孩",
+"artists": [
+{
+"name": "瓷阿秋"
+}
+],
+"duration": 181840,
+"alias": [],
+"album": {
+"name": "2022毕业回以及年末翻唱合集"
+}
+},
+{
+"id": 2097514912,
+"name": "不完美小孩 (Live)",
+"artists": [
+{
+"name": "TF家族练习生"
+}
+],
+"duration": 267363,
+"alias": [],
+"album": {
+"name": ""
+}
+},
+{
+"id": 2112276979,
+"name": "剩下的盛夏",
+"artists": [
+{
+"name": "TFBOYS"
+}
+],
+"duration": 237096,
+"alias": [
+"2016 TFBOYS三周年广州粉丝见面会现场"
+],
+"album": {
+"name": ""
+}
+},
+{
+"id": 2108548279,
+"name": "不完美小孩",
+"artists": [
+{
+"name": "马嘉祺"
+},
+{
+"name": "宋亚轩"
+},
+{
+"name": "张真源"
+},
+{
+"name": "刘耀文"
+},
+{
+"name": "贺峻霖"
+},
+{
+"name": "丁程鑫"
+},
+{
+"name": "敖子逸"
+},
+{
+"name": "陈玺达"
+},
+{
+"name": "李天泽"
+},
+{
+"name": "陈泗旭"
+}
+],
+"duration": 238236,
+"alias": [
+"2017TF家族冬日嘉年华现场"
+],
+"album": {
+"name": ""
+}
+},
+{
+"id": 3321087319,
+"name": "不完美小孩(汪苏泷版)",
+"artists": [
+{
+"name": "辣辣快闭麦叭"
+}
+],
+"duration": 261290,
+"alias": [],
+"album": {
+"name": "汪汪的赶路日记"
+}
+},
+{
+"id": 3399847050,
+"name": "不完美小孩",
+"artists": [
+{
+"name": "严子礼"
+}
+],
+"duration": 264920,
+"alias": [
+"Cover TFBOYS"
+],
+"album": {
+"name": "不完美小孩"
+}
+},
+{
+"id": 3436137147,
+"name": "不完美小孩（袁一琦）",
+"artists": [
+{
+"name": "17"
+}
+],
+"duration": 238053,
+"alias": [],
+"album": {
+"name": "袁一琦"
+}
+}
+],
+"犯贱 徐良 阿悄": [
+{
+"id": 174960,
+"name": "犯贱",
+"artists": [
+{
+"name": "徐良"
+},
+{
+"name": "阿悄"
+}
+],
+"duration": 227413,
+"alias": [],
+"album": {
+"name": "犯贱"
+}
+},
+{
+"id": 174961,
+"name": "红装",
+"artists": [
+{
+"name": "徐良"
+},
+{
+"name": "阿悄"
+}
+],
+"duration": 246505,
+"alias": [],
+"album": {
+"name": "犯贱"
+}
+},
+{
+"id": 174966,
+"name": "月光",
+"artists": [
+{
+"name": "徐良"
+},
+{
+"name": "阿悄"
+}
+],
+"duration": 254406,
+"alias": [],
+"album": {
+"name": "犯贱"
+}
+},
+{
+"id": 174964,
+"name": "天真",
+"artists": [
+{
+"name": "徐良"
+},
+{
+"name": "阿悄"
+}
+],
+"duration": 225837,
+"alias": [],
+"album": {
+"name": "犯贱"
+}
+},
+{
+"id": 26599833,
+"name": "犯贱",
+"artists": [
+{
+"name": "徐良"
+},
+{
+"name": "阿悄"
+}
+],
+"duration": 213916,
+"alias": [],
+"album": {
+"name": "徐良原创合集"
+}
+},
+{
+"id": 174953,
+"name": "犯贱(Remix)",
+"artists": [
+{
+"name": "徐良"
+},
+{
+"name": "阿悄"
+}
+],
+"duration": 227413,
+"alias": [],
+"album": {
+"name": "不良少年"
+}
+},
+{
+"id": 420134487,
+"name": "梦",
+"artists": [
+{
+"name": "徐良"
+},
+{
+"name": "阿悄"
+}
+],
+"duration": 253177,
+"alias": [],
+"album": {
+"name": "犯贱"
+}
+},
+{
+"id": 2730151461,
+"name": "犯贱Dj-阿悄Vs徐良2012男女对唱Rnb",
+"artists": [
+{
+"name": "DJ阿福"
+}
+],
+"duration": 207072,
+"alias": [],
+"album": {
+"name": ""
+}
+},
+{
+"id": 2160625875,
+"name": "犯贱",
+"artists": [
+{
+"name": "徐良、阿悄"
+}
+],
+"duration": 213890,
+"alias": [],
+"album": {
+"name": ""
+}
+},
+{
+"id": 2062227121,
+"name": "犯贱",
+"artists": [
+{
+"name": "张子辰"
+},
+{
+"name": "徐良/阿悄"
+}
+],
+"duration": 71192,
+"alias": [],
+"album": {
+"name": "张新航的翻唱"
+}
+}
+],
+"犯贱": [
+{
+"id": 174960,
+"name": "犯贱",
+"artists": [
+{
+"name": "徐良"
+},
+{
+"name": "阿悄"
+}
+],
+"duration": 227413,
+"alias": [],
+"album": {
+"name": "犯贱"
+}
+},
+{
+"id": 64386,
+"name": "犯贱",
+"artists": [
+{
+"name": "陈小春"
+}
+],
+"duration": 257018,
+"alias": [],
+"album": {
+"name": "抱一抱"
+}
+},
+{
+"id": 3372574628,
+"name": "犯贱 (Cover 徐良)",
+"artists": [
+{
+"name": "欧买噶"
+}
+],
+"duration": 269838,
+"alias": [],
+"album": {
+"name": ""
+}
+},
+{
+"id": 64331,
+"name": "抱一抱",
+"artists": [
+{
+"name": "陈小春"
+}
+],
+"duration": 257857,
+"alias": [],
+"album": {
+"name": "抱一抱"
+}
+},
+{
+"id": 94568,
+"name": "犯贱",
+"artists": [
+{
+"name": "陈小春"
+}
+],
+"duration": 258667,
+"alias": [],
+"album": {
+"name": "Y100 (Evil版)"
+}
+},
+{
+"id": 26599833,
+"name": "犯贱",
+"artists": [
+{
+"name": "徐良"
+},
+{
+"name": "阿悄"
+}
+],
+"duration": 213916,
+"alias": [],
+"album": {
+"name": "徐良原创合集"
+}
+},
+{
+"id": 1843698934,
+"name": "犯贱",
+"artists": [
+{
+"name": "于梓贝"
+}
+],
+"duration": 190616,
+"alias": [],
+"album": {
+"name": "犯贱"
+}
+},
+{
+"id": 3381029020,
+"name": "犯贱",
+"artists": [
+{
+"name": "洛米"
+},
+{
+"name": "麦小鼠"
+}
+],
+"duration": 208640,
+"alias": [
+"比伯版"
+],
+"album": {
+"name": "犯贱"
+}
+},
+{
+"id": 94679,
+"name": "犯贱",
+"artists": [
+{
+"name": "陈小春"
+}
+],
+"duration": 258667,
+"alias": [],
+"album": {
+"name": "十年选"
+}
+},
+{
+"id": 174962,
+"name": "和平分手",
+"artists": [
+{
+"name": "徐良"
+},
+{
+"name": "Britneylee小暖"
+}
+],
+"duration": 234786,
+"alias": [],
+"album": {
+"name": "犯贱"
+}
+}
+],
+"年少有為 李荣浩": [
+{
+"id": 1293886117,
+"name": "年少有为",
+"artists": [
+{
+"name": "李荣浩"
+}
+],
+"duration": 279196,
+"alias": [],
+"album": {
+"name": "耳朵"
+}
+},
+{
+"id": 1395814537,
+"name": "年少有为 (Live)",
+"artists": [
+{
+"name": "李荣浩"
+},
+{
+"name": "李荣浩战队12强"
+}
+],
+"duration": 277364,
+"alias": [],
+"album": {
+"name": "2019中国好声音巅峰之夜"
+}
+},
+{
+"id": 1959528822,
+"name": "紫荆花盛开",
+"artists": [
+{
+"name": "李荣浩"
+},
+{
+"name": "梁咏琪"
+}
+],
+"duration": 210667,
+"alias": [
+"香港回归祖国25周年主题歌曲"
+],
+"album": {
+"name": "紫荆花盛开"
+}
+},
+{
+"id": 31654343,
+"name": "不将就",
+"artists": [
+{
+"name": "李荣浩"
+}
+],
+"duration": 312997,
+"alias": [
+"电影《何以笙箫默》片尾主题曲"
+],
+"album": {
+"name": "有理想"
+}
+},
+{
+"id": 3376491247,
+"name": "年少有为",
+"artists": [
+{
+"name": "提米FM"
+}
+],
+"duration": 272326,
+"alias": [],
+"album": {
+"name": "年少有为"
+}
+},
+{
+"id": 1468114204,
+"name": "年少有为",
+"artists": [
+{
+"name": "李荣浩"
+}
+],
+"duration": 279196,
+"alias": [],
+"album": {
+"name": "上一首情歌 (国语精选)"
+}
+},
+{
+"id": 3400714928,
+"name": "年少有为 (AI R&B版）",
+"artists": [
+{
+"name": "吹牙DE二次元空间"
+}
+],
+"duration": 273716,
+"alias": [],
+"album": {
+"name": ""
+}
+},
+{
+"id": 518686034,
+"name": "戒烟",
+"artists": [
+{
+"name": "李荣浩"
+}
+],
+"duration": 293875,
+"alias": [],
+"album": {
+"name": "戒烟"
+}
+},
+{
+"id": 1318234987,
+"name": "贝贝",
+"artists": [
+{
+"name": "李荣浩"
+}
+],
+"duration": 4000,
+"alias": [],
+"album": {
+"name": "耳朵"
+}
+},
+{
+"id": 1407551413,
+"name": "麻雀",
+"artists": [
+{
+"name": "李荣浩"
+}
+],
+"duration": 252757,
+"alias": [],
+"album": {
+"name": "麻雀"
+}
+}
+],
+"年少有為": [
+{
+"id": 1293886117,
+"name": "年少有为",
+"artists": [
+{
+"name": "李荣浩"
+}
+],
+"duration": 279196,
+"alias": [],
+"album": {
+"name": "耳朵"
+}
+},
+{
+"id": 3365205415,
+"name": "年少有为",
+"artists": [
+{
+"name": "Jade杰德"
+}
+],
+"duration": 279250,
+"alias": [],
+"album": {
+"name": "年少有为"
+}
+},
+{
+"id": 3376491247,
+"name": "年少有为",
+"artists": [
+{
+"name": "提米FM"
+}
+],
+"duration": 272326,
+"alias": [],
+"album": {
+"name": "年少有为"
+}
+},
+{
+"id": 2123198679,
+"name": "年少有为 (live)",
+"artists": [
+{
+"name": "黄绮珊"
+},
+{
+"name": "袁娅维TIA RAY"
+}
+],
+"duration": 304986,
+"alias": [],
+"album": {
+"name": "声生不息·家年华 第10期"
+}
+},
+{
+"id": 1334059960,
+"name": "年少有为（钢琴版伴奏）",
+"artists": [
+{
+"name": "一宁"
+}
+],
+"duration": 263497,
+"alias": [],
+"album": {
+"name": "抖音热曲钢琴版精选集伴奏"
+}
+},
+{
+"id": 3400714928,
+"name": "年少有为 (AI R&B版）",
+"artists": [
+{
+"name": "吹牙DE二次元空间"
+}
+],
+"duration": 273716,
+"alias": [],
+"album": {
+"name": ""
+}
+},
+{
+"id": 3376797042,
+"name": "年少有为",
+"artists": [
+{
+"name": "ELLY JR"
+}
+],
+"duration": 214575,
+"alias": [],
+"album": {
+"name": "倒数"
+}
+},
+{
+"id": 3365217292,
+"name": "年少有为",
+"artists": [
+{
+"name": "陆途"
+}
+],
+"duration": 279250,
+"alias": [],
+"album": {
+"name": "年少有为"
+}
+},
+{
+"id": 3386221889,
+"name": "年少有为",
+"artists": [
+{
+"name": "周觉June"
+}
+],
+"duration": 82800,
+"alias": [],
+"album": {
+"name": "年少有为"
+}
+},
+{
+"id": 1382243726,
+"name": "年少有为2019HB to 王一博",
+"artists": [
+{
+"name": "毛血旺要特辣"
+}
+],
+"duration": 279379,
+"alias": [],
+"album": {
+"name": "年少有为"
+}
+}
+],
+"考試週 (feat. 喬瑟夫 & 宮敬婷) 這群人 喬瑟夫 宮敬婷": [
+{
+"id": 1976020290,
+"name": "考试周 (feat. 乔瑟夫 & 宫敬婷)",
+"artists": [
+{
+"name": "这群人"
+},
+{
+"name": "乔瑟夫"
+},
+{
+"name": "宫敬婷"
+}
+],
+"duration": 512000,
+"alias": [],
+"album": {
+"name": "嘻哈蒸霸战"
+}
+}
+],
+"考試週": [
+{
+"id": 3443730360,
+"name": "医学生考试周之歌（考试周速版）",
+"artists": [
+{
+"name": "用户7969421393"
+}
+],
+"duration": 113973,
+"alias": [],
+"album": {
+"name": "医学生考试周之歌（考试周速版）"
+}
+},
+{
+"id": 3443730358,
+"name": "医学生考试周之歌（考试周速版）",
+"artists": [
+{
+"name": "用户7969421393"
+}
+],
+"duration": 106413,
+"alias": [],
+"album": {
+"name": "医学生考试周之歌（考试周速版）"
+}
+},
+{
+"id": 404783652,
+"name": "10분만 더 (feat. Lee-Yan)",
+"artists": [
+{
+"name": "김댕"
+},
+{
+"name": "Lee-Yan"
+}
+],
+"duration": 207885,
+"alias": [],
+"album": {
+"name": "Daily note"
+}
+},
+{
+"id": 1976020290,
+"name": "考试周 (feat. 乔瑟夫 & 宫敬婷)",
+"artists": [
+{
+"name": "这群人"
+},
+{
+"name": "乔瑟夫"
+},
+{
+"name": "宫敬婷"
+}
+],
+"duration": 512000,
+"alias": [],
+"album": {
+"name": "嘻哈蒸霸战"
+}
+},
+{
+"id": 1374385924,
+"name": "求是青春",
+"artists": [
+{
+"name": "张宝文"
+},
+{
+"name": "方秋实"
+}
+],
+"duration": 304065,
+"alias": [],
+"album": {
+"name": "求是青春"
+}
+},
+{
+"id": 3443730334,
+"name": "医学生考试周之歌",
+"artists": [
+{
+"name": "用户7969421393"
+}
+],
+"duration": 175413,
+"alias": [],
+"album": {
+"name": "医学生考试周之歌"
+}
+},
+{
+"id": 3443729331,
+"name": "医学生考试周之歌",
+"artists": [
+{
+"name": "用户7969421393"
+}
+],
+"duration": 181493,
+"alias": [],
+"album": {
+"name": "医学生考试周之歌"
+}
+},
+{
+"id": 3389399713,
+"name": "热烈盛开",
+"artists": [
+{
+"name": "秋秋"
+}
+],
+"duration": 96144,
+"alias": [
+"未来可期版"
+],
+"album": {
+"name": "热烈盛开"
+}
+},
+{
+"id": 1472645931,
+"name": "爆裂考试周",
+"artists": [
+{
+"name": "Aonlle"
+},
+{
+"name": "啊丸"
+}
+],
+"duration": 213334,
+"alias": [],
+"album": {
+"name": "爆裂考试周"
+}
+},
+{
+"id": 1471496854,
+"name": "医学生",
+"artists": [
+{
+"name": "Doctor-李一刀"
+}
+],
+"duration": 237167,
+"alias": [],
+"album": {
+"name": "伤痕累累的白大褂"
+}
+}
+],
+"拜新年 凤凰传奇": [
+{
+"id": 354576,
+"name": "拜新年",
+"artists": [
+{
+"name": "凤凰传奇"
+}
+],
+"duration": 218881,
+"alias": [],
+"album": {
+"name": "大声唱"
+}
+},
+{
+"id": 1915545114,
+"name": "拜新年 (2022)",
+"artists": [
+{
+"name": "凤凰传奇"
+}
+],
+"duration": 199036,
+"alias": [],
+"album": {
+"name": "拜新年 (2022)"
+}
+},
+{
+"id": 5232333,
+"name": "拜新年",
+"artists": [
+{
+"name": "凤凰传奇"
+}
+],
+"duration": 218881,
+"alias": [],
+"album": {
+"name": "孔雀群星贺新年"
+}
+},
+{
+"id": 1915545115,
+"name": "拜新年 (2022) (伴奏)",
+"artists": [
+{
+"name": "凤凰传奇"
+}
+],
+"duration": 199036,
+"alias": [],
+"album": {
+"name": "拜新年 (2022)"
+}
+},
+{
+"id": 3403324166,
+"name": "拜新年 (Cover 凤凰传奇)",
+"artists": [
+{
+"name": "朗兮璞"
+}
+],
+"duration": 202709,
+"alias": [],
+"album": {
+"name": ""
+}
+},
+{
+"id": 354750,
+"name": "奢香夫人",
+"artists": [
+{
+"name": "凤凰传奇"
+}
+],
+"duration": 259899,
+"alias": [],
+"album": {
+"name": "最炫民族风"
+}
+},
+{
+"id": 1818549630,
+"name": "拜新年",
+"artists": [
+{
+"name": "凤凰传奇"
+}
+],
+"duration": 218881,
+"alias": [],
+"album": {
+"name": "Happy牛Year-孔雀群星贺新年"
+}
+},
+{
+"id": 354684,
+"name": "荷塘月色",
+"artists": [
+{
+"name": "凤凰传奇"
+}
+],
+"duration": 249689,
+"alias": [],
+"album": {
+"name": "我从草原来 新歌+精选"
+}
+},
+{
+"id": 1350658663,
+"name": "山河图",
+"artists": [
+{
+"name": "凤凰传奇"
+}
+],
+"duration": 226973,
+"alias": [],
+"album": {
+"name": "山河图"
+}
+},
+{
+"id": 3421901160,
+"name": "拜新年 (Cover 凤凰传奇)",
+"artists": [
+{
+"name": "大头针"
+}
+],
+"duration": 209536,
+"alias": [],
+"album": {
+"name": ""
+}
+}
+],
+"拜新年": [
+{
+"id": 354576,
+"name": "拜新年",
+"artists": [
+{
+"name": "凤凰传奇"
+}
+],
+"duration": 218881,
+"alias": [],
+"album": {
+"name": "大声唱"
+}
+},
+{
+"id": 1417107610,
+"name": "成语拜新年",
+"artists": [
+{
+"name": "李昕融"
+},
+{
+"name": "王馨娅"
+},
+{
+"name": "王烁宇YOYO"
+},
+{
+"name": "梁熙眸"
+},
+{
+"name": "徐佳一"
+},
+{
+"name": "徐佳禾"
+}
+],
+"duration": 188369,
+"alias": [],
+"album": {
+"name": "成语拜新年"
+}
+},
+{
+"id": 407007191,
+"name": "拜新年 (Live)",
+"artists": [
+{
+"name": "群星"
+}
+],
+"duration": 54563,
+"alias": [],
+"album": {
+"name": "2014东方卫视春晚"
+}
+},
+{
+"id": 2016412899,
+"name": "拜新年（完整版）",
+"artists": [
+{
+"name": "丁丽君"
+}
+],
+"duration": 180973,
+"alias": [],
+"album": {
+"name": "大丁子翻唱"
+}
+},
+{
+"id": 354750,
+"name": "奢香夫人",
+"artists": [
+{
+"name": "凤凰传奇"
+}
+],
+"duration": 259899,
+"alias": [],
+"album": {
+"name": "最炫民族风"
+}
+},
+{
+"id": 2122262011,
+"name": "成语拜新年 / 童声版",
+"artists": [
+{
+"name": "白木"
+},
+{
+"name": "张芷恬"
+}
+],
+"duration": 188000,
+"alias": [],
+"album": {
+"name": "张芷恬小朋友"
+}
+},
+{
+"id": 1915545114,
+"name": "拜新年 (2022)",
+"artists": [
+{
+"name": "凤凰传奇"
+}
+],
+"duration": 199036,
+"alias": [],
+"album": {
+"name": "拜新年 (2022)"
+}
+},
+{
+"id": 2662643988,
+"name": "拜新年 (DJ版)",
+"artists": [
+{
+"name": "闫辽艳"
+},
+{
+"name": "高捞"
+}
+],
+"duration": 233558,
+"alias": [],
+"album": {
+"name": "拜新年 (Dj对唱版)"
+}
+},
+{
+"id": 3443728259,
+"name": "拜新年",
+"artists": [
+{
+"name": "幻速旋律"
+}
+],
+"duration": 64365,
+"alias": [],
+"album": {
+"name": "过往碎片"
+}
+},
+{
+"id": 1808380632,
+"name": "拜呀拜新年",
+"artists": [
+{
+"name": "欧阳冰凉"
+},
+{
+"name": "洵风"
+},
+{
+"name": "叶隐Regina"
+},
+{
+"name": "涉嫌卖萌的王同学"
+},
+{
+"name": "陈摆摆"
+},
+{
+"name": "落屹Louris"
+},
+{
+"name": "软薯yo"
+},
+{
+"name": "寄云"
+}
+],
+"duration": 214230,
+"alias": [],
+"album": {
+"name": "2021！！"
+}
+}
+],
+"不谓侠 萧忆情": [
+{
+"id": 475530855,
+"name": "不谓侠",
+"artists": [
+{
+"name": "萧忆情Alex"
+}
+],
+"duration": 266736,
+"alias": [],
+"album": {
+"name": "萧音弥漫"
+}
+},
+{
+"id": 3384286099,
+"name": "不谓侠 (Cover 萧忆情Alex)",
+"artists": [
+{
+"name": "萧萧"
+}
+],
+"duration": 232779,
+"alias": [],
+"album": {
+"name": ""
+}
+},
+{
+"id": 2755796768,
+"name": "不谓侠（Cover萧忆情）",
+"artists": [
+{
+"name": "伍宇辰"
+}
+],
+"duration": 32833,
+"alias": [],
+"album": {
+"name": "《段章曲艺》"
+}
+},
+{
+"id": 2727478717,
+"name": "不谓侠（Feat.洛天依）（Cover 萧忆情Alex）",
+"artists": [
+{
+"name": "Longj1nga_"
+},
+{
+"name": "洛天依"
+}
+],
+"duration": 266768,
+"alias": [],
+"album": {
+"name": "洛天依X Studio Cover"
+}
+},
+{
+"id": 3322131443,
+"name": "不谓侠（cover萧忆情）",
+"artists": [
+{
+"name": "童千千"
+}
+],
+"duration": 264597,
+"alias": [],
+"album": {
+"name": "童千千的小小世界"
+}
+},
+{
+"id": 3322264226,
+"name": "不谓侠(cover.萧忆情）",
+"artists": [
+{
+"name": "喵了个咪"
+}
+],
+"duration": 267984,
+"alias": [],
+"album": {
+"name": "萌二代"
+}
+},
+{
+"id": 3354626767,
+"name": "不谓侠（cover萧忆情）",
+"artists": [
+{
+"name": "小黑"
+}
+],
+"duration": 267052,
+"alias": [],
+"album": {
+"name": "雁回首"
+}
+},
+{
+"id": 3392185313,
+"name": "【AI点酥Susu】不谓侠/萧忆情Alex",
+"artists": [
+{
+"name": "宴泽feastum"
+}
+],
+"duration": 268004,
+"alias": [],
+"album": {
+"name": ""
+}
+},
+{
+"id": 491274636,
+"name": "不谓侠",
+"artists": [
+{
+"name": "萧忆情"
+}
+],
+"duration": 266736,
+"alias": [],
+"album": {
+"name": "春日迟迟"
+}
+},
+{
+"id": 2704491834,
+"name": "不谓侠",
+"artists": [
+{
+"name": "萧忆情Alex"
+}
+],
+"duration": 266736,
+"alias": [],
+"album": {
+"name": "萧忆情音乐合辑"
+}
+}
+],
+"不谓侠": [
+{
+"id": 475530855,
+"name": "不谓侠",
+"artists": [
+{
+"name": "萧忆情Alex"
+}
+],
+"duration": 266736,
+"alias": [],
+"album": {
+"name": "萧音弥漫"
+}
+},
+{
+"id": 481626333,
+"name": "不谓侠",
+"artists": [
+{
+"name": "叶洛洛"
+}
+],
+"duration": 266736,
+"alias": [],
+"album": {
+"name": "不谓侠"
+}
+},
+{
+"id": 3436713491,
+"name": "不谓侠(向江南折过花)",
+"artists": [
+{
+"name": "林清樱"
+}
+],
+"duration": 347927,
+"alias": [],
+"album": {
+"name": "夜雨中的迈巴赫"
+}
+},
+{
+"id": 2707736248,
+"name": "不谓侠(Live)",
+"artists": [
+{
+"name": "小阿七"
+}
+],
+"duration": 15394,
+"alias": [],
+"album": {
+"name": ""
+}
+},
+{
+"id": 3373044137,
+"name": "不谓侠dj",
+"artists": [
+{
+"name": "萧承煦"
+}
+],
+"duration": 37986,
+"alias": [],
+"album": {
+"name": "不谓侠"
+}
+},
+{
+"id": 2736207528,
+"name": "不谓侠(37秒)",
+"artists": [
+{
+"name": "小阿枫"
+}
+],
+"duration": 37564,
+"alias": [],
+"album": {
+"name": ""
+}
+},
+{
+"id": 2739296917,
+"name": "不谓侠DJ",
+"artists": [
+{
+"name": "冰冷"
+}
+],
+"duration": 36780,
+"alias": [],
+"album": {
+"name": "心跳"
+}
+},
+{
+"id": 3390633491,
+"name": "不谓侠DJ版",
+"artists": [
+{
+"name": "洋洋y"
+}
+],
+"duration": 397531,
+"alias": [],
+"album": {
+"name": "讲不出再见DJ版"
+}
+},
+{
+"id": 3388968206,
+"name": "不谓侠V2(赤旗版)",
+"artists": [
+{
+"name": "北极星电台"
+}
+],
+"duration": 286920,
+"alias": [],
+"album": {
+"name": "不谓侠V2(赤旗版)"
+}
+},
+{
+"id": 2715230643,
+"name": "不谓侠（粤语版）",
+"artists": [
+{
+"name": "湘菱"
+}
+],
+"duration": 135862,
+"alias": [],
+"album": {
+"name": "武侠"
+}
+}
+],
+"时间有泪 - Live 张碧晨": [
+{
+"id": 463262369,
+"name": "时间有泪 (live)",
+"artists": [
+{
+"name": "张碧晨"
+}
+],
+"duration": 320895,
+"alias": [
+"原唱：张学友"
+],
+"album": {
+"name": "歌手 第7期"
+}
+},
+{
+"id": 1320030903,
+"name": "时间有泪 (Live)",
+"artists": [
+{
+"name": "张碧晨"
+}
+],
+"duration": 327824,
+"alias": [],
+"album": {
+"name": "张碧晨2018北京极光演唱会"
+}
+},
+{
+"id": 499673019,
+"name": "时间有泪 (Live)",
+"artists": [
+{
+"name": "陈颖恩"
+}
+],
+"duration": 296325,
+"alias": [
+"原唱：张学友"
+],
+"album": {
+"name": "中国新歌声第二季 第6期"
+}
+},
+{
+"id": 29771760,
+"name": "时间有泪",
+"artists": [
+{
+"name": "张学友"
+}
+],
+"duration": 217891,
+"alias": [],
+"album": {
+"name": "时间有泪"
+}
+},
+{
+"id": 29822036,
+"name": "时间有泪",
+"artists": [
+{
+"name": "张学友"
+}
+],
+"duration": 217891,
+"alias": [],
+"album": {
+"name": "醒着做梦"
+}
+},
+{
+"id": 3339805286,
+"name": "茧蜜 (Live)",
+"artists": [
+{
+"name": "张碧晨"
+},
+{
+"name": "高睿"
+}
+],
+"duration": 257943,
+"alias": [
+"有歌第二季第2期"
+],
+"album": {
+"name": "茧蜜"
+}
+},
+{
+"id": 863428039,
+"name": "见与不见",
+"artists": [
+{
+"name": "张碧晨"
+}
+],
+"duration": 303758,
+"alias": [],
+"album": {
+"name": "时"
+}
+},
+{
+"id": 1954038892,
+"name": "时间里的飞人 (Live)",
+"artists": [
+{
+"name": "张碧晨"
+},
+{
+"name": "裘德"
+}
+],
+"duration": 284245,
+"alias": [],
+"album": {
+"name": "天赐的声音第三季 第11期"
+}
+},
+{
+"id": 1329720019,
+"name": "漂流",
+"artists": [
+{
+"name": "张碧晨"
+}
+],
+"duration": 265324,
+"alias": [
+"电影《惊涛飓浪》中国区推广曲"
+],
+"album": {
+"name": "时"
+}
+},
+{
+"id": 32619064,
+"name": "年轮",
+"artists": [
+{
+"name": "张碧晨"
+}
+],
+"duration": 274504,
+"alias": [
+"电视剧《花千骨》插曲"
+],
+"album": {
+"name": "花千骨 电视原声带"
+}
+}
+],
+"时间有泪": [
+{
+"id": 29822036,
+"name": "时间有泪",
+"artists": [
+{
+"name": "张学友"
+}
+],
+"duration": 217891,
+"alias": [],
+"album": {
+"name": "醒着做梦"
+}
+},
+{
+"id": 463262369,
+"name": "时间有泪 (live)",
+"artists": [
+{
+"name": "张碧晨"
+}
+],
+"duration": 320895,
+"alias": [
+"原唱：张学友"
+],
+"album": {
+"name": "歌手 第7期"
+}
+},
+{
+"id": 499673019,
+"name": "时间有泪 (Live)",
+"artists": [
+{
+"name": "陈颖恩"
+}
+],
+"duration": 296325,
+"alias": [
+"原唱：张学友"
+],
+"album": {
+"name": "中国新歌声第二季 第6期"
+}
+},
+{
+"id": 29771760,
+"name": "时间有泪",
+"artists": [
+{
+"name": "张学友"
+}
+],
+"duration": 217891,
+"alias": [],
+"album": {
+"name": "时间有泪"
+}
+},
+{
+"id": 528396241,
+"name": "时间有泪（Cover 张碧晨）",
+"artists": [
+{
+"name": "梁雪"
+},
+{
+"name": "梁雪"
+}
+],
+"duration": 322063,
+"alias": [],
+"album": {
+"name": "河北师大校园歌手大赛"
+}
+},
+{
+"id": 551056534,
+"name": "时间有泪（翻自 张碧晨）",
+"artists": [
+{
+"name": "李昕伟"
+}
+],
+"duration": 320896,
+"alias": [],
+"album": {
+"name": "时间有泪"
+}
+},
+{
+"id": 2604653521,
+"name": "时间有泪",
+"artists": [
+{
+"name": "0PIPI5"
+}
+],
+"duration": 220074,
+"alias": [],
+"album": {
+"name": "时间有泪"
+}
+},
+{
+"id": 1935204058,
+"name": "时间有泪",
+"artists": [
+{
+"name": "张学友"
+}
+],
+"duration": 217891,
+"alias": [],
+"album": {
+"name": "致前任 | 华语情歌精选"
+}
+},
+{
+"id": 1313648720,
+"name": "时间有泪",
+"artists": [
+{
+"name": "田心SJ"
+}
+],
+"duration": 132858,
+"alias": [],
+"album": {
+"name": "唱给你的歌"
+}
+},
+{
+"id": 1320030903,
+"name": "时间有泪 (Live)",
+"artists": [
+{
+"name": "张碧晨"
+}
+],
+"duration": 327824,
+"alias": [],
+"album": {
+"name": "张碧晨2018北京极光演唱会"
+}
+}
+],
+"Counting Stars OneRepublic": [
+{
+"id": 26060065,
+"name": "Counting Stars",
+"artists": [
+{
+"name": "OneRepublic"
+}
+],
+"duration": 256946,
+"alias": [],
+"album": {
+"name": "Native (Deluxe Version)"
+}
+},
+{
+"id": 1850175684,
+"name": "Counting Stars",
+"artists": [
+{
+"name": "OneRepublic"
+}
+],
+"duration": 256760,
+"alias": [],
+"album": {
+"name": "Horoscope Tunes: Cancer"
+}
+},
+{
+"id": 2082358409,
+"name": "Counting Stars (2023 Version)",
+"artists": [
+{
+"name": "OneRepublic"
+}
+],
+"duration": 231875,
+"alias": [],
+"album": {
+"name": "Counting Stars (2023 Version)"
+}
+},
+{
+"id": 1917551212,
+"name": "Counting Stars (from One Night In Malibu)",
+"artists": [
+{
+"name": "OneRepublic"
+}
+],
+"duration": 345755,
+"alias": [],
+"album": {
+"name": "One Night In Malibu"
+}
+},
+{
+"id": 27746716,
+"name": "Counting Stars (Lonczinski Remix)",
+"artists": [
+{
+"name": "OneRepublic"
+}
+],
+"duration": 287000,
+"alias": [],
+"album": {
+"name": "Counting Stars (Lonczinski Remix)"
+}
+},
+{
+"id": 1824878724,
+"name": "Counting Stars",
+"artists": [
+{
+"name": "OneRepublic"
+}
+],
+"duration": 256760,
+"alias": [],
+"album": {
+"name": "Roadtrip Bangers"
+}
+},
+{
+"id": 1865094696,
+"name": "Counting Stars",
+"artists": [
+{
+"name": "OneRepublic"
+}
+],
+"duration": 256760,
+"alias": [],
+"album": {
+"name": "A Summer You Won't Forget"
+}
+},
+{
+"id": 1814024337,
+"name": "Counting Stars",
+"artists": [
+{
+"name": "OneRepublic"
+}
+],
+"duration": 256760,
+"alias": [],
+"album": {
+"name": "Running 100-120 BPM"
+}
+},
+{
+"id": 28129427,
+"name": "Counting Stars",
+"artists": [
+{
+"name": "OneRepublic"
+}
+],
+"duration": 256946,
+"alias": [],
+"album": {
+"name": "So Fresh - The Hits Of Spring 2013"
+}
+},
+{
+"id": 1866410283,
+"name": "Counting Stars",
+"artists": [
+{
+"name": "OneRepublic"
+}
+],
+"duration": 256760,
+"alias": [
+"(2021年度最受小学孩子欢迎的歌）"
+],
+"album": {
+"name": "Elementary School Hits For Kids 2021"
+}
+}
+],
+"Counting Stars": [
+{
+"id": 26060065,
+"name": "Counting Stars",
+"artists": [
+{
+"name": "OneRepublic"
+}
+],
+"duration": 256946,
+"alias": [],
+"album": {
+"name": "Native (Deluxe Version)"
+}
+},
+{
+"id": 1866410283,
+"name": "Counting Stars",
+"artists": [
+{
+"name": "OneRepublic"
+}
+],
+"duration": 256760,
+"alias": [
+"(2021年度最受小学孩子欢迎的歌）"
+],
+"album": {
+"name": "Elementary School Hits For Kids 2021"
+}
+},
+{
+"id": 2021526170,
+"name": "Counting Stars (Sped Up TikTok Version)",
+"artists": [
+{
+"name": "Danil Muzik"
+}
+],
+"duration": 213971,
+"alias": [],
+"album": {
+"name": "Counting Stars (Sped Up TikTok Version)"
+}
+},
+{
+"id": 409931835,
+"name": "Counting Stars (Lost Frequencies Bootleg)",
+"artists": [
+{
+"name": "Lost Frequencies"
+},
+{
+"name": "OneRepublic"
+}
+],
+"duration": 208195,
+"alias": [],
+"album": {
+"name": "Counting Stars (Lost Frequencies Bootleg)"
+}
+},
+{
+"id": 1892413750,
+"name": "Counting stars (feat. BE’O)",
+"artists": [
+{
+"name": "RAP VIỆT"
+},
+{
+"name": "BE’O"
+}
+],
+"duration": 62136,
+"alias": [],
+"album": {
+"name": "Counting stars (feat. BE’O)"
+}
+},
+{
+"id": 1824878724,
+"name": "Counting Stars",
+"artists": [
+{
+"name": "OneRepublic"
+}
+],
+"duration": 256760,
+"alias": [],
+"album": {
+"name": "Roadtrip Bangers"
+}
+},
+{
+"id": 1487287376,
+"name": "Counting Stars",
+"artists": [
+{
+"name": "Simply Three"
+}
+],
+"duration": 236306,
+"alias": [],
+"album": {
+"name": "Volume 2"
+}
+},
+{
+"id": 2646100905,
+"name": "Counting Stars (Live)",
+"artists": [
+{
+"name": "崔伞"
+},
+{
+"name": "李茂珍"
+}
+],
+"duration": 249077,
+"alias": [],
+"album": {
+"name": "리무진 서비스"
+}
+},
+{
+"id": 3387379860,
+"name": "Counting Stars (live)",
+"artists": [
+{
+"name": "Stanaj"
+}
+],
+"duration": 289813,
+"alias": [],
+"album": {
+"name": "歌手2026 第2期"
+}
+},
+{
+"id": 1850175684,
+"name": "Counting Stars",
+"artists": [
+{
+"name": "OneRepublic"
+}
+],
+"duration": 256760,
+"alias": [],
+"album": {
+"name": "Horoscope Tunes: Cancer"
+}
+}
+]
+}

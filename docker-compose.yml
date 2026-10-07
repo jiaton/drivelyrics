@@ -1,0 +1,24 @@
+# DriveLyrics: backend (FastAPI) + frontend (nginx serving the app and proxying /api).
+# Put it behind HTTPS (a reverse proxy or a tunnel) at the PUBLIC_BASE_URL you set in
+# backend/.env — Google and Spotify sign-in need the exact public URL.
+name: drivelyrics
+
+services:
+  backend:
+    build: ./backend
+    env_file:
+      - ./backend/.env
+    volumes:
+      - backend-data:/app/data
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  backend-data:

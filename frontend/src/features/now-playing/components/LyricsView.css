@@ -1,0 +1,46 @@
+.lyrics-viewport {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
+  /* Manual drag is handled entirely via Pointer Events in JS — this stops the
+     browser's own touch-scroll/pinch-zoom gestures from fighting that drag. */
+  touch-action: none;
+  cursor: grab;
+}
+
+.lyrics-viewport:active {
+  cursor: grabbing;
+}
+
+.lyrics-track {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  will-change: transform;
+  transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.lyrics-line {
+  padding: calc(var(--line-gap) / 2) 2rem;
+  font-size: var(--font-size-inactive);
+  color: var(--color-fg-dim);
+  transition: color var(--transition-fast), font-size var(--transition-fast);
+  text-align: center;
+}
+
+.lyrics-line.active {
+  color: var(--color-active);
+  font-size: var(--font-size-active);
+  font-weight: 600;
+}
+
+.lyrics-line-translation {
+  /* Deliberately not `em` — it must not scale up when the parent .lyrics-line gains
+     the larger .active font-size, or the translation would visually dominate the
+     line it's annotating. */
+  font-size: clamp(0.9rem, 2vw, 1.25rem);
+  color: var(--color-fg-dim);
+  margin-top: 0.25rem;
+}

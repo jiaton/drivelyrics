@@ -1,0 +1,20 @@
+/*
+ * Token file — the only place a raw color/size value may be defined.
+ * Everywhere else in the app references these variables, never a raw hex or px literal
+ * for anything visual/theme-related (layout utilities like gap/padding are exempt).
+ */
+:root {
+  --color-bg: #05070a;
+  --color-fg: #f5f6f8;
+  --color-fg-dim: #7a7f8a;
+  --color-active: #ffffff;
+  --color-accent: #1db954; /* Spotify green — used sparingly, e.g. connection dot */
+  --color-error: #ff5f56;
+
+  --font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+  --font-size-active: clamp(1.75rem, 4vw, 3rem);
+  --font-size-inactive: clamp(1.25rem, 3vw, 2.25rem);
+  --line-gap: 1.5rem;
+
+  --transition-fast: 120ms ease-out;
+}

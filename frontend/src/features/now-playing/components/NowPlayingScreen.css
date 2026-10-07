@@ -1,0 +1,27 @@
+.now-playing-screen {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Sits behind everything (z-index 0) so the header/lyrics content, painted with the
+   default z-index:auto stacking of normal in-flow elements, needs its own z-index:1
+   wrapper to land above it — an absolutely-positioned z-index:auto child otherwise
+   paints above ordinary in-flow siblings regardless of DOM order. */
+.album-art-backdrop {
+  position: absolute;
+  inset: -40px; /* oversized + scaled so the blur's own edge softening never shows a hard edge */
+  background-size: cover;
+  background-position: center;
+  filter: blur(40px) brightness(0.35);
+  transform: scale(1.2);
+  z-index: 0;
+}
+
+.now-playing-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
