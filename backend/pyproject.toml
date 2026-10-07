@@ -3,7 +3,7 @@ name = "lyric-backend"
 version = "0.1.0"
 description = "Now-playing lyrics service: polls Spotify, matches synced lyrics, streams to the frontend"
 requires-python = ">=3.12"
-license = { text = "AGPL-3.0-or-later" }
+license = "AGPL-3.0-or-later"
 dependencies = [
     "fastapi (>=0.115,<1.0)",
     "uvicorn[standard] (>=0.32,<1.0)",
