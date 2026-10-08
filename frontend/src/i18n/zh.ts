@@ -48,7 +48,7 @@ export const zh: Dictionary = {
     ],
   },
   cta: { title: "下一程，准备好了吗？", button: "开始使用" },
-  footer: { privacy: "隐私", rights: "DriveLyrics" },
+  footer: { privacy: "隐私", source: "源代码", rights: "DriveLyrics" },
   pair: {
     title: "登录一块屏幕",
     needSignIn: "请先在这里登录，显示这个码的屏幕随后会登录到同一个账号。",

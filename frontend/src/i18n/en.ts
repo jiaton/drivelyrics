@@ -58,7 +58,7 @@ export const en = {
     ],
   },
   cta: { title: "Ready for the next drive?", button: "Get started" },
-  footer: { privacy: "Privacy", rights: "DriveLyrics" },
+  footer: { privacy: "Privacy", source: "Source code", rights: "DriveLyrics" },
   pair: {
     title: "Sign in a screen",
     needSignIn: "Sign in here first. The screen showing the code will then be signed in to the same account.",
