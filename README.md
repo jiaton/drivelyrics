@@ -88,3 +88,5 @@ cd frontend && npm install && npm test && npm run dev   # proxies /api to :8000
 to others over a network, you must share its source under the same license.
 
 Not affiliated with Spotify, Tesla, Google, NetEase or LRCLIB.
+
+Thanks to the [LINUX DO](https://linux.do) community.
