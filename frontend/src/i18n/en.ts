@@ -1,5 +1,5 @@
 export const en = {
-  nav: { signIn: "Sign in", howItWorks: "How it works", privacy: "Privacy" },
+  nav: { signIn: "Sign in", howItWorks: "How it works", privacy: "Privacy", source: "Source code on GitHub" },
   hero: {
     eyebrow: "Made for your car's browser",
     title: "Sing along on every drive.",
@@ -26,12 +26,20 @@ export const en = {
   steps: {
     title: "Up and running in three steps",
     items: [
-      { title: "Continue with Google", body: "One tap, and your account exists — no forms. We only learn your name and email, nothing else in your Google account." },
-      {
-        title: "Connect your Spotify",
-        body: "Create your own Spotify developer app (needs Spotify Premium) and paste two values. A guided, two-minute setup — best done on a computer.",
-      },
-      { title: "Open it in the car", body: "Go to drivelyrics.com on the car screen and scan the code with your phone. It stays signed in until you sign out." },
+      { title: "Continue with Google", body: "Only your email and name. Nothing else." },
+      { title: "Connect Spotify", body: "Spotify Premium required. A guided two-minute setup." },
+      { title: "Scan in the car", body: "Open drivelyrics.com on the car screen and scan with your phone." },
+    ],
+  },
+  privacyBand: {
+    title: "Private by design",
+    lead: "DriveLyrics only needs to know who you are and what's playing.",
+    items: [
+      { title: "Google: email and name only", body: "Used purely to sign you in. No contacts, no Drive, no profile picture, no other access to your Google account." },
+      { title: "Spotify: only what's playing", body: "Read-only: the current song and position, and only while a DriveLyrics screen is open. Your app secret and tokens are stored encrypted." },
+      { title: "No ads, no tracking", body: "No analytics, no third-party scripts. The only cookie keeps you signed in." },
+      { title: "Open source", body: "Every line is public, so you can check all of this yourself." },
+      { title: "Delete anytime", body: "One button in Settings removes your account and everything tied to it." },
     ],
   },
   features: {
@@ -42,7 +50,7 @@ export const en = {
       { title: "Two lyric sources", body: "NetEase Cloud Music and LRCLIB. Choose your favorite, or let DriveLyrics pick by song language." },
       { title: "Fix it in one tap", body: "Wrong lyrics? Pick the right version from every match. Your fix helps everyone who plays that song." },
       { title: "Built for the car", body: "Big, readable type, keeps the screen awake, and light enough for an in-car browser." },
-      { title: "Private by design", body: "No ads, no tracking. Your Spotify credentials are encrypted, and you can delete your account any time." },
+      { title: "Any screen", body: "Car, tablet or desktop: any modern browser. English and Chinese." },
     ],
   },
   faq: {
@@ -58,7 +66,7 @@ export const en = {
     ],
   },
   cta: { title: "Ready for the next drive?", button: "Get started" },
-  footer: { privacy: "Privacy", source: "Source code", rights: "DriveLyrics" },
+  footer: { privacy: "Privacy", rights: "DriveLyrics" },
   pair: {
     title: "Sign in a screen",
     needSignIn: "Sign in here first. The screen showing the code will then be signed in to the same account.",
@@ -76,7 +84,7 @@ export const en = {
       {
         h: "What we store",
         p: [
-          "From Google sign-in: your email address, name and profile picture URL. We use Google data only to identify your account.",
+          "From Google sign-in: your email address and name — nothing else (Google also sends a profile picture link; we discard it). We use them only to identify your account.",
           "The Spotify developer app Client ID and Client secret you enter, and the Spotify access and refresh tokens from connecting it. The secret and tokens are encrypted at rest.",
           "Your display preferences, and the lyric fixes and per-song source choices you make.",
           "Sign-in sessions: a random token in a cookie (we keep only a hash of it) and the browser's user-agent string, so you can tell your devices apart.",

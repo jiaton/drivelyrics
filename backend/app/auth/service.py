@@ -97,7 +97,6 @@ def user_for_google(db: Session, identity: GoogleIdentity) -> User:
     user.google_sub = identity.sub
     user.email = email
     user.name = identity.name
-    user.picture_url = identity.picture_url
     db.add(user)
     db.commit()
     db.refresh(user)

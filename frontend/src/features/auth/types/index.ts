@@ -2,7 +2,6 @@ export interface User {
   id: number;
   email: string;
   name: string;
-  picture_url: string;
   role: "user" | "admin";
 }
 

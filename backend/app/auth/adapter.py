@@ -23,6 +23,9 @@ class GoogleOAuthClient(GoogleOAuthPort):
         return f"{AUTHORIZE_URL}?{urlencode(params)}"
 
     async def identify(self, code: str, redirect_uri: str) -> GoogleIdentity:
+        # Only the email (identity) and name are kept: the profile picture Google also
+        # returns is deliberately dropped — the landing and privacy pages promise
+        # "email and name, nothing else".
         # The userinfo call (over TLS, with the token Google just issued us) stands in
         # for verifying the ID token's signature locally — same trust, no JWKS handling.
         async with httpx.AsyncClient(timeout=10) as client:
@@ -45,5 +48,4 @@ class GoogleOAuthClient(GoogleOAuthPort):
             email=body.get("email", ""),
             email_verified=bool(body.get("email_verified")),
             name=body.get("name", ""),
-            picture_url=body.get("picture", ""),
         )

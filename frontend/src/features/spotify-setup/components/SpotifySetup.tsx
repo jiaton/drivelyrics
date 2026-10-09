@@ -5,6 +5,9 @@ import { TextField } from "../../../components/ui/TextField";
 import type { SpotifyStatus } from "../types";
 import { useI18n } from "../../../i18n";
 import { rich } from "../../../i18n/rich";
+import { signOut } from "../../auth/api/useMe";
+import type { User } from "../../auth/types";
+import { LanguageSwitch } from "../../landing/components/LanguageSwitch";
 
 function Step({ n, children }: { n: number; children: React.ReactNode }) {
   return (
@@ -40,11 +43,13 @@ function CopyBox({ value }: { value: string }) {
  * can't take sign-ups. Best done on a computer or phone — not in the car.
  */
 export function SpotifySetup({
+  user,
   status,
   saveApp,
   removeApp,
   onDone,
 }: {
+  user: User;
   status: SpotifyStatus;
   saveApp: (clientId: string, clientSecret: string) => Promise<void>;
   removeApp: () => Promise<void>;
@@ -70,6 +75,22 @@ export function SpotifySetup({
 
   return (
     <Page width={680}>
+      {/* A new user lands here before anything else exists: the way out has to be here too. */}
+      <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: "1rem", flexWrap: "wrap", color: "var(--color-fg-dim)", fontSize: "0.9rem" }}>
+        <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
+          {t.app.settings.signedInAs} <span style={{ color: "var(--color-fg)" }}>{user.email}</span>
+        </span>
+        <LanguageSwitch />
+        <Button
+          variant="ghost"
+          style={{ padding: "0.4rem 0.8rem", fontSize: "0.9rem" }}
+          onClick={() => {
+            if (window.confirm(t.app.settings.signOutConfirm)) signOut();
+          }}
+        >
+          {t.app.settings.signOut}
+        </Button>
+      </div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <h1 style={{ margin: 0 }}>{ts.title}</h1>
         {onDone ? (

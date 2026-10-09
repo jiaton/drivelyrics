@@ -5,7 +5,6 @@ class UserSchema(BaseModel):
     id: int
     email: str
     name: str
-    picture_url: str
     role: str
 
 

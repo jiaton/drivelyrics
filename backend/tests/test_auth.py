@@ -85,7 +85,7 @@ def test_wrong_poll_secret_learns_nothing(app_client):
 
 
 def _identity(sub, email, verified=True):
-    return GoogleIdentity(sub=sub, email=email, email_verified=verified, name="N", picture_url="")
+    return GoogleIdentity(sub=sub, email=email, email_verified=verified, name="N")
 
 
 def test_google_sign_in_claims_the_pre_created_owner_row():

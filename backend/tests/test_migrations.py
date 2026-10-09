@@ -90,7 +90,22 @@ def test_v2_keys_matches_per_source_and_keeps_manual_picks(tmp_path):
     migrations.migrate(engine)
 
     with engine.connect() as conn:
-        assert conn.execute(text("PRAGMA user_version")).scalar_one() == 2
+        assert conn.execute(text("PRAGMA user_version")).scalar_one() == len(migrations.STEPS)
         rows = conn.execute(text("SELECT spotify_track_id, source, source_song_id, manual FROM trackmatch")).all()
         assert [tuple(r) for r in rows] == [("t-picked", "netease", "42", 1)]  # "found nothing" rows re-search
         assert conn.execute(text("SELECT lyrics_source FROM userpreferences")).scalar_one() == "auto"
+
+
+def test_v3_forgets_stored_profile_pictures(tmp_path):
+    path = tmp_path / "v2.db"
+    conn = sqlite3.connect(path)
+    conn.executescript("""
+CREATE TABLE users (id INTEGER PRIMARY KEY, email VARCHAR NOT NULL, google_sub VARCHAR, name VARCHAR NOT NULL, picture_url VARCHAR NOT NULL, role VARCHAR NOT NULL, created_at FLOAT NOT NULL);
+INSERT INTO users VALUES (1, 'a@example.com', 'sub', 'A', 'https://lh3.googleusercontent.com/x', 'admin', 0);
+PRAGMA user_version = 2;
+""")
+    conn.close()
+    engine = create_engine(f"sqlite:///{path}")
+    migrations.migrate(engine)
+    with engine.connect() as c:
+        assert c.execute(text("SELECT picture_url FROM users")).scalar_one() == ""

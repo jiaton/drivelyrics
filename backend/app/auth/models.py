@@ -11,7 +11,7 @@ class User(SQLModel, table=True):
     email: str = Field(unique=True, index=True)
     google_sub: str | None = Field(default=None, unique=True, index=True)
     name: str = Field(default="")
-    picture_url: str = Field(default="")
+    picture_url: str = Field(default="")  # unused, always "": we don't keep Google's profile picture
     role: str = Field(default="user")  # "user" | "admin"
     created_at: float
 

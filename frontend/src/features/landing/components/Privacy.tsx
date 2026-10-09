@@ -1,5 +1,6 @@
 import { useI18n } from "../../../i18n";
 import { Brand } from "./Brand";
+import { GitHubLink } from "./GitHubLink";
 import { LanguageSwitch } from "./LanguageSwitch";
 import { SiteFooter } from "./SiteFooter";
 import "./landing.css";
@@ -14,6 +15,7 @@ export function Privacy() {
         <Brand />
         <nav>
           <LanguageSwitch />
+          <GitHubLink />
         </nav>
       </header>
       <main className="section narrow prose">

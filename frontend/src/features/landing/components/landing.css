@@ -41,6 +41,27 @@
 .brand { display: flex; align-items: center; gap: 0.6rem; color: var(--color-fg); text-decoration: none; font-weight: 600; font-size: 1.1rem; letter-spacing: -0.01em; }
 .nav-link { color: var(--color-fg-dim); text-decoration: none; font-size: 0.95rem; }
 .nav-link:hover { color: var(--color-fg); }
+.github-link { display: inline-flex; color: var(--color-fg-dim); }
+.github-link:hover { color: var(--color-fg); }
+
+/* privacy band */
+.privacy-band {
+  border: 1px solid var(--card-border);
+  border-radius: 24px;
+  padding: 2.5rem;
+  background: linear-gradient(135deg, rgba(255, 106, 136, 0.08), rgba(255, 179, 92, 0.05) 60%, transparent);
+}
+.privacy-band h2 { margin-bottom: 0.6rem; }
+.privacy-band .lead { margin-bottom: 1.8rem; }
+.privacy-band ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.4rem 2.5rem; }
+.privacy-band li { display: flex; gap: 0.9rem; align-items: flex-start; }
+.privacy-band .check {
+  flex-shrink: 0; width: 1.6rem; height: 1.6rem; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; font-weight: 700; color: var(--color-bg); background: linear-gradient(135deg, var(--hl-a), var(--hl-b));
+}
+.privacy-band h3 { margin: 0.1rem 0 0.3rem; font-size: 1.05rem; }
+.privacy-band li p { margin: 0; color: var(--color-fg-dim); line-height: 1.6; }
+.privacy-more { display: inline-block; margin-top: 1.8rem; color: var(--color-fg); }
 
 /* Also used in the signed-in settings modal, outside .site: hence the fallbacks. */
 .lang-switch { display: flex; border: 1px solid var(--card-border, rgba(255, 255, 255, 0.12)); border-radius: 999px; overflow: hidden; flex-shrink: 0; }
@@ -193,7 +214,8 @@
 
 @media (max-width: 900px) {
   .hero { grid-template-columns: 1fr; gap: 2.5rem; padding-top: 1.5rem; }
-  .steps, .features { grid-template-columns: 1fr; }
+  .steps, .features, .privacy-band ul { grid-template-columns: 1fr; }
+  .privacy-band { padding: 1.6rem; }
   .nav-link { display: none; }
 }
 @media (max-width: 640px) {

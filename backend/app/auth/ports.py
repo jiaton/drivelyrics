@@ -8,7 +8,6 @@ class GoogleIdentity:
     email: str
     email_verified: bool
     name: str
-    picture_url: str
 
 
 class GoogleOAuthPort(Protocol):

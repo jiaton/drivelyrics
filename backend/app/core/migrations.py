@@ -90,7 +90,14 @@ def _v2_lyrics_source(conn: Connection) -> None:
         conn.execute(text("DROP TABLE trackmatch_v1"))
 
 
-STEPS: list[Callable[[Connection], None]] = [_v1_multi_user, _v2_lyrics_source]
+def _v3_forget_profile_pictures(conn: Connection) -> None:
+    """The landing page promises only email and name are kept from Google; drop the
+    profile picture URLs stored before that (the column stays, always empty)."""
+    if "users" in _tables(conn):
+        conn.execute(text("UPDATE users SET picture_url = ''"))
+
+
+STEPS: list[Callable[[Connection], None]] = [_v1_multi_user, _v2_lyrics_source, _v3_forget_profile_pictures]
 
 
 def migrate(engine: Engine) -> None:

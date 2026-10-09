@@ -3,6 +3,7 @@ import { devSignIn, googleSignInUrl } from "../../auth/api/useMe";
 import { usePairing } from "../../auth/api/usePairing";
 import type { Me } from "../../auth/types";
 import { Brand } from "./Brand";
+import { GitHubLink } from "./GitHubLink";
 import { LanguageSwitch } from "./LanguageSwitch";
 import { LyricsDemo } from "./LyricsDemo";
 import { SiteFooter } from "./SiteFooter";
@@ -33,6 +34,7 @@ export function Landing({ me, onSignedIn }: { me: Me; onSignedIn: () => void }) 
         <nav>
           <a href="#how" className="nav-link">{t.nav.howItWorks}</a>
           <LanguageSwitch />
+          <GitHubLink />
           {me.google_enabled ? (
             <button className="btn btn-small" onClick={signIn}>{t.nav.signIn}</button>
           ) : null}
@@ -82,6 +84,25 @@ export function Landing({ me, onSignedIn }: { me: Me; onSignedIn: () => void }) 
               </li>
             ))}
           </ol>
+        </section>
+
+        <section className="section">
+          <div className="privacy-band">
+            <h2>{t.privacyBand.title}</h2>
+            <p className="lead">{t.privacyBand.lead}</p>
+            <ul>
+              {t.privacyBand.items.map((item, i) => (
+                <li key={i}>
+                  <span className="check" aria-hidden>✓</span>
+                  <div>
+                    <h3>{item.title}</h3>
+                    <p>{item.body}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+            <a href="/privacy" className="privacy-more">{t.footer.privacy} →</a>
+          </div>
         </section>
 
         <section className="section">

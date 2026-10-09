@@ -28,7 +28,7 @@ function SignedInApp({ user, lyricsSources }: { user: User; lyricsSources: strin
   if (error) return <ErrorState message={t.app.backendDown} />;
   if (!status) return <LoadingSpinner />;
   if (!status.connected || setupOpen) {
-    return <SpotifySetup status={status} saveApp={saveApp} removeApp={removeApp} onDone={status.connected ? () => setSetupOpen(false) : undefined} />;
+    return <SpotifySetup user={user} status={status} saveApp={saveApp} removeApp={removeApp} onDone={status.connected ? () => setSetupOpen(false) : undefined} />;
   }
   return <NowPlayingScreen user={user} lyricsSources={lyricsSources} onSpotifyDisconnected={refresh} onOpenSpotifySetup={openSetup} />;
 }

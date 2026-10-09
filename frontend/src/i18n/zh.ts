@@ -1,7 +1,7 @@
 import { en, type Dictionary } from "./en";
 
 export const zh: Dictionary = {
-  nav: { signIn: "登录", howItWorks: "如何使用", privacy: "隐私" },
+  nav: { signIn: "登录", howItWorks: "如何使用", privacy: "隐私", source: "GitHub 上的源代码" },
   hero: {
     eyebrow: "为车机浏览器而做",
     title: "每一程，\n都能跟着唱。",
@@ -19,9 +19,20 @@ export const zh: Dictionary = {
   steps: {
     title: "三步开始",
     items: [
-      { title: "用 Google 继续", body: "点一下，账号就建好了，不用填表。我们只拿到你的名字和邮箱，碰不到你 Google 账号里的其他东西。" },
-      { title: "连接 Spotify", body: "创建一个属于你自己的 Spotify 开发者应用（需要 Spotify Premium），粘贴两个值。有引导，两分钟搞定——建议在电脑上做。" },
-      { title: "在车上打开", body: "在车机上打开 drivelyrics.com，用手机扫一下屏幕上的码。之后一直保持登录，除非你主动退出。" },
+      { title: "用 Google 继续", body: "只用你的邮箱和名字，别的都不碰。" },
+      { title: "连接 Spotify", body: "需要 Spotify Premium，两分钟引导设置。" },
+      { title: "车上扫码", body: "车机打开 drivelyrics.com，手机扫一下就好。" },
+    ],
+  },
+  privacyBand: {
+    title: "隐私优先",
+    lead: "DriveLyrics 只需要知道你是谁、正在放什么歌。",
+    items: [
+      { title: "Google：只拿邮箱和名字", body: "只用来登录。不碰你的联系人、云端硬盘和头像，也没有你 Google 账号的其他任何权限。" },
+      { title: "Spotify：只读正在播放", body: "只读当前这首歌和播放进度，而且只在 DriveLyrics 页面打开时读取。你的应用密钥和令牌都加密保存。" },
+      { title: "没有广告，没有追踪", body: "没有统计分析，没有第三方脚本。唯一的 cookie 只用来保持登录。" },
+      { title: "开源", body: "每一行代码都公开，以上这些你都可以自己核实。" },
+      { title: "随时删除", body: "设置里一个按钮，就能删除账号和所有相关数据。" },
     ],
   },
   features: {
@@ -32,7 +43,7 @@ export const zh: Dictionary = {
       { title: "两个歌词源", body: "网易云音乐和 LRCLIB。选你喜欢的，或者让 DriveLyrics 按歌曲语言自动选。" },
       { title: "一键纠错", body: "歌词不对？从所有匹配结果里选出正确的版本。你的纠正也会帮到之后放这首歌的人。" },
       { title: "为车而做", body: "大字号、好读，保持屏幕常亮，在车机浏览器上也跑得很轻。" },
-      { title: "重视隐私", body: "没有广告，没有追踪。你的 Spotify 凭据加密保存，随时可以删除账号。" },
+      { title: "任何屏幕", body: "车机、平板、电脑，现代浏览器都能用。中英双语。" },
     ],
   },
   faq: {
@@ -48,7 +59,7 @@ export const zh: Dictionary = {
     ],
   },
   cta: { title: "下一程，准备好了吗？", button: "开始使用" },
-  footer: { privacy: "隐私", source: "源代码", rights: "DriveLyrics" },
+  footer: { privacy: "隐私", rights: "DriveLyrics" },
   pair: {
     title: "登录一块屏幕",
     needSignIn: "请先在这里登录，显示这个码的屏幕随后会登录到同一个账号。",
@@ -66,7 +77,7 @@ export const zh: Dictionary = {
       {
         h: "我们保存什么",
         p: [
-          "来自 Google 登录：你的邮箱、名字和头像链接。我们只用 Google 数据来识别你的账号。",
+          "来自 Google 登录：你的邮箱和名字，别的都不要（Google 还会附带头像链接，我们直接丢弃）。只用来识别你的账号。",
           "你填入的 Spotify 开发者应用 Client ID 和 Client secret，以及连接后得到的 Spotify 访问令牌和刷新令牌。Secret 和令牌都加密保存。",
           "你的显示设置，以及你做的歌词纠正和单曲来源选择。",
           "登录会话：cookie 里的一个随机令牌（我们只保存它的哈希值），以及浏览器的 User-Agent，方便你分辨自己的设备。",
