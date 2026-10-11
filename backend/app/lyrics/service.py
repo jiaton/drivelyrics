@@ -7,9 +7,10 @@ from dataclasses import dataclass, field
 
 from sqlmodel import Session, select
 
-from app.lyrics.jyutping import line_jyutping, looks_cantonese
+from app.lyrics.cantonese import is_cantonese
+from app.lyrics.jyutping import line_jyutping
 from app.lyrics.lrc_parser import parse_lrc
-from app.lyrics.matching import ScoredCandidate, is_acceptable, is_confident, query_title, rank, split_artists
+from app.lyrics.matching import Candidate, ScoredCandidate, is_acceptable, is_confident, query_title, rank, split_artists
 from app.lyrics.models import LyricsText, TrackCantonese, TrackMatch, UserTrackSource
 from app.lyrics.ports import LyricsSourcePort
 
@@ -21,6 +22,7 @@ from app.lyrics.ports import LyricsSourcePort
 MATCH_VERSION = 3
 
 MAX_CANDIDATES = 12
+SEARCH_HITS_PER_SOURCE = 10
 
 log = logging.getLogger(__name__)
 
@@ -30,6 +32,10 @@ class UnknownSource(Exception):
 
 
 class NoSyncedLyrics(Exception):
+    pass
+
+
+class ProviderUnavailable(Exception):
     pass
 
 
@@ -121,42 +127,8 @@ class LyricsService:
             romanization_lines=[{"t": line["t"], "text": jp} for line in lines if (jp := line_jyutping(line["text"]))] if cantonese else [],
         )
 
-    async def _romanized(self, db: Session, text: LyricsText) -> bool:
-        """text.romanized, read from the provider once for lyrics cached before it was
-        recorded. An error counts as "no" for now and isn't saved."""
-        if text.romanized is not None:
-            return text.romanized
-        try:
-            raw = await self._sources[text.source].fetch_raw_lyric(text.song_id)
-        except Exception:
-            log.exception("re-reading %s:%s for its romanization failed", text.source, text.song_id)
-            return False
-        text.romanized = raw.romanized
-        db.add(text)
-        db.commit()
-        return raw.romanized
-
-    async def _is_cantonese(self, db: Session, track_id: str, text: LyricsText) -> bool:
-        """A reader's mark on the track wins; otherwise the guess (jyutping.py), using a
-        romanization from any source's cached lyrics for the track — LRCLIB lyrics of a
-        Cantonese song still count when NetEase's copy was romanized."""
-        mark = db.get(TrackCantonese, track_id) if track_id else None
-        if mark is not None:
-            return mark.cantonese
-        if not looks_cantonese(text.lrc_text, provider_romanized=True):
-            return False  # no Han characters, or Japanese/Korean: nothing to look up
-        if looks_cantonese(text.lrc_text, provider_romanized=False):
-            return True
-        if text.source in self._sources and await self._romanized(db, text):
-            return True
-        for match in db.exec(select(TrackMatch).where(TrackMatch.spotify_track_id == track_id)) if track_id else []:
-            other = db.get(LyricsText, (match.source, match.source_song_id)) if match.source_song_id else None
-            if other is not None and other is not text and other.romanized:
-                return True
-        return False
-
-    async def _finish(self, db: Session, track_id: str, row: TrackMatch, text: LyricsText) -> LyricsResult:
-        return self._result(row, text, cantonese=await self._is_cantonese(db, track_id, text))
+    async def _finish(self, db: Session, track_id: str, row: TrackMatch | None, text: LyricsText) -> LyricsResult:
+        return self._result(row, text, cantonese=await is_cantonese(db, self._sources, track_id, text))
 
     def _save(self, db: Session, track: TrackInfo, source: str, song_id: str, manual: bool, user_id: int | None) -> TrackMatch:
         row = db.get(TrackMatch, (track.track_id, source)) or TrackMatch(
@@ -246,12 +218,36 @@ class LyricsService:
         self.counters["picks"] += 1
         return await self._finish(db, track.track_id, row, text)
 
-    def set_cantonese(self, db: Session, track_id: str, cantonese: bool, user_id: int) -> None:
-        """A reader says whether this track is sung in Cantonese — for everyone."""
-        mark = db.get(TrackCantonese, track_id) or TrackCantonese(spotify_track_id=track_id, cantonese=cantonese, updated_at=0)
-        mark.cantonese, mark.set_by, mark.updated_at = cantonese, user_id, time.time()
-        db.add(mark)
-        db.commit()
+    async def search(self, query: str, order: list[str]) -> list[Candidate]:
+        """Free-text search (the search screen, no Spotify track involved): each source's
+        own hits in its own order, sources in `order`. A failing source is left out."""
+        sources = self._ordered(order)
+        results = await asyncio.gather(*(s.search(query) for s in sources), return_exceptions=True)
+        self.counters["searches"] += 1
+        hits: list[Candidate] = []
+        for source, result in zip(sources, results):
+            if isinstance(result, BaseException):
+                log.warning("search via %s failed: %r", source.name, result)
+                self.counters[f"error:{source.name}"] += 1
+                continue
+            hits += result[:SEARCH_HITS_PER_SOURCE]
+        return hits
+
+    async def song(self, db: Session, source: str, song_id: str) -> LyricsResult:
+        """One provider song's lyrics, for the search screen. Cached like any other
+        lyrics text; touches no track's match."""
+        if source not in self._sources:
+            raise UnknownSource(source)
+        try:
+            text = await self._text(db, source, song_id)
+        except Exception as exc:
+            self.counters[f"error:{source}"] += 1
+            raise ProviderUnavailable(source) from exc
+        if not parse_lrc(text.lrc_text):
+            raise NoSyncedLyrics(f"{source}:{song_id}")
+        result = await self._finish(db, "", None, text)
+        result.source, result.song_id = source, song_id
+        return result
 
 
 def forget_user(db: Session, user_id: int) -> None:

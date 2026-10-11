@@ -12,7 +12,7 @@ on 17 songs: every Cantonese one has it, no Mandarin or Hokkien one does) is Net
 shipping a romanization for Han-script lyrics; Japanese and Korean songs have one too,
 told apart by their kana/hangul. Colloquial Cantonese characters are a weaker extra
 signal (useful for LRCLIB lyrics), and a reader can mark a track by hand
-(service.set_cantonese) when both miss."""
+(cantonese.mark_cantonese) when both miss."""
 
 import re
 
@@ -20,8 +20,8 @@ import ToJyutping
 from opencc import OpenCC
 
 _s2hk = OpenCC("s2hk")
-_HAN = re.compile(r"[㐀-䶿一-鿿]")
-_KANA_HANGUL = re.compile(r"[぀-ヿㇰ-ㇿᄀ-ᇿ가-힯]")
+_HAN = re.compile(r"[\u3400-\u4dbf\u4e00-\u9fff]")
+_KANA_HANGUL = re.compile(r"[\u3040-\u30ff\u31f0-\u31ff\u1100-\u11ff\uac00-\ud7af]")
 # Written only in colloquial Cantonese. Not 唔 or 乜: Mandarin lyrics use those as
 # interjections. Two hits needed, so one stray character doesn't decide.
 _CANTONESE_ONLY = set("嘅咗冇佢喺啲嗰哋㗎嚟嘢咩噉啱嘥攰瞓諗揾搵")

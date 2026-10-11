@@ -1,7 +1,8 @@
 import pytest
-from sqlmodel import Session, SQLModel, create_engine
+from sqlmodel import Session, SQLModel, create_engine, select
 
 from app.auth.models import User
+from app.lyrics.cantonese import mark_cantonese
 from app.lyrics.matching import Candidate
 from app.lyrics.models import LyricsText, TrackMatch
 from app.lyrics.ports import RawLyric
@@ -265,9 +266,9 @@ async def test_not_romanized_is_not_cantonese(db):
 
 async def test_a_readers_mark_wins_both_ways_for_everyone(db):
     service = LyricsService([RomanizingSource("netease", romanized=False)])
-    service.set_cantonese(db, SONG.track_id, True, user_id=7)
+    mark_cantonese(db, SONG.track_id, True, user_id=7)
     assert (await service.get_lyrics(db, SONG, NETEASE_FIRST)).cantonese
-    service.set_cantonese(db, SONG.track_id, False, user_id=8)
+    mark_cantonese(db, SONG.track_id, False, user_id=8)
     assert not (await service.get_lyrics(db, SONG, NETEASE_FIRST)).cantonese
 
 
@@ -292,3 +293,25 @@ async def test_lrclib_lyrics_count_netease_romanization_of_the_same_track(db):
     await service.get_lyrics(db, SONG, NETEASE_FIRST)  # caches NetEase's copy
     result = await service.get_lyrics(db, SONG, LRCLIB_FIRST)
     assert result.source == "lrclib" and result.cantonese
+
+
+async def test_search_lists_sources_in_order_and_skips_a_failing_one(db):
+    netease = FakeSource("netease", hits=[Candidate("n1", "A", ["X"], None, source="netease")])
+    lrclib = FakeSource("lrclib", hits=[Candidate("l1", "A", ["X"], None, source="lrclib")])
+    service = LyricsService([netease, lrclib])
+    assert [h.song_id for h in await service.search("A", LRCLIB_FIRST)] == ["l1", "n1"]
+    lrclib.fail = True
+    assert [h.song_id for h in await service.search("A", LRCLIB_FIRST)] == ["n1"]
+
+
+async def test_song_lyrics_from_search_touch_no_track(db):
+    service = LyricsService([RomanizingSource("netease", romanized=True)])
+    result = await service.song(db, "netease", "77")
+    assert (result.source, result.song_id, result.cantonese) == ("netease", "77", True)
+    assert result.romanization_lines[0]["text"].startswith("laan4")
+    assert db.exec(select(TrackMatch)).all() == []
+
+
+async def test_song_without_synced_lyrics_is_refused(db):
+    with pytest.raises(NoSyncedLyrics):
+        await LyricsService([FakeSource("netease", lrc="")]).song(db, "netease", "1")

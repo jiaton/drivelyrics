@@ -7,6 +7,8 @@ import { useMe } from "./features/auth/api/useMe";
 import { useSpotifyStatus } from "./features/spotify-setup/api/useSpotifyStatus";
 import { SpotifySetup } from "./features/spotify-setup/components/SpotifySetup";
 import { AdminStats } from "./features/admin/components/AdminStats";
+import { SearchScreen } from "./features/search/components/SearchScreen";
+import { useLocation } from "./lib/nav";
 import { LoadingSpinner } from "./components/ui/LoadingSpinner";
 import { ErrorState } from "./components/ui/ErrorState";
 import type { User } from "./features/auth/types";
@@ -36,6 +38,7 @@ function SignedInApp({ user, lyricsSources }: { user: User; lyricsSources: strin
 export default function App() {
   const { t } = useI18n();
   const { me, error, refresh } = useMe();
+  useLocation(); // re-render on in-app navigation (lib/nav)
   // Stable: the pairing poller restarts whenever this changes.
   const onSignedIn = useCallback(() => {
     window.history.replaceState(null, "", window.location.pathname === "/pair" ? window.location.pathname + window.location.search : "/");
@@ -49,6 +52,8 @@ export default function App() {
   else if (window.location.pathname === "/pair") screen = <PairApprove me={me} onSignedIn={onSignedIn} />;
   else if (!me.user) screen = <Landing me={me} onSignedIn={onSignedIn} />;
   else if (window.location.pathname === "/admin" && me.user.role === "admin") screen = <AdminStats />;
+  // Before the Spotify check: searching works without a linked Spotify app.
+  else if (window.location.pathname === "/search") screen = <SearchScreen />;
   else screen = <SignedInApp user={me.user} lyricsSources={me.lyrics_sources} />;
 
   return <div style={{ height: "100vh" }}>{screen}</div>;

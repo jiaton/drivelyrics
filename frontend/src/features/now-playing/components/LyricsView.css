@@ -30,6 +30,11 @@
   text-align: center;
 }
 
+/* Static (search screen): nothing is "current", so every line reads at full strength. */
+.lyrics-viewport.static .lyrics-line {
+  color: var(--color-fg);
+}
+
 .lyrics-line.active {
   color: var(--color-active);
   font-size: var(--font-size-active);

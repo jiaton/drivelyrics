@@ -1,0 +1,139 @@
+.search-screen {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg);
+}
+
+.search-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  color: var(--color-fg-dim);
+}
+
+.search-form {
+  flex: 1;
+  display: flex;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  font-size: 1.15rem;
+  padding: 0.7rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-fg-dim);
+  background: transparent;
+  color: var(--color-fg);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--color-fg);
+}
+
+.search-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.95rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search-chip {
+  flex-shrink: 0;
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-fg-dim);
+  background: transparent;
+  color: var(--color-fg-dim);
+  cursor: pointer;
+}
+
+.search-chip[aria-pressed="true"] {
+  background: var(--color-fg);
+  border-color: var(--color-fg);
+  color: var(--color-bg);
+}
+
+.search-link {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--color-fg-dim);
+  cursor: pointer;
+  padding: 0.4rem 0.25rem;
+}
+
+.search-body {
+  flex: 1;
+  min-height: 0;
+}
+
+.search-results {
+  height: 100%;
+  overflow-y: auto;
+  touch-action: pan-y; /* native scrolling, momentum included */
+  padding: 0 1.5rem 1.5rem;
+}
+
+.search-note {
+  color: var(--color-fg-dim);
+  padding: 1rem 0.25rem;
+  line-height: 1.5;
+  max-width: 40rem;
+}
+
+.search-note.error {
+  color: var(--color-error);
+}
+
+.search-hit {
+  display: flex;
+  width: 100%;
+  gap: 1rem;
+  align-items: center;
+  text-align: left;
+  padding: 1rem 0.75rem;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--color-fg);
+  font: inherit;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.search-hit-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.search-hit-main > div {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search-hit-sub {
+  color: var(--color-fg-dim);
+  font-size: 0.9rem;
+  margin-top: 0.15rem;
+}
+
+.search-hit-side {
+  flex-shrink: 0;
+  text-align: right;
+  color: var(--color-fg-dim);
+  font-size: 0.85rem;
+}

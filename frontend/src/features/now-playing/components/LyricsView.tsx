@@ -8,6 +8,7 @@ import "./LyricsView.css";
 const TICK_MS = 200;
 const MANUAL_RESET_MS = 5000;
 const TAP_MOVE_THRESHOLD_PX = 6;
+const STATIC_EDGE = 0.25; // static view: how far in from the top/bottom the first/last line rests
 
 /**
  * Line-level sync, not per-frame: a setInterval tick (5/sec) picks the active line
@@ -23,6 +24,9 @@ const TAP_MOVE_THRESHOLD_PX = 6;
  * Releasing mid-swipe keeps gliding and slows down like a phone list (lib/fling.ts: one
  * CSS transition, still no per-frame JS); past the first or last line the drag resists
  * and springs back. Touching during a glide stops it where it is.
+ *
+ * Without `nowPlayingRef` (the search screen: no playback to follow) the view is static:
+ * it opens at the top, nothing is highlighted, and it only moves when dragged.
  */
 export function LyricsView({
   lines,
@@ -37,8 +41,9 @@ export function LyricsView({
   showTranslation: boolean;
   romanizationLines: LyricLine[]; // Jyutping, same t as the line it reads
   showJyutping: boolean;
-  nowPlayingRef: React.RefObject<ClientNowPlaying | null>;
+  nowPlayingRef?: React.RefObject<ClientNowPlaying | null>;
 }) {
+  const following = nowPlayingRef !== undefined;
   const viewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const lineElsRef = useRef<(HTMLDivElement | null)[]>([]);
@@ -71,15 +76,20 @@ export function LyricsView({
     isManualRef.current = false;
     lineElsRef.current.forEach((el) => el?.classList.remove("active"));
     glidingUntilRef.current = 0;
+    const first = lineElsRef.current[0];
+    const height = viewportRef.current?.clientHeight ?? 0;
+    // Static: first line a quarter of the way down (the track's top sits at mid-viewport).
+    const start = !following && first ? -(height * STATIC_EDGE) - (first.offsetTop + first.clientHeight / 2) : 0;
+    currentOffsetRef.current = start;
     if (trackRef.current) {
-      trackRef.current.style.transition = "";
-      trackRef.current.style.transform = "translate3d(0, 0, 0)";
+      trackRef.current.style.transition = following ? "" : "none";
+      trackRef.current.style.transform = `translate3d(0, ${start}px, 0)`;
     }
-  }, [lines]);
+  }, [lines, following]);
 
   useEffect(() => {
     const computeCurrentIndex = () => {
-      const np = nowPlayingRef.current;
+      const np = nowPlayingRef?.current;
       if (!np) return -1;
 
       // performance.now() only — never compare against the server's `fetched_at` wall
@@ -133,13 +143,17 @@ export function LyricsView({
       resetTimerRef.current = window.setTimeout(resetToAuto, MANUAL_RESET_MS + afterMs);
     };
 
-    /** Track offsets that center the first / last line. */
+    /** How far the track may scroll: following, the first / last line centered; static,
+     *  the first line a quarter of the way down / the last a quarter from the bottom. */
     const bounds = () => {
       const els = lineElsRef.current;
       const first = els[0];
       const last = els[lines.length - 1];
       if (!first || !last) return { min: currentOffsetRef.current, max: currentOffsetRef.current };
-      return { min: -(last.offsetTop + last.clientHeight / 2), max: -(first.offsetTop + first.clientHeight / 2) };
+      const edge = following ? 0 : (viewportRef.current?.clientHeight ?? 0) * STATIC_EDGE;
+      const max = -edge - (first.offsetTop + first.clientHeight / 2);
+      const min = edge - (last.offsetTop + last.clientHeight / 2);
+      return { min: Math.min(min, max), max };
     };
 
     const moveTo = (offset: number, transition: string) => {
@@ -151,7 +165,7 @@ export function LyricsView({
     };
 
     const tick = () => {
-      if (isManualRef.current || lines.length === 0) return;
+      if (!following || isManualRef.current || lines.length === 0) return;
       applyActiveIndex(computeCurrentIndex());
     };
 
@@ -192,7 +206,7 @@ export function LyricsView({
       draggingRef.current = false;
 
       if (!dragMovedRef.current) {
-        resetToAuto(); // tap — snap back immediately
+        if (following) resetToAuto(); // tap — snap back immediately
         return;
       }
       const { min, max } = bounds();
@@ -209,7 +223,7 @@ export function LyricsView({
         }
       }
       glidingUntilRef.current = glideMs ? performance.now() + glideMs : 0;
-      scheduleResetTimer(glideMs); // real drag — 5s after it comes to rest, back to the current line
+      if (following) scheduleResetTimer(glideMs); // real drag — 5s after it comes to rest, back to the current line
     };
 
     const viewport = viewportRef.current;
@@ -228,7 +242,7 @@ export function LyricsView({
       viewport?.removeEventListener("pointerup", endDrag);
       viewport?.removeEventListener("pointercancel", endDrag);
     };
-  }, [lines, nowPlayingRef]);
+  }, [lines, nowPlayingRef, following]);
 
   if (lines.length === 0) {
     return (
@@ -241,7 +255,7 @@ export function LyricsView({
   }
 
   return (
-    <div className="lyrics-viewport" ref={viewportRef}>
+    <div className={following ? "lyrics-viewport" : "lyrics-viewport static"} ref={viewportRef}>
       <div className="lyrics-track" ref={trackRef}>
         {lines.map((line, i) => {
           const translation = showTranslation ? translationByTime.get(line.t) : undefined;

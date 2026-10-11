@@ -5,13 +5,8 @@ import { fill } from "../../../i18n/rich";
 import { chooseCandidate, useCandidates } from "../api/useCandidates";
 import type { LyricsData } from "../api/useLyrics";
 import type { Candidate, TrackRef } from "../types";
+import { formatDuration } from "../../../lib/format";
 
-
-function formatDuration(ms: number | null) {
-  if (ms == null) return "";
-  const s = Math.round(ms / 1000);
-  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
-}
 
 /**
  * "Wrong lyrics?" — every plausible match from every source, best first.

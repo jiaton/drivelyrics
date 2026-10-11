@@ -23,3 +23,20 @@ def test_marking_a_track_cantonese_is_shared(app_client, monkeypatch):
     marked = a.put("/api/lyrics/cantonese", json={**TRACK, "cantonese": True}).json()
     assert marked["cantonese"] and marked["romanization_lines"][0]["text"].startswith("laan4")
     assert b.get("/api/lyrics", params=TRACK).json()["cantonese"] is True
+
+
+def test_search_is_rate_limited_per_user(app_client, monkeypatch):
+    monkeypatch.setattr(routes, "service", LyricsService([RomanizingSource("lrclib", romanized=False)]))
+    a, b = app_client(), app_client()
+    sign_in(a, "search-a@example.com")
+    sign_in(b, "search-b@example.com")
+    first = a.get("/api/lyrics/search", params={"q": "Song"})
+    assert first.status_code == 200 and first.json()["results"][0]["song_id"] == "s1"
+    assert a.get("/api/lyrics/search", params={"q": "Song"}).status_code == 429
+    assert b.get("/api/lyrics/search", params={"q": "Song"}).status_code == 200  # per user
+
+
+def test_song_ids_are_validated(app_client):
+    a = app_client()
+    sign_in(a, "song-id@example.com")
+    assert a.get("/api/lyrics/song", params={"source": "lrclib", "song_id": "../x"}).status_code == 422

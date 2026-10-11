@@ -17,6 +17,7 @@ This repository is the same code, for reading and for running your own.
 - **Accurate matching for Chinese songs**: title, artist and duration are scored together,
   Traditional and Simplified Chinese are folded together (OpenCC), and covers,
   instrumentals and live cuts are told apart.
+- **Search any song's lyrics**, playing or not; Spotify isn't polled while you search.
 - **Fix wrong lyrics in one tap**: pick the right version among every match; the fix is
   shared with everyone who plays that song.
 - **Sign a car in by scanning a QR code** with a phone that's already signed in — nothing

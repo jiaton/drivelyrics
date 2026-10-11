@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { useNowPlayingStream } from "../api/useNowPlayingStream";
 import { toLyricsData, useLyrics } from "../api/useLyrics";
 import { api } from "../../../lib/api";
+import { navigate } from "../../../lib/nav";
 import { useWakeLock } from "../hooks/useWakeLock";
 import { LyricsView } from "./LyricsView";
 import { LyricsPicker } from "./LyricsPicker";
@@ -110,6 +111,13 @@ export function NowPlayingScreen({
               {t.app.wrongLyrics}
             </button>
           ) : null}
+          <button onClick={() => navigate("/search")} aria-label={t.app.openSearch} title={t.app.openSearch} style={{ ...headerButton, display: "flex", padding: 4 }}>
+            {/* An SVG, not a glyph: the car browser's fonts may not have one. */}
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden>
+              <circle cx="10.5" cy="10.5" r="6.5" />
+              <path d="M15.5 15.5 21 21" />
+            </svg>
+          </button>
           <button onClick={() => setSettingsOpen(true)} aria-label={t.app.openSettings} style={{ ...headerButton, fontSize: "1.2rem" }}>
             ⚙
           </button>
@@ -117,8 +125,11 @@ export function NowPlayingScreen({
 
         <div style={{ flex: 1, minHeight: 0 }}>
           {!nowPlaying.track_id ? (
-            <div style={{ display: "flex", height: "100%", alignItems: "center", justifyContent: "center", color: "var(--color-fg-dim)", fontSize: "var(--font-size-inactive)" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", height: "100%", alignItems: "center", justifyContent: "center", color: "var(--color-fg-dim)", fontSize: "var(--font-size-inactive)" }}>
               {t.app.nothingPlaying}
+              <Button variant="secondary" onClick={() => navigate("/search")}>
+                {t.app.openSearch}
+              </Button>
             </div>
           ) : loading && lines.length === 0 ? (
             <LoadingSpinner />

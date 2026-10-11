@@ -38,6 +38,19 @@ class CandidateSchema(BaseModel):
     selected: bool
 
 
+class SearchHit(BaseModel):
+    source: str
+    song_id: str
+    name: str
+    artists: list[str]
+    album: str | None
+    duration_ms: int | None
+
+
+class SearchResponse(BaseModel):
+    results: list[SearchHit]
+
+
 class CandidatesResponse(BaseModel):
     candidates: list[CandidateSchema]
 
