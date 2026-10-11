@@ -12,6 +12,8 @@ This repository is the same code, for reading and for running your own.
   included). Smooth on a car's weak GPU: one CSS transform per line change, no per-frame
   JavaScript.
 - **Translations** under each line, when the lyrics source has them.
+- **Jyutping (粵拼) for Cantonese songs**, tones as small superscripts, generated with
+  [ToJyutping](https://github.com/CanCLID/ToJyutping).
 - **Accurate matching for Chinese songs**: title, artist and duration are scored together,
   Traditional and Simplified Chinese are folded together (OpenCC), and covers,
   instrumentals and live cuts are told apart.

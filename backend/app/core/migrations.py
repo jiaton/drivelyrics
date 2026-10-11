@@ -15,7 +15,7 @@ from sqlmodel import SQLModel
 from app.auth.models import AuthSession, User  # noqa: F401  (registers tables)
 from app.core.config import settings
 from app.core.crypto import encrypt
-from app.lyrics.models import LyricsText, TrackMatch  # noqa: F401
+from app.lyrics.models import LyricsText, TrackCantonese, TrackMatch  # noqa: F401
 from app.preferences.models import UserPreferences  # noqa: F401
 from app.spotify.models import SpotifyApp, SpotifyToken  # noqa: F401
 
@@ -97,7 +97,19 @@ def _v3_forget_profile_pictures(conn: Connection) -> None:
         conn.execute(text("UPDATE users SET picture_url = ''"))
 
 
-STEPS: list[Callable[[Connection], None]] = [_v1_multi_user, _v2_lyrics_source, _v3_forget_profile_pictures]
+def _v4_cantonese(conn: Connection) -> None:
+    """Jyutping: a per-user preference, and whether the provider romanized a song's
+    lyrics (NULL for lyrics fetched before — re-read from the provider when needed).
+    The new TrackCantonese table comes from create_all."""
+    tables = _tables(conn)
+    if "userpreferences" in tables and "show_jyutping" not in _columns(conn, "userpreferences"):
+        conn.execute(text("ALTER TABLE userpreferences ADD COLUMN show_jyutping BOOLEAN NOT NULL DEFAULT 0"))
+    if "lyricstext" in tables and "romanized" not in _columns(conn, "lyricstext"):
+        conn.execute(text("ALTER TABLE lyricstext ADD COLUMN romanized BOOLEAN"))
+        conn.execute(text("UPDATE lyricstext SET romanized = 0 WHERE source = 'lrclib'"))  # LRCLIB has none
+
+
+STEPS: list[Callable[[Connection], None]] = [_v1_multi_user, _v2_lyrics_source, _v3_forget_profile_pictures, _v4_cantonese]
 
 
 def migrate(engine: Engine) -> None:

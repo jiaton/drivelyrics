@@ -9,7 +9,9 @@ class UserPreferences(SQLModel, table=True):
     show_album_art: bool = Field(default=True)
     keep_screen_awake: bool = Field(default=True)
     # "auto" | "netease" | "lrclib" — which lyrics provider to try first. See
-    # lyrics/service.source_order for what "auto" means.
+    # lyrics/order.source_order for what "auto" means.
     # server_default too: migration step 1 inserts with raw SQL into tables built from
     # these current models, so every column added later needs a DB-side default.
     lyrics_source: str = Field(default="auto", sa_column_kwargs={"server_default": "auto"})
+    # Jyutping under each line of Cantonese songs (lyrics/jyutping.py).
+    show_jyutping: bool = Field(default=False, sa_column_kwargs={"server_default": "0"})

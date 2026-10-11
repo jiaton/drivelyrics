@@ -12,6 +12,16 @@ class LyricsResponse(BaseModel):
     source: str  # "netease" | "lrclib" | "" when nothing matched
     song_id: str
     manual: bool  # someone picked this match by hand
+    cantonese: bool  # sung in Cantonese (guessed, or marked by a reader)
+    romanization_lines: list[LyricLineSchema]  # Jyutping per line, same t; [] unless cantonese
+
+
+class CantoneseRequest(BaseModel):
+    track_id: str
+    title: str
+    artist: str
+    duration_ms: int | None = None
+    cantonese: bool
 
 
 class CandidateSchema(BaseModel):

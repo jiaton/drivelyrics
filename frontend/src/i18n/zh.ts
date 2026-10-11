@@ -125,6 +125,9 @@ export const zh: Dictionary = {
     settings: {
       title: "设置",
       showTranslation: "显示翻译",
+      showJyutping: "显示粤拼（粤语歌）",
+      thisSongCantonese: "这首是粤语歌",
+      cantoneseHint: "根据歌词自动判断。判断错了可以在这里改，所有人共享。",
       showAlbumArt: "显示专辑封面",
       keepAwake: "保持屏幕常亮",
       lyricsSource: "歌词来源",

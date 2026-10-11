@@ -44,3 +44,25 @@
   color: var(--color-fg-dim);
   margin-top: 0.25rem;
 }
+
+.lyrics-line-romanization {
+  /* Fixed size like the translation: it annotates the line, it mustn't grow with it. */
+  font-size: clamp(0.85rem, 1.8vw, 1.15rem);
+  font-weight: 400;
+  color: var(--color-fg-dim);
+  margin-top: 0.2rem;
+  letter-spacing: 0.02em;
+}
+
+.lyrics-line.active .lyrics-line-romanization {
+  color: var(--color-active);
+  opacity: 0.8;
+}
+
+/* haang⁴: the tone digit small and raised; line-height 0 so it doesn't push lines apart. */
+.lyrics-line-romanization .tone {
+  font-size: 0.65em;
+  vertical-align: super;
+  line-height: 0;
+  margin-left: 0.05em;
+}

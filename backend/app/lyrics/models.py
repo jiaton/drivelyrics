@@ -26,13 +26,28 @@ class LyricsText(SQLModel, table=True):
     song_id: str = Field(primary_key=True)
     lrc_text: str  # "" = the provider has no synced lyrics for it
     tlyric_text: str = Field(default="")  # translation LRC, "" if none
+    # The provider ships a romanization of these lyrics (NetEase `romalrc`) — for
+    # Han-script lyrics that means Cantonese (see jyutping.py). None = fetched before
+    # this was recorded; read again from the provider when it matters.
+    romanized: bool | None = Field(default=None)
     fetched_at: float
+
+
+class TrackCantonese(SQLModel, table=True):
+    """A reader's word on whether a track is sung in Cantonese, overriding the guess
+    (jyutping.looks_cantonese) either way. Shared by every user, like a correction:
+    the language is the song's, not the reader's."""
+
+    spotify_track_id: str = Field(primary_key=True)
+    cantonese: bool
+    set_by: int | None = Field(default=None, foreign_key="users.id")
+    updated_at: float
 
 
 class UserTrackSource(SQLModel, table=True):
     """One reader's "show me this source for this track", set when they pick lyrics from
     a source other than the one they were shown without saying it was the wrong song —
-    i.e. they just prefer that source here. Affects only them (service.reader_order)."""
+    i.e. they just prefer that source here. Affects only them (order.reader_order)."""
 
     user_id: int = Field(primary_key=True, foreign_key="users.id")
     spotify_track_id: str = Field(primary_key=True)

@@ -10,6 +10,7 @@ class PreferencesResponse(BaseModel):
     show_album_art: bool
     keep_screen_awake: bool
     lyrics_source: LyricsSource
+    show_jyutping: bool
 
 
 class PreferencesUpdate(BaseModel):
@@ -20,3 +21,4 @@ class PreferencesUpdate(BaseModel):
     show_album_art: bool | None = None
     keep_screen_awake: bool | None = None
     lyrics_source: LyricsSource | None = None
+    show_jyutping: bool | None = None

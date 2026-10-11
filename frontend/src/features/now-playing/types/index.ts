@@ -39,6 +39,8 @@ export interface LyricsPayload {
   source: string; // "netease" | "lrclib" | "" = nothing found
   song_id: string;
   manual: boolean;
+  cantonese: boolean; // sung in Cantonese (guessed, or marked by a reader)
+  romanization_lines: LyricLine[]; // Jyutping, same t as the lyric line; [] unless cantonese
 }
 
 export interface Candidate {

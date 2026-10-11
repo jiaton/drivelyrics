@@ -8,12 +8,22 @@ export interface LyricsData {
   source: string;
   songId: string;
   manual: boolean;
+  cantonese: boolean;
+  romanizationLines: LyricsPayload["romanization_lines"];
 }
 
-const EMPTY: LyricsData = { lines: [], translationLines: [], source: "", songId: "", manual: false };
+const EMPTY: LyricsData = { lines: [], translationLines: [], source: "", songId: "", manual: false, cantonese: false, romanizationLines: [] };
 
 export function toLyricsData(body: LyricsPayload): LyricsData {
-  return { lines: body.lines, translationLines: body.translation_lines, source: body.source, songId: body.song_id, manual: body.manual };
+  return {
+    lines: body.lines,
+    translationLines: body.translation_lines,
+    source: body.source,
+    songId: body.song_id,
+    manual: body.manual,
+    cantonese: body.cantonese,
+    romanizationLines: body.romanization_lines,
+  };
 }
 
 export function trackParams(track: TrackRef) {
@@ -79,8 +89,8 @@ export function useLyrics(track: TrackRef | null, sourceKey: string) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
 
-  /** After a manual pick: show it now. A pick beats every source preference, so cached
-   *  results for this track under other preferences are stale too. */
+  /** After a manual pick (or a Cantonese mark): show it now. Cached results for this
+   *  track under other source preferences are stale too. */
   const replace = useCallback(
     (id: string, next: LyricsData) => {
       for (const k of [...cache.keys()]) if (k.startsWith(`${id}|`)) cache.delete(k);

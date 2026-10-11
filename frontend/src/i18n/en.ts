@@ -134,6 +134,9 @@ export const en = {
       showTranslation: "Show translation",
       showAlbumArt: "Show album art",
       keepAwake: "Keep screen awake",
+      showJyutping: "Show Jyutping (Cantonese songs)",
+      thisSongCantonese: "This song is in Cantonese",
+      cantoneseHint: "Guessed from the lyrics. Correct it here; the fix is shared with everyone.",
       lyricsSource: "Lyrics source",
       sourceAuto: "Auto",
       sourceHints: {

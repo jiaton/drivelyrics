@@ -6,8 +6,9 @@ from app.auth.models import User
 from app.core.config import settings
 from app.core.db import get_session
 from app.lyrics.adapter import LrclibClient, NeteaseLyricsClient
-from app.lyrics.schemas import CandidateSchema, CandidatesResponse, ChoiceRequest, LyricsResponse
-from app.lyrics.service import LyricsResult, LyricsService, NoSyncedLyrics, TrackInfo, UnknownSource, reader_order
+from app.lyrics.schemas import CandidateSchema, CandidatesResponse, CantoneseRequest, ChoiceRequest, LyricsResponse
+from app.lyrics.order import reader_order
+from app.lyrics.service import LyricsResult, LyricsService, NoSyncedLyrics, TrackInfo, UnknownSource
 from app.preferences.service import get_preferences
 
 router = APIRouter(prefix="/api/lyrics", tags=["lyrics"])
@@ -25,7 +26,13 @@ def _order(session: Session, user: User, track: TrackInfo) -> list[str]:
 
 def _response(result: LyricsResult) -> LyricsResponse:
     return LyricsResponse(
-        lines=result.lines, translation_lines=result.translation_lines, source=result.source, song_id=result.song_id, manual=result.manual
+        lines=result.lines,
+        translation_lines=result.translation_lines,
+        source=result.source,
+        song_id=result.song_id,
+        manual=result.manual,
+        cantonese=result.cantonese,
+        romanization_lines=result.romanization_lines,
     )
 
 
@@ -65,3 +72,11 @@ async def choose(body: ChoiceRequest, user: User = Depends(current_user), sessio
     except NoSyncedLyrics:
         raise HTTPException(status_code=422, detail="that song has no synced lyrics")
     return _response(result)
+
+
+@router.put("/cantonese", response_model=LyricsResponse)
+async def set_cantonese(body: CantoneseRequest, user: User = Depends(current_user), session: Session = Depends(get_session)):
+    """Mark the track as (not) Cantonese for everyone; answers with its lyrics as now shown."""
+    track = TrackInfo(body.track_id, body.title, body.artist, body.duration_ms)
+    service.set_cantonese(session, track.track_id, body.cantonese, user.id)
+    return _response(await service.get_lyrics(session, track, _order(session, user, track)))

@@ -8,6 +8,7 @@ from app.lyrics.matching import Candidate
 class RawLyric:
     lrc: str | None
     tlyric: str | None  # translated LRC, if the provider has one
+    romanized: bool = False  # the provider has a romanization too (see LyricsText.romanized)
 
 
 class LyricsSourcePort(Protocol):

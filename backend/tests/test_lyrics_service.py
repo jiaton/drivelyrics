@@ -3,9 +3,10 @@ from sqlmodel import Session, SQLModel, create_engine
 
 from app.auth.models import User
 from app.lyrics.matching import Candidate
-from app.lyrics.models import TrackMatch
+from app.lyrics.models import LyricsText, TrackMatch
 from app.lyrics.ports import RawLyric
-from app.lyrics.service import MATCH_VERSION, LyricsService, NoSyncedLyrics, TrackInfo, reader_order, source_order
+from app.lyrics.order import reader_order, source_order
+from app.lyrics.service import MATCH_VERSION, LyricsService, NoSyncedLyrics, TrackInfo
 
 
 class FakeSource:
@@ -236,3 +237,58 @@ async def test_without_netease_every_reader_gets_lrclib(db):
     service = LyricsService([lrclib])
     assert (await service.get_lyrics(db, SONG, NETEASE_FIRST)).source == "lrclib"
     assert service.source_names == ["lrclib"]
+
+
+CANTO_LRC = "[00:01.00]攔路雨偏似雪花\n[00:05.00]Oh"
+
+
+class RomanizingSource(FakeSource):
+    def __init__(self, name, romanized, **kw):
+        super().__init__(name, lrc=CANTO_LRC, **kw)
+        self.romanized = romanized
+
+    async def fetch_raw_lyric(self, song_id):
+        self.fetch_calls.append(song_id)
+        return RawLyric(lrc=self.lrc, tlyric=None, romanized=self.romanized)
+
+
+async def test_romanized_han_lyrics_are_cantonese_with_jyutping(db):
+    result = await LyricsService([RomanizingSource("netease", romanized=True)]).get_lyrics(db, SONG, NETEASE_FIRST)
+    assert result.cantonese
+    assert result.romanization_lines == [{"t": 1000, "text": "laan4 lou6 jyu5 pin1 ci5 syut3 faa1"}]
+
+
+async def test_not_romanized_is_not_cantonese(db):
+    result = await LyricsService([RomanizingSource("netease", romanized=False)]).get_lyrics(db, SONG, NETEASE_FIRST)
+    assert not result.cantonese and result.romanization_lines == []
+
+
+async def test_a_readers_mark_wins_both_ways_for_everyone(db):
+    service = LyricsService([RomanizingSource("netease", romanized=False)])
+    service.set_cantonese(db, SONG.track_id, True, user_id=7)
+    assert (await service.get_lyrics(db, SONG, NETEASE_FIRST)).cantonese
+    service.set_cantonese(db, SONG.track_id, False, user_id=8)
+    assert not (await service.get_lyrics(db, SONG, NETEASE_FIRST)).cantonese
+
+
+async def test_lyrics_cached_before_v4_are_reread_once(db):
+    netease = RomanizingSource("netease", romanized=True)
+    service = LyricsService([netease])
+    await service.get_lyrics(db, SONG, NETEASE_FIRST)
+    text = db.get(LyricsText, ("netease", "s1"))
+    text.romanized = None  # as the v4 migration leaves NetEase rows
+    db.add(text)
+    db.commit()
+    netease.fetch_calls.clear()
+    assert (await service.get_lyrics(db, SONG, NETEASE_FIRST)).cantonese
+    assert (await service.get_lyrics(db, SONG, NETEASE_FIRST)).cantonese
+    assert netease.fetch_calls == ["s1"]
+
+
+async def test_lrclib_lyrics_count_netease_romanization_of_the_same_track(db):
+    netease = RomanizingSource("netease", romanized=True)
+    lrclib = RomanizingSource("lrclib", romanized=False)
+    service = LyricsService([netease, lrclib])
+    await service.get_lyrics(db, SONG, NETEASE_FIRST)  # caches NetEase's copy
+    result = await service.get_lyrics(db, SONG, LRCLIB_FIRST)
+    assert result.source == "lrclib" and result.cantonese

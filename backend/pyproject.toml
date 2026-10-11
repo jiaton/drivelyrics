@@ -2,7 +2,7 @@
 name = "lyric-backend"
 version = "0.1.0"
 description = "Now-playing lyrics service: polls Spotify, matches synced lyrics, streams to the frontend"
-requires-python = ">=3.12"
+requires-python = ">=3.12,<4"
 license = "AGPL-3.0-or-later"
 dependencies = [
     "fastapi (>=0.115,<1.0)",
@@ -14,6 +14,7 @@ dependencies = [
     "opencc (>=1.1,<2.0)",
     "cryptography (>=43,<47)",
     "segno (>=1.6,<2.0)",
+    "tojyutping (>=3.2,<4)",
 ]
 
 [tool.poetry]

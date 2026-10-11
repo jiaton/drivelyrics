@@ -109,3 +109,23 @@ PRAGMA user_version = 2;
     migrations.migrate(engine)
     with engine.connect() as c:
         assert c.execute(text("SELECT picture_url FROM users")).scalar_one() == ""
+
+
+def test_v4_adds_jyutping_preference_and_marks_lrclib_unromanized(tmp_path):
+    path = tmp_path / "v3.db"
+    conn = sqlite3.connect(path)
+    conn.executescript("""
+CREATE TABLE userpreferences (user_id INTEGER PRIMARY KEY, show_translation BOOLEAN NOT NULL, show_album_art BOOLEAN NOT NULL, keep_screen_awake BOOLEAN NOT NULL, lyrics_source VARCHAR NOT NULL DEFAULT 'auto');
+CREATE TABLE lyricstext (source VARCHAR NOT NULL, song_id VARCHAR NOT NULL, lrc_text VARCHAR NOT NULL, tlyric_text VARCHAR NOT NULL, fetched_at FLOAT NOT NULL, PRIMARY KEY (source, song_id));
+INSERT INTO userpreferences VALUES (1, 1, 1, 1, 'auto');
+INSERT INTO lyricstext VALUES ('netease', '1', '[00:01.00]x', '', 0), ('lrclib', '2', '[00:01.00]y', '', 0);
+PRAGMA user_version = 3;
+""")
+    conn.close()
+    engine = create_engine(f"sqlite:///{path}")
+    migrations.migrate(engine)
+    with engine.connect() as c:
+        assert c.execute(text("SELECT show_jyutping FROM userpreferences")).scalar_one() == 0
+        rows = c.execute(text("SELECT source, romanized FROM lyricstext ORDER BY source")).all()
+        assert [tuple(r) for r in rows] == [("lrclib", 0), ("netease", None)]  # NetEase: re-read when needed
+        assert "trackcantonese" in {r[0] for r in c.execute(text("SELECT name FROM sqlite_master WHERE type='table'"))}

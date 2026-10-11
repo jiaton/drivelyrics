@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import type { ClientNowPlaying, LyricLine } from "../types";
 import { computeActiveIndex } from "../lib/activeIndex";
+import { jyutpingSyllables } from "../lib/jyutping";
 import { FLING_EASING, SETTLE_EASING, SETTLE_MS, fling, releaseVelocity, rubberBand, type Sample } from "../lib/fling";
 import "./LyricsView.css";
 
@@ -27,11 +28,15 @@ export function LyricsView({
   lines,
   translationLines,
   showTranslation,
+  romanizationLines,
+  showJyutping,
   nowPlayingRef,
 }: {
   lines: LyricLine[];
   translationLines: LyricLine[];
   showTranslation: boolean;
+  romanizationLines: LyricLine[]; // Jyutping, same t as the line it reads
+  showJyutping: boolean;
   nowPlayingRef: React.RefObject<ClientNowPlaying | null>;
 }) {
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -57,6 +62,8 @@ export function LyricsView({
     for (const line of translationLines) map.set(line.t, line.text);
     return map;
   }, [translationLines]);
+
+  const romanizationByTime = useMemo(() => new Map(romanizationLines.map((line) => [line.t, line.text])), [romanizationLines]);
 
   useLayoutEffect(() => {
     activeIndexRef.current = -1;
@@ -238,6 +245,7 @@ export function LyricsView({
       <div className="lyrics-track" ref={trackRef}>
         {lines.map((line, i) => {
           const translation = showTranslation ? translationByTime.get(line.t) : undefined;
+          const jyutping = showJyutping ? romanizationByTime.get(line.t) : undefined;
           return (
             <div
               key={line.t + "-" + i}
@@ -247,6 +255,17 @@ export function LyricsView({
               }}
             >
               <div className="lyrics-line-text">{line.text || " "}</div>
+              {jyutping ? (
+                <div className="lyrics-line-romanization">
+                  {jyutpingSyllables(jyutping).map((s, j) => (
+                    <span key={j}>
+                      {j > 0 ? " " : null}
+                      {s.base}
+                      {s.tone ? <span className="tone">{s.tone}</span> : null}
+                    </span>
+                  ))}
+                </div>
+              ) : null}
               {translation ? <div className="lyrics-line-translation">{translation}</div> : null}
             </div>
           );

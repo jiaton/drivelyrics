@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useNowPlayingStream } from "../api/useNowPlayingStream";
-import { useLyrics } from "../api/useLyrics";
+import { toLyricsData, useLyrics } from "../api/useLyrics";
+import { api } from "../../../lib/api";
 import { useWakeLock } from "../hooks/useWakeLock";
 import { LyricsView } from "./LyricsView";
 import { LyricsPicker } from "./LyricsPicker";
@@ -9,7 +10,7 @@ import { Button } from "../../../components/ui/Button";
 import { usePreferences } from "../../preferences/api/usePreferences";
 import { SettingsModal } from "../../preferences/components/SettingsModal";
 import type { User } from "../../auth/types";
-import type { TrackRef } from "../types";
+import type { LyricsPayload, TrackRef } from "../types";
 import { useI18n } from "../../../i18n";
 import "./NowPlayingScreen.css";
 
@@ -49,9 +50,20 @@ export function NowPlayingScreen({
   // What decides the server's source order for this user (backend: source_order), as
   // the server last confirmed it — see usePreferences.
   const sourceKey = !saved ? "" : saved.lyrics_source === "auto" ? `auto:${saved.show_translation}` : saved.lyrics_source;
-  const { lines, translationLines, source: shownSource, loading, error, replace } = useLyrics(saved ? track : null, sourceKey);
+  const { lines, translationLines, romanizationLines, cantonese, source: shownSource, loading, error, replace } = useLyrics(saved ? track : null, sourceKey);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
+
+  // A reader correcting the Cantonese guess for this track (shared with everyone).
+  const setCantonese = (value: boolean) => {
+    if (!track) return;
+    api<LyricsPayload>("/api/lyrics/cantonese", {
+      method: "PUT",
+      json: { track_id: track.trackId, title: track.title, artist: track.artist, duration_ms: track.durationMs, cantonese: value },
+    })
+      .then((body) => replace(track.trackId, toLyricsData(body)))
+      .catch(() => undefined); // the toggle just stays as it was
+  };
 
   useWakeLock(preferences.keep_screen_awake && !!nowPlaying?.is_playing);
 
@@ -126,6 +138,8 @@ export function NowPlayingScreen({
               lines={lines}
               translationLines={translationLines}
               showTranslation={preferences.show_translation}
+              romanizationLines={romanizationLines}
+              showJyutping={preferences.show_jyutping}
               nowPlayingRef={latestRef}
             />
           )}
@@ -137,6 +151,7 @@ export function NowPlayingScreen({
           user={user}
           lyricsSources={lyricsSources}
           preferences={preferences}
+          cantonese={track && lines.length > 0 ? { value: cantonese, onChange: setCantonese } : null}
           onChange={updatePreferences}
           onOpenSpotifySetup={onOpenSpotifySetup}
           onClose={() => setSettingsOpen(false)}

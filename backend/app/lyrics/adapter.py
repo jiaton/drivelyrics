@@ -40,6 +40,7 @@ class NeteaseLyricsClient(LyricsSourcePort):
         return RawLyric(
             lrc=body.get("lrc", {}).get("lyric") or None,
             tlyric=body.get("tlyric", {}).get("lyric") or None,
+            romanized=bool((body.get("romalrc") or {}).get("lyric")),
         )
 
 

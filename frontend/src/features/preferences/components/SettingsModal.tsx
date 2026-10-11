@@ -13,6 +13,7 @@ export function SettingsModal({
   user,
   lyricsSources,
   preferences,
+  cantonese,
   onChange,
   onOpenSpotifySetup,
   onClose,
@@ -20,6 +21,8 @@ export function SettingsModal({
   user: User;
   lyricsSources: string[];
   preferences: Preferences;
+  /** The current track's Cantonese guess and how to correct it; null when no lyrics are shown. */
+  cantonese: { value: boolean; onChange: (next: boolean) => void } | null;
   onChange: (patch: PreferencesPatch) => void;
   onOpenSpotifySetup: () => void;
   onClose: () => void;
@@ -65,6 +68,19 @@ export function SettingsModal({
           checked={preferences.show_translation}
           onChange={(next) => onChange({ show_translation: next })}
         />
+        <Toggle
+          label={ts.showJyutping}
+          checked={preferences.show_jyutping}
+          onChange={(next) => onChange({ show_jyutping: next })}
+        />
+        {preferences.show_jyutping && cantonese ? (
+          <div style={{ paddingLeft: "1rem", borderLeft: "2px solid rgba(255,255,255,0.12)" }}>
+            <Toggle label={ts.thisSongCantonese} checked={cantonese.value} onChange={cantonese.onChange} />
+            <div style={{ color: "var(--color-fg-dim)", fontSize: "0.8rem", marginTop: "-0.4rem", paddingBottom: "0.5rem", lineHeight: 1.4 }}>
+              {ts.cantoneseHint}
+            </div>
+          </div>
+        ) : null}
         <Toggle
           label={ts.showAlbumArt}
           checked={preferences.show_album_art}

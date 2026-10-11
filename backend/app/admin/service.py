@@ -13,7 +13,7 @@ from app.lyrics.models import TrackMatch, UserTrackSource
 from app.preferences.models import UserPreferences
 from app.spotify.models import SpotifyApp, SpotifyToken
 
-_TABLES = ["users", "authsession", "spotifyapp", "spotifytoken", "userpreferences", "trackmatch", "lyricstext", "usertracksource"]
+_TABLES = ["users", "authsession", "spotifyapp", "spotifytoken", "userpreferences", "trackmatch", "lyricstext", "usertracksource", "trackcantonese"]
 _LIST_LIMIT = 50
 
 
