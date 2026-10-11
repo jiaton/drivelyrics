@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import type { ClientNowPlaying, LyricLine } from "../types";
 import { computeActiveIndex } from "../lib/activeIndex";
+import { FLING_EASING, SETTLE_EASING, SETTLE_MS, fling, releaseVelocity, rubberBand, type Sample } from "../lib/fling";
 import "./LyricsView.css";
 
 const TICK_MS = 200;
@@ -17,7 +18,10 @@ const TAP_MOVE_THRESHOLD_PX = 6;
  * highlight both freeze where they were when the drag started — matches how most
  * lyric apps behave, and is simpler than trying to keep the highlight live while the
  * viewport is under the user's control). A tap (no meaningful movement) snaps back
- * immediately; an actual drag snaps back automatically 5s after the last touch.
+ * immediately; an actual drag snaps back automatically 5s after the scroll comes to rest.
+ * Releasing mid-swipe keeps gliding and slows down like a phone list (lib/fling.ts: one
+ * CSS transition, still no per-frame JS); past the first or last line the drag resists
+ * and springs back. Touching during a glide stops it where it is.
  */
 export function LyricsView({
   lines,
@@ -41,6 +45,8 @@ export function LyricsView({
   const dragMovedRef = useRef(false);
   const dragStartYRef = useRef(0);
   const dragStartOffsetRef = useRef(0);
+  const samplesRef = useRef<Sample[]>([]);
+  const glidingUntilRef = useRef(0); // performance.now() at which the current fling ends
   const resetTimerRef = useRef<number | null>(null);
 
   // Translations are matched to the original lines by timestamp, not by array index —
@@ -57,7 +63,11 @@ export function LyricsView({
     currentOffsetRef.current = 0;
     isManualRef.current = false;
     lineElsRef.current.forEach((el) => el?.classList.remove("active"));
-    if (trackRef.current) trackRef.current.style.transform = "translate3d(0, 0, 0)";
+    glidingUntilRef.current = 0;
+    if (trackRef.current) {
+      trackRef.current.style.transition = "";
+      trackRef.current.style.transform = "translate3d(0, 0, 0)";
+    }
   }, [lines]);
 
   useEffect(() => {
@@ -111,9 +121,26 @@ export function LyricsView({
       applyActiveIndex(computeCurrentIndex(), true);
     };
 
-    const scheduleResetTimer = () => {
+    const scheduleResetTimer = (afterMs = 0) => {
       clearResetTimer();
-      resetTimerRef.current = window.setTimeout(resetToAuto, MANUAL_RESET_MS);
+      resetTimerRef.current = window.setTimeout(resetToAuto, MANUAL_RESET_MS + afterMs);
+    };
+
+    /** Track offsets that center the first / last line. */
+    const bounds = () => {
+      const els = lineElsRef.current;
+      const first = els[0];
+      const last = els[lines.length - 1];
+      if (!first || !last) return { min: currentOffsetRef.current, max: currentOffsetRef.current };
+      return { min: -(last.offsetTop + last.clientHeight / 2), max: -(first.offsetTop + first.clientHeight / 2) };
+    };
+
+    const moveTo = (offset: number, transition: string) => {
+      currentOffsetRef.current = offset;
+      const track = trackRef.current;
+      if (!track) return;
+      track.style.transition = transition;
+      track.style.transform = `translate3d(0, ${offset}px, 0)`;
     };
 
     const tick = () => {
@@ -122,13 +149,23 @@ export function LyricsView({
     };
 
     const onPointerDown = (e: PointerEvent) => {
+      const track = trackRef.current;
+      const wasGliding = performance.now() < glidingUntilRef.current;
+      glidingUntilRef.current = 0;
+      // Freeze wherever a glide (a fling or the line-to-line transition) has got to.
+      if (track) {
+        const shown = getComputedStyle(track).transform;
+        if (shown && shown !== "none") currentOffsetRef.current = new DOMMatrixReadOnly(shown).m42;
+        moveTo(currentOffsetRef.current, "none");
+      }
       draggingRef.current = true;
-      dragMovedRef.current = false;
+      // A tap that stops a glide is a scroll gesture, not "back to the current line".
+      dragMovedRef.current = wasGliding;
       dragStartYRef.current = e.clientY;
       dragStartOffsetRef.current = currentOffsetRef.current;
+      samplesRef.current = [{ y: e.clientY, t: e.timeStamp }];
       isManualRef.current = true;
       clearResetTimer();
-      if (trackRef.current) trackRef.current.style.transition = "none";
       (e.target as Element).setPointerCapture?.(e.pointerId);
     };
 
@@ -136,21 +173,36 @@ export function LyricsView({
       if (!draggingRef.current) return;
       const delta = e.clientY - dragStartYRef.current;
       if (Math.abs(delta) > TAP_MOVE_THRESHOLD_PX) dragMovedRef.current = true;
-      const newOffset = dragStartOffsetRef.current + delta;
-      currentOffsetRef.current = newOffset;
-      if (trackRef.current) trackRef.current.style.transform = `translate3d(0, ${newOffset}px, 0)`;
+      samplesRef.current.push({ y: e.clientY, t: e.timeStamp });
+      if (samplesRef.current.length > 20) samplesRef.current.shift();
+      const { min, max } = bounds();
+      const height = viewportRef.current?.clientHeight ?? 800;
+      moveTo(rubberBand(dragStartOffsetRef.current + delta, min, max, height), "none");
     };
 
-    const endDrag = () => {
+    const endDrag = (e: PointerEvent) => {
       if (!draggingRef.current) return;
       draggingRef.current = false;
-      if (trackRef.current) trackRef.current.style.transition = "";
 
-      if (dragMovedRef.current) {
-        scheduleResetTimer(); // real drag — give the driver 5s before snapping back
-      } else {
+      if (!dragMovedRef.current) {
         resetToAuto(); // tap — snap back immediately
+        return;
       }
+      const { min, max } = bounds();
+      const offset = currentOffsetRef.current;
+      let glideMs = 0;
+      if (offset > max || offset < min) {
+        moveTo(offset > max ? max : min, `transform ${SETTLE_MS}ms ${SETTLE_EASING}`); // spring back
+        glideMs = SETTLE_MS;
+      } else {
+        const glide = fling(offset, releaseVelocity(samplesRef.current, e.timeStamp), min, max);
+        if (glide) {
+          moveTo(glide.target, `transform ${glide.durationMs}ms ${FLING_EASING}`);
+          glideMs = glide.durationMs;
+        }
+      }
+      glidingUntilRef.current = glideMs ? performance.now() + glideMs : 0;
+      scheduleResetTimer(glideMs); // real drag — 5s after it comes to rest, back to the current line
     };
 
     const viewport = viewportRef.current;
