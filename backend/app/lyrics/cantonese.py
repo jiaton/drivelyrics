@@ -1,13 +1,20 @@
-"""Is a track sung in Cantonese? The guess itself is jyutping.looks_cantonese; this adds
-what it needs from storage: a reader's mark, and whether a provider romanized the lyrics."""
+"""Is a track sung in Cantonese? Readers' votes first; otherwise a guess from the lyrics.
+
+The guess, strongest signal first: colloquial Cantonese characters (rare: most
+Cantopop is written in standard Chinese); the word-usage score (cantonese_model.py,
+works on any source's text); NetEase shipping a romanization for Chinese lyrics
+(every Cantonese song checked had one, no Mandarin or Hokkien song did — but some
+Cantonese songs lack one, which the score catches), also from another source's cached
+copy of the same track."""
 
 import logging
 import time
 
-from sqlmodel import Session, select
+from sqlmodel import Session, func, select
 
-from app.lyrics.jyutping import looks_cantonese
-from app.lyrics.models import LyricsText, TrackCantonese, TrackMatch
+from app.lyrics.cantonese_model import written_for_cantonese
+from app.lyrics.jyutping import chinese_lyrics, colloquial_cantonese
+from app.lyrics.models import CantoneseVote, LyricsText, TrackMatch
 from app.lyrics.ports import LyricsSourcePort
 
 log = logging.getLogger(__name__)
@@ -31,17 +38,31 @@ async def _romanized(db: Session, sources: dict[str, LyricsSourcePort], text: Ly
     return raw.romanized
 
 
-async def is_cantonese(db: Session, sources: dict[str, LyricsSourcePort], track_id: str, text: LyricsText) -> bool:
-    """A reader's mark on the track wins; otherwise the guess, using a romanization from
-    any source's cached lyrics for the track — LRCLIB lyrics of a Cantonese song still
-    count when NetEase's copy was romanized. track_id "" = a song looked up by search,
-    not a Spotify track: the guess from these lyrics alone."""
-    mark = db.get(TrackCantonese, track_id) if track_id else None
-    if mark is not None:
-        return mark.cantonese
-    if not looks_cantonese(text.lrc_text, provider_romanized=True):
-        return False  # no Han characters, or Japanese/Korean: nothing to look up
-    if looks_cantonese(text.lrc_text, provider_romanized=False):
+def _voted(db: Session, track_id: str, user_id: int | None) -> bool | None:
+    """The reader's own vote; else the majority's; None on a tie or no votes."""
+    if user_id is not None and (own := db.get(CantoneseVote, (user_id, track_id))) is not None:
+        return own.cantonese
+    counts = dict(
+        db.exec(
+            select(CantoneseVote.cantonese, func.count())
+            .where(CantoneseVote.spotify_track_id == track_id)
+            .group_by(CantoneseVote.cantonese)
+        ).all()
+    )
+    yes, no = counts.get(True, 0), counts.get(False, 0)
+    return None if yes == no else yes > no
+
+
+async def is_cantonese(
+    db: Session, sources: dict[str, LyricsSourcePort], track_id: str, text: LyricsText, user_id: int | None = None
+) -> bool:
+    """track_id "" = a song looked up by search, not a Spotify track: no votes, and only
+    these lyrics to go on."""
+    if track_id and (voted := _voted(db, track_id, user_id)) is not None:
+        return voted
+    if not chinese_lyrics(text.lrc_text):
+        return False
+    if colloquial_cantonese(text.lrc_text) or written_for_cantonese(text.lrc_text):
         return True
     if await _romanized(db, sources, text):
         return True
@@ -54,9 +75,10 @@ async def is_cantonese(db: Session, sources: dict[str, LyricsSourcePort], track_
     return False
 
 
-def mark_cantonese(db: Session, track_id: str, cantonese: bool, user_id: int) -> None:
-    """A reader says whether this track is sung in Cantonese — for everyone."""
-    mark = db.get(TrackCantonese, track_id) or TrackCantonese(spotify_track_id=track_id, cantonese=cantonese, updated_at=0)
-    mark.cantonese, mark.set_by, mark.updated_at = cantonese, user_id, time.time()
-    db.add(mark)
+def vote_cantonese(db: Session, track_id: str, cantonese: bool, user_id: int) -> None:
+    vote = db.get(CantoneseVote, (user_id, track_id)) or CantoneseVote(
+        user_id=user_id, spotify_track_id=track_id, cantonese=cantonese, updated_at=0
+    )
+    vote.cantonese, vote.updated_at = cantonese, time.time()
+    db.add(vote)
     db.commit()

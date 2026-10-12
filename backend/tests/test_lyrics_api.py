@@ -40,3 +40,15 @@ def test_song_ids_are_validated(app_client):
     a = app_client()
     sign_in(a, "song-id@example.com")
     assert a.get("/api/lyrics/song", params={"source": "lrclib", "song_id": "../x"}).status_code == 422
+
+
+def test_two_camps_voting_leave_bystanders_with_the_guess(app_client, monkeypatch):
+    monkeypatch.setattr(routes, "service", LyricsService([RomanizingSource("lrclib", romanized=False)]))
+    a, b, c = app_client(), app_client(), app_client()
+    for client, email in ((a, "camp-a@example.com"), (b, "camp-b@example.com"), (c, "bystander@example.com")):
+        sign_in(client, email)
+    track = {**TRACK, "track_id": "contested"}
+    assert a.put("/api/lyrics/cantonese", json={**track, "cantonese": True}).json()["cantonese"] is True
+    assert b.put("/api/lyrics/cantonese", json={**track, "cantonese": False}).json()["cantonese"] is False
+    assert a.get("/api/lyrics", params=track).json()["cantonese"] is True  # each keeps their own
+    assert c.get("/api/lyrics", params=track).json()["cantonese"] is False  # 1 : 1 → the guess

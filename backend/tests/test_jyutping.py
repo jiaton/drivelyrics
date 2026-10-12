@@ -1,4 +1,4 @@
-from app.lyrics.jyutping import line_jyutping, looks_cantonese
+from app.lyrics.jyutping import chinese_lyrics, colloquial_cantonese, line_jyutping
 
 
 def test_jyutping_of_a_line():
@@ -15,11 +15,10 @@ def test_latin_words_kept_punctuation_dropped():
     assert line_jyutping("All the way (oh)") == ""
 
 
-def test_looks_cantonese():
-    standard_chinese = "[00:01.00]攔路雨偏似雪花\n[00:05.00]飲泣的你凍嗎"
-    assert looks_cantonese(standard_chinese, provider_romanized=True)
-    assert not looks_cantonese(standard_chinese, provider_romanized=False)  # 富士山下 reads like any Mandarin song
-    assert looks_cantonese("[00:01.00]佢話我哋冇嘢", provider_romanized=False)  # colloquial Cantonese
-    assert not looks_cantonese("[00:01.00]佢", provider_romanized=False)  # one character doesn't decide
-    assert not looks_cantonese("[00:01.00]夢ならばどれほどよかったでしょう", provider_romanized=True)  # Japanese
-    assert not looks_cantonese("[00:01.00]Hello", provider_romanized=True)
+def test_chinese_lyrics_and_colloquial_cantonese():
+    assert chinese_lyrics("[00:01.00]攔路雨偏似雪花")
+    assert not chinese_lyrics("[00:01.00]夢ならばどれほどよかったでしょう")  # Japanese
+    assert not chinese_lyrics("[00:01.00]Hello")
+    assert colloquial_cantonese("[00:01.00]佢話我哋冇嘢")
+    assert not colloquial_cantonese("[00:01.00]佢")  # one character doesn't decide
+    assert not colloquial_cantonese("[00:01.00]攔路雨偏似雪花")  # 富士山下 reads like any Mandarin song

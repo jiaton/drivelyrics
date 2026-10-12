@@ -55,7 +55,7 @@ export function NowPlayingScreen({
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
 
-  // A reader correcting the Cantonese guess for this track (shared with everyone).
+  // The reader's vote on whether this track is Cantonese (theirs to decide, one vote for others).
   const setCantonese = (value: boolean) => {
     if (!track) return;
     api<LyricsPayload>("/api/lyrics/cantonese", {

@@ -7,7 +7,7 @@ from app.core.config import settings
 from app.core.db import get_session
 from app.lyrics.adapter import LrclibClient, NeteaseLyricsClient
 from app.core.rate_limit import MinInterval
-from app.lyrics.cantonese import mark_cantonese
+from app.lyrics.cantonese import vote_cantonese
 from app.lyrics.schemas import CandidateSchema, CandidatesResponse, CantoneseRequest, ChoiceRequest, LyricsResponse, SearchHit, SearchResponse
 from app.lyrics.order import reader_order, source_order
 from app.lyrics.service import LyricsResult, LyricsService, NoSyncedLyrics, ProviderUnavailable, TrackInfo, UnknownSource
@@ -44,7 +44,7 @@ def _response(result: LyricsResult) -> LyricsResponse:
 
 @router.get("", response_model=LyricsResponse)
 async def get_lyrics(track: TrackInfo = Depends(_track), user: User = Depends(current_user), session: Session = Depends(get_session)):
-    return _response(await service.get_lyrics(session, track, _order(session, user, track)))
+    return _response(await service.get_lyrics(session, track, _order(session, user, track), user.id))
 
 
 @router.get("/candidates", response_model=CandidatesResponse)
@@ -82,10 +82,11 @@ async def choose(body: ChoiceRequest, user: User = Depends(current_user), sessio
 
 @router.put("/cantonese", response_model=LyricsResponse)
 async def set_cantonese(body: CantoneseRequest, user: User = Depends(current_user), session: Session = Depends(get_session)):
-    """Mark the track as (not) Cantonese for everyone; answers with its lyrics as now shown."""
+    """The reader's vote on whether the track is Cantonese (decides it for them, counts
+    once for everyone else); answers with its lyrics as they now see them."""
     track = TrackInfo(body.track_id, body.title, body.artist, body.duration_ms)
-    mark_cantonese(session, track.track_id, body.cantonese, user.id)
-    return _response(await service.get_lyrics(session, track, _order(session, user, track)))
+    vote_cantonese(session, track.track_id, body.cantonese, user.id)
+    return _response(await service.get_lyrics(session, track, _order(session, user, track), user.id))
 
 
 @router.get("/search", response_model=SearchResponse)

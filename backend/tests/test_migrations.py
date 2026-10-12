@@ -128,4 +128,22 @@ PRAGMA user_version = 3;
         assert c.execute(text("SELECT show_jyutping FROM userpreferences")).scalar_one() == 0
         rows = c.execute(text("SELECT source, romanized FROM lyricstext ORDER BY source")).all()
         assert [tuple(r) for r in rows] == [("lrclib", 0), ("netease", None)]  # NetEase: re-read when needed
-        assert "trackcantonese" in {r[0] for r in c.execute(text("SELECT name FROM sqlite_master WHERE type='table'"))}
+        assert "cantonesevote" in {r[0] for r in c.execute(text("SELECT name FROM sqlite_master WHERE type='table'"))}
+
+
+def test_v5_turns_shared_marks_into_votes(tmp_path):
+    path = tmp_path / "v4.db"
+    conn = sqlite3.connect(path)
+    conn.executescript("""
+CREATE TABLE users (id INTEGER PRIMARY KEY, email VARCHAR NOT NULL, google_sub VARCHAR, name VARCHAR NOT NULL, picture_url VARCHAR NOT NULL, role VARCHAR NOT NULL, created_at FLOAT NOT NULL);
+INSERT INTO users VALUES (1, 'a@example.com', 'sub', 'A', '', 'user', 0);
+CREATE TABLE trackcantonese (spotify_track_id VARCHAR PRIMARY KEY, cantonese BOOLEAN NOT NULL, set_by INTEGER, updated_at FLOAT NOT NULL);
+INSERT INTO trackcantonese VALUES ('t1', 1, 1, 5), ('t2', 0, NULL, 6);
+PRAGMA user_version = 4;
+""")
+    conn.close()
+    engine = create_engine(f"sqlite:///{path}")
+    migrations.migrate(engine)
+    with engine.connect() as c:
+        assert [tuple(r) for r in c.execute(text("SELECT user_id, spotify_track_id, cantonese FROM cantonesevote"))] == [(1, "t1", 1)]
+        assert "trackcantonese" not in {r[0] for r in c.execute(text("SELECT name FROM sqlite_master WHERE type='table'"))}

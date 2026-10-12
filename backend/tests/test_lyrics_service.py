@@ -2,7 +2,7 @@ import pytest
 from sqlmodel import Session, SQLModel, create_engine, select
 
 from app.auth.models import User
-from app.lyrics.cantonese import mark_cantonese
+from app.lyrics.cantonese import vote_cantonese
 from app.lyrics.matching import Candidate
 from app.lyrics.models import LyricsText, TrackMatch
 from app.lyrics.ports import RawLyric
@@ -264,12 +264,19 @@ async def test_not_romanized_is_not_cantonese(db):
     assert not result.cantonese and result.romanization_lines == []
 
 
-async def test_a_readers_mark_wins_both_ways_for_everyone(db):
-    service = LyricsService([RomanizingSource("netease", romanized=False)])
-    mark_cantonese(db, SONG.track_id, True, user_id=7)
-    assert (await service.get_lyrics(db, SONG, NETEASE_FIRST)).cantonese
-    mark_cantonese(db, SONG.track_id, False, user_id=8)
-    assert not (await service.get_lyrics(db, SONG, NETEASE_FIRST)).cantonese
+async def test_own_vote_decides_for_the_voter_majority_for_others(db):
+    db.add(User(id=9, email="third@example.com", created_at=0))
+    db.commit()
+    service = LyricsService([RomanizingSource("netease", romanized=False)])  # guess: not Cantonese
+    vote_cantonese(db, SONG.track_id, True, user_id=7)
+    assert (await service.get_lyrics(db, SONG, NETEASE_FIRST, user_id=7)).cantonese
+    assert (await service.get_lyrics(db, SONG, NETEASE_FIRST, user_id=9)).cantonese  # 1 : 0
+    vote_cantonese(db, SONG.track_id, False, user_id=8)
+    assert not (await service.get_lyrics(db, SONG, NETEASE_FIRST, user_id=8)).cantonese  # own vote
+    assert (await service.get_lyrics(db, SONG, NETEASE_FIRST, user_id=7)).cantonese  # own vote
+    assert not (await service.get_lyrics(db, SONG, NETEASE_FIRST, user_id=9)).cantonese  # 1 : 1, back to the guess
+    vote_cantonese(db, SONG.track_id, False, user_id=7)  # changing one's mind moves one vote
+    assert not (await service.get_lyrics(db, SONG, NETEASE_FIRST, user_id=9)).cantonese  # 0 : 2
 
 
 async def test_lyrics_cached_before_v4_are_reread_once(db):

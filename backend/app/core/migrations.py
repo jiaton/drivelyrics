@@ -15,7 +15,7 @@ from sqlmodel import SQLModel
 from app.auth.models import AuthSession, User  # noqa: F401  (registers tables)
 from app.core.config import settings
 from app.core.crypto import encrypt
-from app.lyrics.models import LyricsText, TrackCantonese, TrackMatch  # noqa: F401
+from app.lyrics.models import CantoneseVote, LyricsText, TrackMatch  # noqa: F401
 from app.preferences.models import UserPreferences  # noqa: F401
 from app.spotify.models import SpotifyApp, SpotifyToken  # noqa: F401
 
@@ -100,7 +100,7 @@ def _v3_forget_profile_pictures(conn: Connection) -> None:
 def _v4_cantonese(conn: Connection) -> None:
     """Jyutping: a per-user preference, and whether the provider romanized a song's
     lyrics (NULL for lyrics fetched before — re-read from the provider when needed).
-    The new TrackCantonese table comes from create_all."""
+    (Step 4 also brought a shared TrackCantonese table, replaced by votes in step 5.)"""
     tables = _tables(conn)
     if "userpreferences" in tables and "show_jyutping" not in _columns(conn, "userpreferences"):
         conn.execute(text("ALTER TABLE userpreferences ADD COLUMN show_jyutping BOOLEAN NOT NULL DEFAULT 0"))
@@ -109,7 +109,25 @@ def _v4_cantonese(conn: Connection) -> None:
         conn.execute(text("UPDATE lyricstext SET romanized = 0 WHERE source = 'lrclib'"))  # LRCLIB has none
 
 
-STEPS: list[Callable[[Connection], None]] = [_v1_multi_user, _v2_lyrics_source, _v3_forget_profile_pictures, _v4_cantonese]
+def _v5_cantonese_votes(conn: Connection) -> None:
+    """One shared "is Cantonese" mark per track (last writer wins) → one vote per
+    reader. A mark becomes its setter's vote."""
+    SQLModel.metadata.tables["cantonesevote"].create(conn, checkfirst=True)
+    if "trackcantonese" in _tables(conn):
+        conn.execute(text(
+            "INSERT OR IGNORE INTO cantonesevote (user_id, spotify_track_id, cantonese, updated_at) "
+            "SELECT set_by, spotify_track_id, cantonese, updated_at FROM trackcantonese WHERE set_by IS NOT NULL"
+        ))
+        conn.execute(text("DROP TABLE trackcantonese"))
+
+
+STEPS: list[Callable[[Connection], None]] = [
+    _v1_multi_user,
+    _v2_lyrics_source,
+    _v3_forget_profile_pictures,
+    _v4_cantonese,
+    _v5_cantonese_votes,
+]
 
 
 def migrate(engine: Engine) -> None:

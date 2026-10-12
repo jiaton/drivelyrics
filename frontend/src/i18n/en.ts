@@ -151,7 +151,7 @@ export const en = {
       keepAwake: "Keep screen awake",
       showJyutping: "Show Jyutping (Cantonese songs)",
       thisSongCantonese: "This song is in Cantonese",
-      cantoneseHint: "Guessed from the lyrics. Correct it here; the fix is shared with everyone.",
+      cantoneseHint: "Guessed from the lyrics. Your answer applies to you right away and counts as one vote for everyone else.",
       lyricsSource: "Lyrics source",
       sourceAuto: "Auto",
       sourceHints: {

@@ -33,14 +33,15 @@ class LyricsText(SQLModel, table=True):
     fetched_at: float
 
 
-class TrackCantonese(SQLModel, table=True):
-    """A reader's word on whether a track is sung in Cantonese, overriding the guess
-    (jyutping.looks_cantonese) either way. Shared by every user, like a correction:
-    the language is the song's, not the reader's."""
+class CantoneseVote(SQLModel, table=True):
+    """One reader's word on whether a track is sung in Cantonese, overriding the guess
+    (cantonese.is_cantonese) either way. Their own vote decides what they see; everyone
+    else sees the majority, and a tie (or no votes) is left to the guess. So two camps
+    re-marking a song can't flip it back and forth for others: each moves one vote."""
 
+    user_id: int = Field(primary_key=True, foreign_key="users.id")
     spotify_track_id: str = Field(primary_key=True)
     cantonese: bool
-    set_by: int | None = Field(default=None, foreign_key="users.id")
     updated_at: float
 
 

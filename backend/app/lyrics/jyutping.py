@@ -6,13 +6,8 @@ Cantonese songs (`romalrc`) is a crowd-written, Mandarin-style spelling with no 
 faa1". ToJyutping (CanCLID, BSD-2) segments words, so most 多音字 come out right; it
 reads 繁體 better than 简体 (风褛 → leoi5, 風褸 → lau1), hence the s2hk conversion first.
 
-Whether a song is Cantonese can't be read off its characters — 富士山下 is written in
-standard Chinese like any Mandarin song. The signal that does work (checked 2026-10-10
-on 17 songs: every Cantonese one has it, no Mandarin or Hokkien one does) is NetEase
-shipping a romanization for Han-script lyrics; Japanese and Korean songs have one too,
-told apart by their kana/hangul. Colloquial Cantonese characters are a weaker extra
-signal (useful for LRCLIB lyrics), and a reader can mark a track by hand
-(cantonese.mark_cantonese) when both miss."""
+Whether a song is Cantonese at all is cantonese.is_cantonese; the text-only checks it
+uses are here and in cantonese_model.py."""
 
 import re
 
@@ -28,10 +23,14 @@ _CANTONESE_ONLY = set("嘅咗冇佢喺啲嗰哋㗎嚟嘢咩噉啱嘥攰瞓諗揾
 _MIN_CANTONESE_CHARS = 2
 
 
-def looks_cantonese(lrc_text: str, provider_romanized: bool) -> bool:
-    if not _HAN.search(lrc_text) or _KANA_HANGUL.search(lrc_text):
-        return False
-    return provider_romanized or sum(ch in _CANTONESE_ONLY for ch in lrc_text) >= _MIN_CANTONESE_CHARS
+def chinese_lyrics(lrc_text: str) -> bool:
+    """Han characters and no kana/hangul: Chinese, so possibly Cantonese. (Japanese and
+    Korean lyrics are romanized by NetEase too.)"""
+    return bool(_HAN.search(lrc_text)) and not _KANA_HANGUL.search(lrc_text)
+
+
+def colloquial_cantonese(lrc_text: str) -> bool:
+    return sum(ch in _CANTONESE_ONLY for ch in lrc_text) >= _MIN_CANTONESE_CHARS
 
 
 def line_jyutping(text: str) -> str:

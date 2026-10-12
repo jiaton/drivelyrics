@@ -11,7 +11,7 @@ from app.lyrics.cantonese import is_cantonese
 from app.lyrics.jyutping import line_jyutping
 from app.lyrics.lrc_parser import parse_lrc
 from app.lyrics.matching import Candidate, ScoredCandidate, is_acceptable, is_confident, query_title, rank, split_artists
-from app.lyrics.models import LyricsText, TrackCantonese, TrackMatch, UserTrackSource
+from app.lyrics.models import CantoneseVote, LyricsText, TrackMatch, UserTrackSource
 from app.lyrics.ports import LyricsSourcePort
 
 # Bump when matching changes in a way that should re-match already-cached tracks. Rows
@@ -127,8 +127,8 @@ class LyricsService:
             romanization_lines=[{"t": line["t"], "text": jp} for line in lines if (jp := line_jyutping(line["text"]))] if cantonese else [],
         )
 
-    async def _finish(self, db: Session, track_id: str, row: TrackMatch | None, text: LyricsText) -> LyricsResult:
-        return self._result(row, text, cantonese=await is_cantonese(db, self._sources, track_id, text))
+    async def _finish(self, db: Session, track_id: str, row: TrackMatch | None, text: LyricsText, user_id: int | None = None) -> LyricsResult:
+        return self._result(row, text, cantonese=await is_cantonese(db, self._sources, track_id, text, user_id))
 
     def _save(self, db: Session, track: TrackInfo, source: str, song_id: str, manual: bool, user_id: int | None) -> TrackMatch:
         row = db.get(TrackMatch, (track.track_id, source)) or TrackMatch(
@@ -148,7 +148,7 @@ class LyricsService:
         text = await self._text(db, row.source, row.source_song_id)
         return text if parse_lrc(text.lrc_text) else None
 
-    async def get_lyrics(self, db: Session, track: TrackInfo, order: list[str]) -> LyricsResult:
+    async def get_lyrics(self, db: Session, track: TrackInfo, order: list[str], user_id: int | None = None) -> LyricsResult:
         """The first source in the reader's order whose row has synced lyrics. Within a
         source, a manual row (someone's correction) simply *is* that source's answer; a
         manual row with no song ("this source has the wrong song") is skipped and never
@@ -176,7 +176,7 @@ class LyricsService:
                     row = self._save(db, track, source.name, song_id, manual=False, user_id=None)
                 if text := await self._lyrics_of(db, row):
                     self._count(searched, row.source)
-                    return await self._finish(db, track.track_id, row, text)
+                    return await self._finish(db, track.track_id, row, text, user_id)
             self._count(searched, "")
             return self._result(None, None)
 
@@ -216,7 +216,7 @@ class LyricsService:
         db.add(pin)
         db.commit()
         self.counters["picks"] += 1
-        return await self._finish(db, track.track_id, row, text)
+        return await self._finish(db, track.track_id, row, text, user_id)
 
     async def search(self, query: str, order: list[str]) -> list[Candidate]:
         """Free-text search (the search screen, no Spotify track involved): each source's
@@ -258,7 +258,6 @@ def forget_user(db: Session, user_id: int) -> None:
     for row in db.exec(select(TrackMatch).where(TrackMatch.chosen_by == user_id)):
         row.chosen_by = None
         db.add(row)
-    for mark in db.exec(select(TrackCantonese).where(TrackCantonese.set_by == user_id)):
-        mark.set_by = None
-        db.add(mark)
+    for vote in db.exec(select(CantoneseVote).where(CantoneseVote.user_id == user_id)):
+        db.delete(vote)
     db.commit()

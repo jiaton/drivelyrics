@@ -21,7 +21,7 @@ export function SettingsModal({
   user: User;
   lyricsSources: string[];
   preferences: Preferences;
-  /** The current track's Cantonese guess and how to correct it; null when no lyrics are shown. */
+  /** Whether the current track is Cantonese as this reader sees it, and their vote; null when no lyrics are shown. */
   cantonese: { value: boolean; onChange: (next: boolean) => void } | null;
   onChange: (patch: PreferencesPatch) => void;
   onOpenSpotifySetup: () => void;
