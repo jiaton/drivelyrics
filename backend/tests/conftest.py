@@ -2,7 +2,9 @@
 Environment variables win over backend/.env, which in a dev checkout is a symlink to
 the production values — tests must never touch those."""
 
+import atexit
 import os
+import shutil
 import tempfile
 from pathlib import Path
 
@@ -11,6 +13,7 @@ from cryptography.fernet import Fernet
 
 # RAM-backed when available: on the NAS every fsync to disk costs ~0.7s.
 _TMP = tempfile.mkdtemp(prefix="lyric-test-", dir="/dev/shm" if os.path.isdir("/dev/shm") else None)
+atexit.register(shutil.rmtree, _TMP, ignore_errors=True)  # RAM: don't leave one per run
 
 os.environ.update(
     {
