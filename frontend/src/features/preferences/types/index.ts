@@ -1,11 +1,7 @@
-export type LyricsSource = "auto" | "netease" | "lrclib";
+import type { Schema } from "../../../lib/schema";
 
-export interface Preferences {
-  show_translation: boolean;
-  show_album_art: boolean;
-  keep_screen_awake: boolean;
-  lyrics_source: LyricsSource;
-  show_jyutping: boolean;
-}
-
+export type Preferences = Schema<"PreferencesResponse">;
+export type LyricsSource = Preferences["lyrics_source"];
+// Not Schema<"PreferencesUpdate">: that allows explicit nulls, which the optimistic
+// merge into Preferences mustn't see. Any subset of real values is a valid update.
 export type PreferencesPatch = Partial<Preferences>;

@@ -1,21 +1,5 @@
-export interface User {
-  id: number;
-  email: string;
-  name: string;
-  role: "user" | "admin";
-}
+import type { Schema } from "../../../lib/schema";
 
-export interface Me {
-  user: User | null;
-  google_enabled: boolean;
-  dev_login: boolean;
-  lyrics_sources: string[];
-}
-
-export interface PairStart {
-  code: string;
-  poll_secret: string;
-  approve_url: string;
-  qr_svg: string;
-  expires_in: number;
-}
+export type User = Schema<"UserSchema">;
+export type Me = Schema<"MeResponse">;
+export type PairStart = Schema<"PairStartResponse">;

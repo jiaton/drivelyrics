@@ -1,13 +1,7 @@
-export interface NowPlaying {
-  is_playing: boolean;
-  track_id: string | null;
-  name: string | null;
-  artist: string | null;
-  album_art_url: string | null;
-  duration_ms: number | null;
-  progress_ms: number | null;
-  fetched_at: number; // unix seconds, server clock — informational only, not used for scroll timing
-}
+import type { Schema } from "../../../lib/schema";
+
+// fetched_at: unix seconds, server clock — informational only, not used for scroll timing.
+export type NowPlaying = Schema<"NowPlayingResponse">;
 
 /**
  * NowPlaying plus a client-side monotonic timestamp. `receivedAtPerf` is
@@ -17,14 +11,11 @@ export interface NowPlaying {
  * across a server and a car's system clock isn't something to rely on: either one
  * could be off by seconds, and `performance.now()` can't drift out of sync with itself.
  */
-export interface ClientNowPlaying extends NowPlaying {
+export type ClientNowPlaying = NowPlaying & {
   receivedAtPerf: number;
-}
+};
 
-export interface LyricLine {
-  t: number; // ms offset into the track
-  text: string;
-}
+export type LyricLine = Schema<"LyricLineSchema">; // t: ms offset into the track
 
 export interface TrackRef {
   trackId: string;
@@ -33,23 +24,5 @@ export interface TrackRef {
   durationMs: number | null;
 }
 
-export interface LyricsPayload {
-  lines: LyricLine[];
-  translation_lines: LyricLine[];
-  source: string; // "netease" | "lrclib" | "" = nothing found
-  song_id: string;
-  manual: boolean;
-  cantonese: boolean; // sung in Cantonese (guessed, or marked by a reader)
-  romanization_lines: LyricLine[]; // Jyutping, same t as the lyric line; [] unless cantonese
-}
-
-export interface Candidate {
-  source: string;
-  song_id: string;
-  name: string;
-  artists: string[];
-  album: string | null;
-  duration_ms: number | null;
-  score: number;
-  selected: boolean;
-}
+export type LyricsPayload = Schema<"LyricsResponse">;
+export type Candidate = Schema<"CandidateSchema">;

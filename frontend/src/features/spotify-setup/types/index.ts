@@ -1,6 +1,3 @@
-export interface SpotifyStatus {
-  app_configured: boolean;
-  client_id: string;
-  connected: boolean;
-  redirect_uri: string;
-}
+import type { Schema } from "../../../lib/schema";
+
+export type SpotifyStatus = Schema<"SpotifyStatusResponse">;

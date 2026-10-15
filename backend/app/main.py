@@ -10,10 +10,12 @@ from app.auth.deps import SessionCookieMiddleware
 from app.auth.routes import router as auth_router
 from app.auth.service import prune_dead_sessions
 from app.core.db import engine, init_db
+from app.core.openapi import with_stream_schemas
 from app.lyrics.routes import router as lyrics_router
 from app.preferences.routes import router as preferences_router
 from app.spotify.routes import pollers
 from app.spotify.routes import router as spotify_router
+from app.spotify.schemas import NowPlayingResponse
 
 logging.basicConfig(level=logging.INFO)
 
@@ -35,6 +37,7 @@ app.include_router(lyrics_router)
 app.include_router(preferences_router)
 app.include_router(admin_router)
 app.include_router(account_router)
+app.openapi = with_stream_schemas(app, [NowPlayingResponse])  # type: ignore[method-assign]
 
 
 @app.get("/health")
