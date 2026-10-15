@@ -1,7 +1,9 @@
 import { useMemo, useState } from "react";
 import { useNowPlayingStream } from "../api/useNowPlayingStream";
 import { toLyricsData, useLyrics } from "../api/useLyrics";
-import { api } from "../../../lib/api";
+import { api, ApiError } from "../../../lib/api";
+import { feedApi } from "../../feed/api/feedApi";
+import type { Sources, SourceName } from "../api/useSources";
 import { navigate } from "../../../lib/nav";
 import { useWakeLock } from "../hooks/useWakeLock";
 import { LyricsView } from "./LyricsView";
@@ -27,11 +29,15 @@ const headerButton: React.CSSProperties = {
 export function NowPlayingScreen({
   user,
   lyricsSources,
+  sources,
+  selectSource,
   onSpotifyDisconnected,
   onOpenSpotifySetup,
 }: {
   user: User;
   lyricsSources: string[];
+  sources: Sources;
+  selectSource: (source: SourceName) => Promise<void>;
   onSpotifyDisconnected: () => void;
   onOpenSpotifySetup: () => void;
 }) {
@@ -66,6 +72,22 @@ export function NowPlayingScreen({
       .catch(() => undefined); // the toggle just stays as it was
   };
 
+  // The feed only updates when asked: refresh after skipping tracks (debounced server-side).
+  const [refreshNote, setRefreshNote] = useState<string | null>(null);
+  const refreshFeed = (confirmOverBudget = false) => {
+    feedApi
+      .refresh(confirmOverBudget)
+      .then(() => setRefreshNote(null))
+      .catch((err: Error) => {
+        if (err instanceof ApiError && err.status === 409 && !confirmOverBudget) {
+          if (window.confirm(t.app.refreshBudgetConfirm)) refreshFeed(true);
+          return;
+        }
+        setRefreshNote(err instanceof ApiError && err.message === "hourly" ? t.app.refreshHourly : t.app.refreshTooSoon);
+        window.setTimeout(() => setRefreshNote(null), 4000);
+      });
+  };
+
   useWakeLock(preferences.keep_screen_awake && !!nowPlaying?.is_playing);
 
   if (!nowPlaying) {
@@ -73,6 +95,15 @@ export function NowPlayingScreen({
   }
 
   const showAlbumArt = preferences.show_album_art && !!nowPlaying.album_art_url;
+  const isFeed = nowPlaying.source === "feed";
+  const refreshButton = isFeed ? (
+    <button onClick={() => refreshFeed()} aria-label={t.app.refresh} title={t.app.refresh} style={{ ...headerButton, display: "flex", padding: 4 }}>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+        <path d="M20 12a8 8 0 1 1-2.34-5.66" />
+        <path d="M20 4v5h-5" />
+      </svg>
+    </button>
+  ) : null;
 
   return (
     <div className="now-playing-screen">
@@ -103,9 +134,15 @@ export function NowPlayingScreen({
           {showAlbumArt ? (
             <img src={nowPlaying.album_art_url!} alt="" width={28} height={28} style={{ borderRadius: 4, flexShrink: 0 }} />
           ) : null}
+          {sources.spotify_connected && sources.feed_enabled ? (
+            <span style={{ fontSize: "0.7rem", border: "1px solid var(--color-fg-dim)", borderRadius: 999, padding: "0.05rem 0.5rem", flexShrink: 0 }}>
+              {t.app.sourceLabels[nowPlaying.source] ?? nowPlaying.source}
+            </span>
+          ) : null}
           <span style={{ fontSize: "0.9rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>
-            {nowPlaying.track_id ? `${nowPlaying.name} — ${nowPlaying.artist}` : ""}
+            {refreshNote ?? (nowPlaying.track_id ? `${nowPlaying.name} — ${nowPlaying.artist ?? ""}` : "")}
           </span>
+          {refreshButton}
           {track && lines.length > 0 ? (
             <button onClick={() => setPickerOpen(true)} style={{ ...headerButton, fontSize: "0.85rem" }}>
               {t.app.wrongLyrics}
@@ -126,7 +163,7 @@ export function NowPlayingScreen({
         <div style={{ flex: 1, minHeight: 0 }}>
           {!nowPlaying.track_id ? (
             <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", height: "100%", alignItems: "center", justifyContent: "center", color: "var(--color-fg-dim)", fontSize: "var(--font-size-inactive)" }}>
-              {t.app.nothingPlaying}
+              {isFeed ? t.app.nothingPlayingFeed : t.app.nothingPlaying}
               <Button variant="secondary" onClick={() => navigate("/search")}>
                 {t.app.openSearch}
               </Button>
@@ -151,6 +188,7 @@ export function NowPlayingScreen({
               showTranslation={preferences.show_translation}
               romanizationLines={romanizationLines}
               showJyutping={preferences.show_jyutping}
+              syncOffsetMs={preferences.sync_offset_ms}
               nowPlayingRef={latestRef}
             />
           )}
@@ -163,6 +201,8 @@ export function NowPlayingScreen({
           lyricsSources={lyricsSources}
           preferences={preferences}
           cantonese={track && lines.length > 0 ? { value: cantonese, onChange: setCantonese } : null}
+          sources={sources}
+          onSelectSource={(source) => selectSource(source).catch(() => undefined)}
           onChange={updatePreferences}
           onOpenSpotifySetup={onOpenSpotifySetup}
           onClose={() => setSettingsOpen(false)}

@@ -1,4 +1,5 @@
 import re
+from typing import Literal
 
 from pydantic import BaseModel, field_validator
 
@@ -36,3 +37,4 @@ class NowPlayingResponse(BaseModel):
     duration_ms: int | None
     progress_ms: int | None
     fetched_at: float
+    source: Literal["spotify", "feed"] = "spotify"

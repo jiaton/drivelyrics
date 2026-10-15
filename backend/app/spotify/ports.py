@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import Protocol
 
+from app.core.nowplaying import NowPlaying
+
 
 @dataclass
 class SpotifyCredentials:
@@ -15,18 +17,6 @@ class TokenBundle:
     access_token: str
     refresh_token: str
     expires_in: float  # seconds
-
-
-@dataclass
-class NowPlaying:
-    is_playing: bool
-    track_id: str | None
-    name: str | None
-    artist: str | None
-    album_art_url: str | None
-    duration_ms: int | None
-    progress_ms: int | None
-    fetched_at: float  # unix timestamp this snapshot was read at
 
 
 class SpotifyAuthError(Exception):

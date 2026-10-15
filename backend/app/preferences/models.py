@@ -15,3 +15,8 @@ class UserPreferences(SQLModel, table=True):
     lyrics_source: str = Field(default="auto", sa_column_kwargs={"server_default": "auto"})
     # Jyutping under each line of Cantonese songs (lyrics/jyutping.py).
     show_jyutping: bool = Field(default=False, sa_column_kwargs={"server_default": "0"})
+    # "spotify" | "feed": where now-playing comes from (nowplaying/service.py; set through
+    # PUT /api/now-playing/source, which also reconnects open screens).
+    now_playing_source: str = Field(default="spotify", sa_column_kwargs={"server_default": "spotify"})
+    # Lyrics timing nudge for every source, ms: positive = lines change earlier.
+    sync_offset_ms: int = Field(default=0, sa_column_kwargs={"server_default": "0"})

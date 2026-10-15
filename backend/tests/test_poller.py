@@ -3,8 +3,9 @@ import asyncio
 import pytest
 
 from app.spotify import service as spotify_service
-from app.spotify.ports import NowPlaying, SpotifyAuthError, SpotifyCredentials, TokenBundle
-from app.spotify.service import DISCONNECTED, RESUBSCRIBE, PollerRegistry
+from app.core.nowplaying import DISCONNECTED, RESUBSCRIBE, NowPlaying
+from app.spotify.ports import SpotifyAuthError, SpotifyCredentials, TokenBundle
+from app.spotify.service import PollerRegistry
 
 
 class FakeAccounts:

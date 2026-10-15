@@ -35,6 +35,11 @@ class Settings(BaseSettings):
     netease_api_base_url: str = ""
     lrclib_base_url: str = "https://lrclib.net"
 
+    # Now-playing feed webhooks go only to public HTTPS addresses. Comma-separated host
+    # names or IPs exempt from that (plain HTTP and private addresses accepted), for a
+    # self-hosted instance calling e.g. Home Assistant on its own LAN.
+    feed_webhook_allow_hosts: str = ""
+
     database_path: str = "/app/data/lyric.db"
     poll_interval_seconds: float = 4.0
 

@@ -9,9 +9,10 @@ from sqlmodel import Session
 from app.core.config import settings
 from app.core.crypto import decrypt, encrypt
 from app.core.db import engine
+from app.core.nowplaying import DISCONNECTED, RESUBSCRIBE, Broadcaster
 from app.core.one_time_states import OneTimeStates
 from app.spotify.models import SpotifyApp, SpotifyToken
-from app.spotify.ports import NowPlaying, SpotifyAuthError, SpotifyClientPort, SpotifyCredentials, TokenBundle
+from app.spotify.ports import SpotifyAuthError, SpotifyClientPort, SpotifyCredentials, TokenBundle
 
 log = logging.getLogger(__name__)
 
@@ -105,40 +106,6 @@ class SpotifyAccounts:
 
 
 # --- Live now-playing: one poller per user, only while someone watches -------------
-
-# Broadcast sentinels besides NowPlaying snapshots:
-DISCONNECTED = "disconnected"  # the Spotify link is dead; the user has to reconnect
-RESUBSCRIBE = "resubscribe"  # this poller was replaced; streams end and EventSource reconnects
-
-
-class Broadcaster:
-    """Fan-out of one user's latest snapshot to each of their open screens."""
-
-    def __init__(self) -> None:
-        self._subscribers: set[asyncio.Queue] = set()
-        self.latest: NowPlaying | str | None = None
-
-    @property
-    def subscriber_count(self) -> int:
-        return len(self._subscribers)
-
-    def subscribe(self) -> asyncio.Queue:
-        queue: asyncio.Queue = asyncio.Queue(maxsize=1)
-        if self.latest is not None:
-            queue.put_nowait(self.latest)
-        self._subscribers.add(queue)
-        return queue
-
-    def unsubscribe(self, queue: asyncio.Queue) -> None:
-        self._subscribers.discard(queue)
-
-    def publish(self, state: NowPlaying | str) -> None:
-        self.latest = state
-        for queue in self._subscribers:
-            if queue.full():
-                queue.get_nowait()  # drop stale snapshot, keep only the newest
-            queue.put_nowait(state)
-
 
 class UserPoller:
     def __init__(self, user_id: int, client: SpotifyClientPort, accounts: SpotifyAccounts) -> None:

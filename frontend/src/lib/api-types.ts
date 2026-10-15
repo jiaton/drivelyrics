@@ -246,23 +246,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/spotify/now-playing/stream": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Now Playing Stream */
-        get: operations["now_playing_stream_api_spotify_now_playing_stream_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/lyrics": {
         parameters: {
             query?: never;
@@ -427,6 +410,230 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/feed/v1/now-playing": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Push */
+        post: operations["push_api_feed_v1_now_playing_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/feed/v1/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Events */
+        get: operations["events_api_feed_v1_events_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/feed/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Status */
+        get: operations["status_api_feed_status_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/feed/tokens": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Tokens */
+        get: operations["list_tokens_api_feed_tokens_get"];
+        put?: never;
+        /** Create Token */
+        post: operations["create_token_api_feed_tokens_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/feed/tokens/{token_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Revoke Token */
+        delete: operations["revoke_token_api_feed_tokens__token_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/feed/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Settings */
+        get: operations["get_settings_api_feed_settings_get"];
+        /** Put Settings */
+        put: operations["put_settings_api_feed_settings_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/feed/webhook": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Put Webhook */
+        put: operations["put_webhook_api_feed_webhook_put"];
+        post?: never;
+        /** Delete Webhook */
+        delete: operations["delete_webhook_api_feed_webhook_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/feed/webhook/secret": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Rotate Secret */
+        post: operations["rotate_secret_api_feed_webhook_secret_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/feed/webhook/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Test Webhook */
+        post: operations["test_webhook_api_feed_webhook_test_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/feed/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Refresh */
+        post: operations["refresh_api_feed_refresh_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/now-playing/sources": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Sources */
+        get: operations["get_sources_api_now_playing_sources_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/now-playing/source": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Put Source */
+        put: operations["put_source_api_now_playing_source_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/now-playing/stream": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Now Playing Stream */
+        get: operations["now_playing_stream_api_now_playing_stream_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/health": {
         parameters: {
             query?: never;
@@ -504,10 +711,182 @@ export interface components {
             /** Wrong Source */
             wrong_source?: string | null;
         };
+        /** DeliveryResult */
+        DeliveryResult: {
+            /** Ok */
+            ok: boolean;
+            /** Detail */
+            detail: string;
+        };
         /** DevLoginRequest */
         DevLoginRequest: {
             /** Email */
             email: string;
+        };
+        /** EventLog */
+        EventLog: {
+            /** At */
+            at: number;
+            /** Reason */
+            reason: string;
+            /** Delivered */
+            delivered: boolean;
+        };
+        /**
+         * FeedPush
+         * @description What is playing right now, pushed by the user's side (POST /api/feed/v1/now-playing).
+         */
+        FeedPush: {
+            /** Playing */
+            playing: boolean;
+            /**
+             * Title
+             * @description Required while playing.
+             */
+            title?: string | null;
+            /** Artist */
+            artist?: string | null;
+            /** Album */
+            album?: string | null;
+            /**
+             * Duration Ms
+             * @description Strongly recommended: lets DriveLyrics ask for the next track right after this one ends.
+             */
+            duration_ms?: number | null;
+            /**
+             * Position Ms
+             * @description Playback position; omitted on a new track = 0.
+             */
+            position_ms?: number | null;
+            /**
+             * Source
+             * @description Shown to the user only, e.g. "Spotify", "Bluetooth".
+             */
+            source?: string | null;
+            /**
+             * Measured At
+             * @description Unix ms when position_ms was read; ignored when more than 5 minutes off the server clock.
+             */
+            measured_at?: number | null;
+            /**
+             * Fetch Id
+             * @description The id of the fetch event this answers, if any.
+             */
+            fetch_id?: string | null;
+        };
+        /**
+         * FeedPushAck
+         * @description For clients that don't listen to events: when to push next, if at all.
+         */
+        FeedPushAck: {
+            /**
+             * Watching
+             * @description A DriveLyrics screen of this user is open.
+             */
+            watching: boolean;
+            /**
+             * Next Fetch In Ms
+             * @description When DriveLyrics would next ask for an update; null = no update needed.
+             */
+            next_fetch_in_ms: number | null;
+        };
+        /** FeedSettingsResponse */
+        FeedSettingsResponse: {
+            /**
+             * Skip Check S
+             * @enum {integer}
+             */
+            skip_check_s: 0 | 30 | 60;
+            /**
+             * Paused Check S
+             * @enum {integer}
+             */
+            paused_check_s: 0 | 60 | 120;
+            /** Monthly Budget */
+            monthly_budget: number;
+            /** Hourly Cap */
+            hourly_cap: number;
+            /** Webhook Url */
+            webhook_url: string;
+            /** Webhook Paused */
+            webhook_paused: boolean;
+        };
+        /** FeedSettingsUpdate */
+        FeedSettingsUpdate: {
+            /** Skip Check S */
+            skip_check_s?: (0 | 30 | 60) | null;
+            /** Paused Check S */
+            paused_check_s?: (0 | 60 | 120) | null;
+            /** Monthly Budget */
+            monthly_budget?: number | null;
+            /** Hourly Cap */
+            hourly_cap?: number | null;
+        };
+        /** FeedStatusResponse */
+        FeedStatusResponse: {
+            /** Enabled */
+            enabled: boolean;
+            /** Watching */
+            watching: boolean;
+            /** Receivers */
+            receivers: number;
+            /**
+             * Webhook
+             * @enum {string}
+             */
+            webhook: "off" | "ok" | "failing" | "paused" | "unused";
+            /** Webhook Detail */
+            webhook_detail: string;
+            last_event: components["schemas"]["EventLog"] | null;
+            last_push: components["schemas"]["PushLog"] | null;
+            /** Not Responding */
+            not_responding: boolean;
+            /**
+             * Blocked
+             * @enum {string}
+             */
+            blocked: "" | "hourly" | "monthly";
+            /** Month */
+            month: string;
+            /** Month Fetches */
+            month_fetches: number;
+            /** Monthly Budget */
+            monthly_budget: number;
+            /** Hour Fetches */
+            hour_fetches: number;
+            /** Hourly Cap */
+            hourly_cap: number;
+            /** Stopped */
+            stopped: string;
+        };
+        /** FeedTokenCreate */
+        FeedTokenCreate: {
+            /** Name */
+            name: string;
+        };
+        /** FeedTokenCreated */
+        FeedTokenCreated: {
+            /** Token */
+            token: string;
+            info: components["schemas"]["FeedTokenInfo"];
+        };
+        /** FeedTokenInfo */
+        FeedTokenInfo: {
+            /** Id */
+            id: number;
+            /** Name */
+            name: string;
+            /** Prefix */
+            prefix: string;
+            /** Created At */
+            created_at: number;
+            /** Last Used At */
+            last_used_at: number | null;
+        };
+        /** FeedTokenList */
+        FeedTokenList: {
+            /** Tokens */
+            tokens: components["schemas"]["FeedTokenInfo"][];
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -600,6 +979,8 @@ export interface components {
             lyrics_source: "auto" | "netease" | "lrclib";
             /** Show Jyutping */
             show_jyutping: boolean;
+            /** Sync Offset Ms */
+            sync_offset_ms: number;
         };
         /**
          * PreferencesUpdate
@@ -617,6 +998,29 @@ export interface components {
             lyrics_source?: ("auto" | "netease" | "lrclib") | null;
             /** Show Jyutping */
             show_jyutping?: boolean | null;
+            /** Sync Offset Ms */
+            sync_offset_ms?: number | null;
+        };
+        /** PushLog */
+        PushLog: {
+            /** At */
+            at: number;
+            /** Playing */
+            playing: boolean;
+            /** Title */
+            title: string | null;
+            /** Artist */
+            artist: string | null;
+            /** Source */
+            source: string | null;
+        };
+        /** RefreshRequest */
+        RefreshRequest: {
+            /**
+             * Confirm Over Budget
+             * @default false
+             */
+            confirm_over_budget: boolean;
         };
         /** SearchHit */
         SearchHit: {
@@ -650,6 +1054,28 @@ export interface components {
             corrections: number;
             /** Marked Wrong */
             marked_wrong: number;
+        };
+        /** SourceUpdate */
+        SourceUpdate: {
+            /**
+             * Source
+             * @enum {string}
+             */
+            source: "spotify" | "feed";
+        };
+        /** SourcesResponse */
+        SourcesResponse: {
+            /**
+             * Selected
+             * @enum {string}
+             */
+            selected: "spotify" | "feed";
+            /** Effective */
+            effective: ("spotify" | "feed") | null;
+            /** Spotify Connected */
+            spotify_connected: boolean;
+            /** Feed Enabled */
+            feed_enabled: boolean;
         };
         /** SpotifyAppRequest */
         SpotifyAppRequest: {
@@ -765,6 +1191,23 @@ export interface components {
             /** Context */
             ctx?: Record<string, never>;
         };
+        /** WebhookSaved */
+        WebhookSaved: {
+            /** Url */
+            url: string;
+            /** Secret */
+            secret: string | null;
+        };
+        /** WebhookSecret */
+        WebhookSecret: {
+            /** Secret */
+            secret: string;
+        };
+        /** WebhookUpdate */
+        WebhookUpdate: {
+            /** Url */
+            url: string;
+        };
         /** NowPlayingResponse */
         NowPlayingResponse: {
             /** Is Playing */
@@ -783,7 +1226,70 @@ export interface components {
             progress_ms: number | null;
             /** Fetched At */
             fetched_at: number;
+            /**
+             * Source
+             * @default spotify
+             * @enum {string}
+             */
+            source: "spotify" | "feed";
         };
+        /**
+         * FetchEvent
+         * @description Read the player once and push the result.
+         */
+        FetchEvent: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "fetch";
+            /** Id */
+            id: string;
+            /**
+             * Reason
+             * @description Informational; treat every fetch the same. New reasons may be added within v1.
+             * @enum {string}
+             */
+            reason: "opened" | "track_ending" | "skip_check" | "paused_check" | "refresh" | "retry";
+            /**
+             * At
+             * @description Unix ms.
+             */
+            at: number;
+        };
+        /**
+         * PingEvent
+         * @description Sent by the "Test" button in settings; needs no answer.
+         */
+        PingEvent: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "ping";
+            /** Id */
+            id: string;
+            /** At */
+            at: number;
+        };
+        /**
+         * StopEvent
+         * @description No screen is open any more: no fetches until the next "opened".
+         */
+        StopEvent: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "stop";
+            /** At */
+            at: number;
+        };
+        /**
+         * FeedEvent
+         * @description One event, on the event stream (GET /api/feed/v1/events) or as a webhook body.
+         */
+        FeedEvent: components["schemas"]["FetchEvent"] | components["schemas"]["StopEvent"] | components["schemas"]["PingEvent"];
     };
     responses: never;
     parameters: never;
@@ -1193,26 +1699,6 @@ export interface operations {
             };
         };
     };
-    now_playing_stream_api_spotify_now_playing_stream_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-        };
-    };
     get_lyrics_api_lyrics_get: {
         parameters: {
             query: {
@@ -1499,6 +1985,428 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["OkResponse"];
+                };
+            };
+        };
+    };
+    push_api_feed_v1_now_playing_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FeedPush"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeedPushAck"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    events_api_feed_v1_events_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    status_api_feed_status_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeedStatusResponse"];
+                };
+            };
+        };
+    };
+    list_tokens_api_feed_tokens_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeedTokenList"];
+                };
+            };
+        };
+    };
+    create_token_api_feed_tokens_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FeedTokenCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeedTokenCreated"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    revoke_token_api_feed_tokens__token_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                token_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OkResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_settings_api_feed_settings_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeedSettingsResponse"];
+                };
+            };
+        };
+    };
+    put_settings_api_feed_settings_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FeedSettingsUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeedSettingsResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    put_webhook_api_feed_webhook_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WebhookUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WebhookSaved"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_webhook_api_feed_webhook_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OkResponse"];
+                };
+            };
+        };
+    };
+    rotate_secret_api_feed_webhook_secret_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WebhookSecret"];
+                };
+            };
+        };
+    };
+    test_webhook_api_feed_webhook_test_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeliveryResult"];
+                };
+            };
+        };
+    };
+    refresh_api_feed_refresh_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RefreshRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OkResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_sources_api_now_playing_sources_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SourcesResponse"];
+                };
+            };
+        };
+    };
+    put_source_api_now_playing_source_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SourceUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SourcesResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    now_playing_stream_api_now_playing_stream_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
                 };
             };
         };

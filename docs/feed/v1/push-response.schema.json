@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://drivelyrics.com/docs/feed/v1/push-response.schema.json",
+  "description": "For clients that don't listen to events: when to push next, if at all.",
+  "properties": {
+    "watching": {
+      "description": "A DriveLyrics screen of this user is open.",
+      "title": "Watching",
+      "type": "boolean"
+    },
+    "next_fetch_in_ms": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "When DriveLyrics would next ask for an update; null = no update needed.",
+      "title": "Next Fetch In Ms"
+    }
+  },
+  "required": [
+    "watching",
+    "next_fetch_in_ms"
+  ],
+  "title": "FeedPushAck",
+  "type": "object"
+}

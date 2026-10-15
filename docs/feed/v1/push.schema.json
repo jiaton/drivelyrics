@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://drivelyrics.com/docs/feed/v1/push.schema.json",
+  "description": "What is playing right now, pushed by the user's side (POST /api/feed/v1/now-playing).",
+  "properties": {
+    "playing": {
+      "title": "Playing",
+      "type": "boolean"
+    },
+    "title": {
+      "anyOf": [
+        {
+          "maxLength": 300,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Required while playing.",
+      "title": "Title"
+    },
+    "artist": {
+      "anyOf": [
+        {
+          "maxLength": 300,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Artist"
+    },
+    "album": {
+      "anyOf": [
+        {
+          "maxLength": 300,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Album"
+    },
+    "duration_ms": {
+      "anyOf": [
+        {
+          "maximum": 86400000,
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Strongly recommended: lets DriveLyrics ask for the next track right after this one ends.",
+      "title": "Duration Ms"
+    },
+    "position_ms": {
+      "anyOf": [
+        {
+          "maximum": 86400000,
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Playback position; omitted on a new track = 0.",
+      "title": "Position Ms"
+    },
+    "source": {
+      "anyOf": [
+        {
+          "maxLength": 40,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Shown to the user only, e.g. \"Spotify\", \"Bluetooth\".",
+      "title": "Source"
+    },
+    "measured_at": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Unix ms when position_ms was read; ignored when more than 5 minutes off the server clock.",
+      "title": "Measured At"
+    },
+    "fetch_id": {
+      "anyOf": [
+        {
+          "maxLength": 64,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "The id of the fetch event this answers, if any.",
+      "title": "Fetch Id"
+    }
+  },
+  "required": [
+    "playing"
+  ],
+  "title": "FeedPush",
+  "type": "object"
+}

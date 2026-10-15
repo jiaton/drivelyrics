@@ -1,15 +1,12 @@
-import asyncio
-
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import RedirectResponse
-from sse_starlette.sse import EventSourceResponse
 
 from app.auth.deps import current_user, optional_user
 from app.auth.models import User
 from app.spotify.adapter import SpotifyApiClient
 from app.spotify.ports import SpotifyAuthError
-from app.spotify.schemas import NowPlayingResponse, SpotifyAppRequest, SpotifyStatusResponse
-from app.spotify.service import DISCONNECTED, REDIRECT_URI, RESUBSCRIBE, PollerRegistry, SpotifyAccounts, pending_states
+from app.spotify.schemas import SpotifyAppRequest, SpotifyStatusResponse
+from app.spotify.service import REDIRECT_URI, PollerRegistry, SpotifyAccounts, pending_states
 
 router = APIRouter(prefix="/api/spotify", tags=["spotify"])
 client = SpotifyApiClient()
@@ -70,26 +67,3 @@ async def callback(
     accounts.save_token(user.id, bundle)
     pollers.restart(user.id)
     return RedirectResponse("/?spotify=connected")
-
-
-@router.get("/now-playing/stream")
-async def now_playing_stream(user: User = Depends(current_user)):
-    poller, queue = pollers.subscribe(user.id)
-
-    async def events():
-        try:
-            while True:
-                state = await queue.get()
-                if state == DISCONNECTED:
-                    yield {"event": "spotify-disconnected", "data": "{}"}
-                    return
-                if state == RESUBSCRIBE:
-                    return
-                payload = NowPlayingResponse.model_validate(state, from_attributes=True)
-                yield {"event": "now-playing", "data": payload.model_dump_json()}
-        except asyncio.CancelledError:
-            raise
-        finally:
-            poller.broadcaster.unsubscribe(queue)
-
-    return EventSourceResponse(events())

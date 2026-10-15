@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "../../../components/ui/Button";
 import { Page } from "../../../components/ui/Page";
 import { TextField } from "../../../components/ui/TextField";
+import { CopyBox } from "../../../components/ui/CopyBox";
 import type { SpotifyStatus } from "../types";
 import { useI18n } from "../../../i18n";
 import { rich } from "../../../i18n/rich";
@@ -18,25 +19,6 @@ function Step({ n, children }: { n: number; children: React.ReactNode }) {
   );
 }
 
-function CopyBox({ value }: { value: string }) {
-  const { t } = useI18n();
-  const [copied, setCopied] = useState(false);
-  return (
-    <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", marginTop: "0.4rem" }}>
-      <code style={{ flex: 1, padding: "0.5rem 0.75rem", border: "1px solid var(--color-fg-dim)", borderRadius: 8, userSelect: "all", WebkitUserSelect: "all", overflowWrap: "anywhere" }}>
-        {value}
-      </code>
-      <Button
-        variant="secondary"
-        style={{ padding: "0.5rem 0.9rem" }}
-        onClick={() => navigator.clipboard?.writeText(value).then(() => setCopied(true))}
-      >
-        {copied ? t.app.spotify.copied : t.app.spotify.copy}
-      </Button>
-    </div>
-  );
-}
-
 /**
  * Each person links their own Spotify Developer app: Spotify only lets an app in
  * development mode serve accounts its owner allow-lists by hand, so one shared app
@@ -48,12 +30,14 @@ export function SpotifySetup({
   saveApp,
   removeApp,
   onDone,
+  onUseFeed,
 }: {
   user: User;
   status: SpotifyStatus;
   saveApp: (clientId: string, clientSecret: string) => Promise<void>;
   removeApp: () => Promise<void>;
   onDone?: () => void;
+  onUseFeed?: () => void;
 }) {
   const { t } = useI18n();
   const ts = t.app.spotify;
@@ -101,6 +85,14 @@ export function SpotifySetup({
       </div>
       {ts.results[result] ? <p style={{ margin: 0, color: "var(--color-error)" }}>{ts.results[result]}</p> : null}
       <p style={{ margin: 0, color: "var(--color-fg-dim)", lineHeight: 1.55 }}>{ts.intro}</p>
+      {onUseFeed ? (
+        <div style={{ border: "1px solid rgba(255,255,255,0.12)", borderRadius: 12, padding: "0.9rem 1.1rem", display: "flex", flexDirection: "column", gap: "0.6rem", alignItems: "flex-start" }}>
+          <span style={{ color: "var(--color-fg-dim)", lineHeight: 1.55 }}>{rich(ts.orFeed)}</span>
+          <Button variant="secondary" onClick={onUseFeed}>
+            {ts.setUpFeed}
+          </Button>
+        </div>
+      ) : null}
 
       <ol style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: "1rem" }}>
         <Step n={1}>

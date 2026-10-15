@@ -1,6 +1,6 @@
 from typing import Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 LyricsSource = Literal["auto", "netease", "lrclib"]
 
@@ -11,6 +11,7 @@ class PreferencesResponse(BaseModel):
     keep_screen_awake: bool
     lyrics_source: LyricsSource
     show_jyutping: bool
+    sync_offset_ms: int
 
 
 class PreferencesUpdate(BaseModel):
@@ -22,3 +23,4 @@ class PreferencesUpdate(BaseModel):
     keep_screen_awake: bool | None = None
     lyrics_source: LyricsSource | None = None
     show_jyutping: bool | None = None
+    sync_offset_ms: int | None = Field(default=None, ge=-3000, le=3000)

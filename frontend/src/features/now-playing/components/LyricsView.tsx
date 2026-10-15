@@ -34,6 +34,7 @@ export function LyricsView({
   showTranslation,
   romanizationLines,
   showJyutping,
+  syncOffsetMs = 0,
   nowPlayingRef,
 }: {
   lines: LyricLine[];
@@ -41,9 +42,12 @@ export function LyricsView({
   showTranslation: boolean;
   romanizationLines: LyricLine[]; // Jyutping, same t as the line it reads
   showJyutping: boolean;
+  syncOffsetMs?: number; // positive = lines change earlier (preference "Lyrics timing")
   nowPlayingRef?: React.RefObject<ClientNowPlaying | null>;
 }) {
   const following = nowPlayingRef !== undefined;
+  const syncOffsetRef = useRef(syncOffsetMs); // read by the tick; a change needs no restart
+  syncOffsetRef.current = syncOffsetMs;
   const viewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const lineElsRef = useRef<(HTMLDivElement | null)[]>([]);
@@ -99,7 +103,7 @@ export function LyricsView({
         ? (np.progress_ms ?? 0) + (performance.now() - np.receivedAtPerf)
         : np.progress_ms ?? 0;
 
-      return computeActiveIndex(lines, currentMs);
+      return computeActiveIndex(lines, currentMs + syncOffsetRef.current);
     };
 
     const applyActiveIndex = (index: number, force = false) => {

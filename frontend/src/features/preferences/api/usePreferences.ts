@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { api } from "../../../lib/api";
 import type { Preferences, PreferencesPatch } from "../types";
 
-const DEFAULTS: Preferences = { show_translation: false, show_album_art: true, keep_screen_awake: true, lyrics_source: "auto", show_jyutping: false };
+const DEFAULTS: Preferences = { show_translation: false, show_album_art: true, keep_screen_awake: true, lyrics_source: "auto", show_jyutping: false, sync_offset_ms: 0 };
 
 /**
  * `preferences` is optimistic (the modal should feel instant); `saved` is the server's

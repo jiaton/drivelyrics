@@ -1,0 +1,95 @@
+.feed-section {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 1.1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.feed-section h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.feed-hint {
+  margin: 0;
+  color: var(--color-fg-dim);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.feed-status-line {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.feed-warning {
+  margin: 0;
+  color: var(--color-error);
+  line-height: 1.5;
+}
+
+.feed-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.feed-choices {
+  display: flex;
+  border: 1px solid var(--color-fg-dim);
+  border-radius: 999px;
+  overflow: hidden;
+  flex-wrap: wrap;
+}
+
+.feed-choices button {
+  background: transparent;
+  color: var(--color-fg);
+  border: none;
+  padding: 0.45rem 0.9rem;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.feed-choices button[aria-checked="true"] {
+  background: var(--color-fg);
+  color: var(--color-bg);
+}
+
+.feed-token {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.6rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.feed-token-meta {
+  color: var(--color-fg-dim);
+  font-size: 0.85rem;
+}
+
+.feed-reveal {
+  border: 1px solid var(--color-accent);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.feed-number {
+  width: 7rem;
+  background: transparent;
+  color: var(--color-fg);
+  border: 1px solid var(--color-fg-dim);
+  border-radius: 8px;
+  padding: 0.45rem 0.6rem;
+  font: inherit;
+}

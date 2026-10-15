@@ -16,6 +16,7 @@ from app.auth.models import AuthSession, User  # noqa: F401  (registers tables)
 from app.core.config import settings
 from app.core.crypto import encrypt
 from app.lyrics.models import CantoneseVote, LyricsText, TrackMatch  # noqa: F401
+from app.feed.models import FeedSettings, FeedToken, FeedUsage  # noqa: F401
 from app.preferences.models import UserPreferences  # noqa: F401
 from app.spotify.models import SpotifyApp, SpotifyToken  # noqa: F401
 
@@ -121,12 +122,25 @@ def _v5_cantonese_votes(conn: Connection) -> None:
         conn.execute(text("DROP TABLE trackcantonese"))
 
 
+def _v6_now_playing_source(conn: Connection) -> None:
+    """Preferences for the now-playing feed (2026-10-15): which source screens show,
+    and a lyrics timing offset. The feed's own tables come from create_all."""
+    if "userpreferences" not in _tables(conn):
+        return
+    columns = _columns(conn, "userpreferences")
+    if "now_playing_source" not in columns:
+        conn.execute(text("ALTER TABLE userpreferences ADD COLUMN now_playing_source VARCHAR NOT NULL DEFAULT 'spotify'"))
+    if "sync_offset_ms" not in columns:
+        conn.execute(text("ALTER TABLE userpreferences ADD COLUMN sync_offset_ms INTEGER NOT NULL DEFAULT 0"))
+
+
 STEPS: list[Callable[[Connection], None]] = [
     _v1_multi_user,
     _v2_lyrics_source,
     _v3_forget_profile_pictures,
     _v4_cantonese,
     _v5_cantonese_votes,
+    _v6_now_playing_source,
 ]
 
 

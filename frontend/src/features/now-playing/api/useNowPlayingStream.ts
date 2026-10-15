@@ -16,7 +16,7 @@ export function useNowPlayingStream(onDisconnected: () => void) {
   const latestRef = useRef<ClientNowPlaying | null>(null);
 
   useEffect(() => {
-    const source = new EventSource("/api/spotify/now-playing/stream");
+    const source = new EventSource("/api/now-playing/stream");
 
     source.addEventListener("open", () => setStatus("open"));
     let reloadTimer: number | undefined;

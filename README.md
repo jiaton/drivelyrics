@@ -22,6 +22,10 @@ This repository is the same code, for reading and for running your own.
   shared with everyone who plays that song.
 - **Sign a car in by scanning a QR code** with a phone that's already signed in — nothing
   to type on the car screen. Sessions last until you sign out.
+- **Any player, not just Spotify — the now-playing feed**: push what's playing from Home
+  Assistant (e.g. your car's media player) or any script; DriveLyrics tells your side when to
+  read the player, about once per track. It never holds your car's credentials. See
+  [docs/feed.md](docs/feed.md).
 - **Multi-user**: Google sign-in; each user links their own Spotify developer app.
   Spotify secrets and tokens are encrypted at rest.
 - English and Chinese UI.

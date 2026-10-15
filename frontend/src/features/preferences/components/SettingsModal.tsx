@@ -5,6 +5,9 @@ import { signOut } from "../../auth/api/useMe";
 import { useI18n } from "../../../i18n";
 import { LanguageSwitch } from "../../landing/components/LanguageSwitch";
 import type { User } from "../../auth/types";
+import type { Sources, SourceName } from "../../now-playing/api/useSources";
+import { navigate } from "../../../lib/nav";
+import { fill } from "../../../i18n/rich";
 import type { LyricsSource, Preferences, PreferencesPatch } from "../types";
 
 const SOURCE_ORDER: LyricsSource[] = ["auto", "netease", "lrclib"];
@@ -14,6 +17,8 @@ export function SettingsModal({
   lyricsSources,
   preferences,
   cantonese,
+  sources,
+  onSelectSource,
   onChange,
   onOpenSpotifySetup,
   onClose,
@@ -23,6 +28,8 @@ export function SettingsModal({
   preferences: Preferences;
   /** Whether the current track is Cantonese as this reader sees it, and their vote; null when no lyrics are shown. */
   cantonese: { value: boolean; onChange: (next: boolean) => void } | null;
+  sources: Sources;
+  onSelectSource: (source: SourceName) => void;
   onChange: (patch: PreferencesPatch) => void;
   onOpenSpotifySetup: () => void;
   onClose: () => void;
@@ -49,6 +56,8 @@ export function SettingsModal({
           border: "1px solid var(--color-fg-dim)",
           borderRadius: 12,
           width: "min(420px, 90vw)",
+          maxHeight: "90vh",
+          overflowY: "auto",
           padding: "1.5rem",
         }}
       >
@@ -63,6 +72,59 @@ export function SettingsModal({
           </button>
         </div>
 
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem", padding: "0.75rem 0" }}>
+          <span style={{ color: "var(--color-fg)", fontSize: "1rem" }}>{ts.nowPlayingFrom}</span>
+          <div role="radiogroup" aria-label={ts.nowPlayingFrom} style={{ display: "flex", border: "1px solid var(--color-fg-dim)", borderRadius: 999, overflow: "hidden", flexShrink: 0 }}>
+            {(["spotify", "feed"] as const).map((value) => {
+              const ready = value === "spotify" ? sources.spotify_connected : sources.feed_enabled;
+              const on = sources.effective === value;
+              return (
+                <button
+                  key={value}
+                  role="radio"
+                  aria-checked={on}
+                  onClick={() => {
+                    if (ready) onSelectSource(value);
+                    else if (value === "feed") navigate("/feed");
+                    else onOpenSpotifySetup();
+                  }}
+                  style={{
+                    background: on ? "var(--color-fg)" : "transparent",
+                    color: on ? "var(--color-bg)" : ready ? "var(--color-fg)" : "var(--color-fg-dim)",
+                    border: "none",
+                    padding: "0.4rem 0.8rem",
+                    fontFamily: "inherit",
+                    fontSize: "0.85rem",
+                    cursor: "pointer",
+                  }}
+                >
+                  {ts.sourceNames[value]}
+                  {ready ? "" : ` (${ts.notSetUp})`}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+        <label style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem", padding: "0.5rem 0" }}>
+          <span style={{ color: "var(--color-fg)", fontSize: "1rem" }}>
+            {ts.syncOffset}
+            <span style={{ display: "block", color: "var(--color-fg-dim)", fontSize: "0.8rem" }}>
+              {preferences.sync_offset_ms === 0
+                ? ts.syncOn
+                : fill(preferences.sync_offset_ms > 0 ? ts.syncEarlier : ts.syncLater, { s: String(Math.abs(preferences.sync_offset_ms) / 1000) })}
+            </span>
+          </span>
+          <input
+            type="range"
+            min={-3000}
+            max={3000}
+            step={250}
+            value={preferences.sync_offset_ms}
+            onChange={(e) => onChange({ sync_offset_ms: Number(e.target.value) })}
+            aria-label={ts.syncOffset}
+            style={{ width: "45%" }}
+          />
+        </label>
         <Toggle
           label={ts.showTranslation}
           checked={preferences.show_translation}
@@ -137,6 +199,9 @@ export function SettingsModal({
           <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
             <Button variant="secondary" onClick={onOpenSpotifySetup}>
               {ts.spotifyApp}
+            </Button>
+            <Button variant="secondary" onClick={() => navigate("/feed")}>
+              {ts.feedSettings}
             </Button>
             {user.role === "admin" ? (
               <Button variant="secondary" onClick={() => window.location.assign("/admin")}>

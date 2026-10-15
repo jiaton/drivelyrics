@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://drivelyrics.com/docs/feed/v1/event.schema.json",
+  "$defs": {
+    "FetchEvent": {
+      "description": "Read the player once and push the result.",
+      "properties": {
+        "type": {
+          "const": "fetch",
+          "default": "fetch",
+          "title": "Type",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "reason": {
+          "description": "Informational; treat every fetch the same. New reasons may be added within v1.",
+          "enum": [
+            "opened",
+            "track_ending",
+            "skip_check",
+            "paused_check",
+            "refresh",
+            "retry"
+          ],
+          "title": "Reason",
+          "type": "string"
+        },
+        "at": {
+          "description": "Unix ms.",
+          "title": "At",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "reason",
+        "at"
+      ],
+      "title": "FetchEvent",
+      "type": "object"
+    },
+    "PingEvent": {
+      "description": "Sent by the \"Test\" button in settings; needs no answer.",
+      "properties": {
+        "type": {
+          "const": "ping",
+          "default": "ping",
+          "title": "Type",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "at": {
+          "title": "At",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "at"
+      ],
+      "title": "PingEvent",
+      "type": "object"
+    },
+    "StopEvent": {
+      "description": "No screen is open any more: no fetches until the next \"opened\".",
+      "properties": {
+        "type": {
+          "const": "stop",
+          "default": "stop",
+          "title": "Type",
+          "type": "string"
+        },
+        "at": {
+          "title": "At",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "at"
+      ],
+      "title": "StopEvent",
+      "type": "object"
+    }
+  },
+  "description": "One event, on the event stream (GET /api/feed/v1/events) or as a webhook body.",
+  "discriminator": {
+    "mapping": {
+      "fetch": "#/$defs/FetchEvent",
+      "ping": "#/$defs/PingEvent",
+      "stop": "#/$defs/StopEvent"
+    },
+    "propertyName": "type"
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/FetchEvent"
+    },
+    {
+      "$ref": "#/$defs/StopEvent"
+    },
+    {
+      "$ref": "#/$defs/PingEvent"
+    }
+  ],
+  "title": "FeedEvent"
+}

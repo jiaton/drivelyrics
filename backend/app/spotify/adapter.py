@@ -3,7 +3,8 @@ from urllib.parse import urlencode
 
 import httpx
 
-from app.spotify.ports import NowPlaying, SpotifyAuthError, SpotifyClientPort, SpotifyCredentials, TokenBundle
+from app.core.nowplaying import NowPlaying
+from app.spotify.ports import SpotifyAuthError, SpotifyClientPort, SpotifyCredentials, TokenBundle
 
 AUTHORIZE_URL = "https://accounts.spotify.com/authorize"
 TOKEN_URL = "https://accounts.spotify.com/api/token"

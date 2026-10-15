@@ -557,25 +557,6 @@
         }
       }
     },
-    "/api/spotify/now-playing/stream": {
-      "get": {
-        "tags": [
-          "spotify"
-        ],
-        "summary": "Now Playing Stream",
-        "operationId": "now_playing_stream_api_spotify_now_playing_stream_get",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/lyrics": {
       "get": {
         "tags": [
@@ -1011,6 +992,519 @@
         }
       }
     },
+    "/api/feed/v1/now-playing": {
+      "post": {
+        "tags": [
+          "feed"
+        ],
+        "summary": "Push",
+        "operationId": "push_api_feed_v1_now_playing_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FeedPush"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedPushAck"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/feed/v1/events": {
+      "get": {
+        "tags": [
+          "feed"
+        ],
+        "summary": "Events",
+        "operationId": "events_api_feed_v1_events_get",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/feed/status": {
+      "get": {
+        "tags": [
+          "feed"
+        ],
+        "summary": "Status",
+        "operationId": "status_api_feed_status_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedStatusResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/feed/tokens": {
+      "get": {
+        "tags": [
+          "feed"
+        ],
+        "summary": "List Tokens",
+        "operationId": "list_tokens_api_feed_tokens_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedTokenList"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "feed"
+        ],
+        "summary": "Create Token",
+        "operationId": "create_token_api_feed_tokens_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FeedTokenCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedTokenCreated"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/feed/tokens/{token_id}": {
+      "delete": {
+        "tags": [
+          "feed"
+        ],
+        "summary": "Revoke Token",
+        "operationId": "revoke_token_api_feed_tokens__token_id__delete",
+        "parameters": [
+          {
+            "name": "token_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Token Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/feed/settings": {
+      "get": {
+        "tags": [
+          "feed"
+        ],
+        "summary": "Get Settings",
+        "operationId": "get_settings_api_feed_settings_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedSettingsResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "feed"
+        ],
+        "summary": "Put Settings",
+        "operationId": "put_settings_api_feed_settings_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FeedSettingsUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedSettingsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/feed/webhook": {
+      "put": {
+        "tags": [
+          "feed"
+        ],
+        "summary": "Put Webhook",
+        "operationId": "put_webhook_api_feed_webhook_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookSaved"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "feed"
+        ],
+        "summary": "Delete Webhook",
+        "operationId": "delete_webhook_api_feed_webhook_delete",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/feed/webhook/secret": {
+      "post": {
+        "tags": [
+          "feed"
+        ],
+        "summary": "Rotate Secret",
+        "operationId": "rotate_secret_api_feed_webhook_secret_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookSecret"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/feed/webhook/test": {
+      "post": {
+        "tags": [
+          "feed"
+        ],
+        "summary": "Test Webhook",
+        "operationId": "test_webhook_api_feed_webhook_test_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/feed/refresh": {
+      "post": {
+        "tags": [
+          "feed"
+        ],
+        "summary": "Refresh",
+        "operationId": "refresh_api_feed_refresh_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/now-playing/sources": {
+      "get": {
+        "tags": [
+          "now-playing"
+        ],
+        "summary": "Get Sources",
+        "operationId": "get_sources_api_now_playing_sources_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SourcesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/now-playing/source": {
+      "put": {
+        "tags": [
+          "now-playing"
+        ],
+        "summary": "Put Source",
+        "operationId": "put_source_api_now_playing_source_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SourceUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SourcesResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/now-playing/stream": {
+      "get": {
+        "tags": [
+          "now-playing"
+        ],
+        "summary": "Now Playing Stream",
+        "operationId": "now_playing_stream_api_now_playing_stream_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
     "/health": {
       "get": {
         "summary": "Health",
@@ -1216,6 +1710,24 @@
         ],
         "title": "ChoiceRequest"
       },
+      "DeliveryResult": {
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "title": "Ok"
+          },
+          "detail": {
+            "type": "string",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "required": [
+          "ok",
+          "detail"
+        ],
+        "title": "DeliveryResult"
+      },
       "DevLoginRequest": {
         "properties": {
           "email": {
@@ -1228,6 +1740,482 @@
           "email"
         ],
         "title": "DevLoginRequest"
+      },
+      "EventLog": {
+        "properties": {
+          "at": {
+            "type": "number",
+            "title": "At"
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason"
+          },
+          "delivered": {
+            "type": "boolean",
+            "title": "Delivered"
+          }
+        },
+        "type": "object",
+        "required": [
+          "at",
+          "reason",
+          "delivered"
+        ],
+        "title": "EventLog"
+      },
+      "FeedPush": {
+        "properties": {
+          "playing": {
+            "type": "boolean",
+            "title": "Playing"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 300
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title",
+            "description": "Required while playing."
+          },
+          "artist": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 300
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Artist"
+          },
+          "album": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 300
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Album"
+          },
+          "duration_ms": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 86400000.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration Ms",
+            "description": "Strongly recommended: lets DriveLyrics ask for the next track right after this one ends."
+          },
+          "position_ms": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 86400000.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Position Ms",
+            "description": "Playback position; omitted on a new track = 0."
+          },
+          "source": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 40
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source",
+            "description": "Shown to the user only, e.g. \"Spotify\", \"Bluetooth\"."
+          },
+          "measured_at": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Measured At",
+            "description": "Unix ms when position_ms was read; ignored when more than 5 minutes off the server clock."
+          },
+          "fetch_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 64
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fetch Id",
+            "description": "The id of the fetch event this answers, if any."
+          }
+        },
+        "type": "object",
+        "required": [
+          "playing"
+        ],
+        "title": "FeedPush",
+        "description": "What is playing right now, pushed by the user's side (POST /api/feed/v1/now-playing)."
+      },
+      "FeedPushAck": {
+        "properties": {
+          "watching": {
+            "type": "boolean",
+            "title": "Watching",
+            "description": "A DriveLyrics screen of this user is open."
+          },
+          "next_fetch_in_ms": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Fetch In Ms",
+            "description": "When DriveLyrics would next ask for an update; null = no update needed."
+          }
+        },
+        "type": "object",
+        "required": [
+          "watching",
+          "next_fetch_in_ms"
+        ],
+        "title": "FeedPushAck",
+        "description": "For clients that don't listen to events: when to push next, if at all."
+      },
+      "FeedSettingsResponse": {
+        "properties": {
+          "skip_check_s": {
+            "type": "integer",
+            "enum": [
+              0,
+              30,
+              60
+            ],
+            "title": "Skip Check S"
+          },
+          "paused_check_s": {
+            "type": "integer",
+            "enum": [
+              0,
+              60,
+              120
+            ],
+            "title": "Paused Check S"
+          },
+          "monthly_budget": {
+            "type": "integer",
+            "title": "Monthly Budget"
+          },
+          "hourly_cap": {
+            "type": "integer",
+            "title": "Hourly Cap"
+          },
+          "webhook_url": {
+            "type": "string",
+            "title": "Webhook Url"
+          },
+          "webhook_paused": {
+            "type": "boolean",
+            "title": "Webhook Paused"
+          }
+        },
+        "type": "object",
+        "required": [
+          "skip_check_s",
+          "paused_check_s",
+          "monthly_budget",
+          "hourly_cap",
+          "webhook_url",
+          "webhook_paused"
+        ],
+        "title": "FeedSettingsResponse"
+      },
+      "FeedSettingsUpdate": {
+        "properties": {
+          "skip_check_s": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "enum": [
+                  0,
+                  30,
+                  60
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Skip Check S"
+          },
+          "paused_check_s": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "enum": [
+                  0,
+                  60,
+                  120
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Paused Check S"
+          },
+          "monthly_budget": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 100000.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Monthly Budget"
+          },
+          "hourly_cap": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 600.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hourly Cap"
+          }
+        },
+        "type": "object",
+        "title": "FeedSettingsUpdate"
+      },
+      "FeedStatusResponse": {
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "title": "Enabled"
+          },
+          "watching": {
+            "type": "boolean",
+            "title": "Watching"
+          },
+          "receivers": {
+            "type": "integer",
+            "title": "Receivers"
+          },
+          "webhook": {
+            "type": "string",
+            "enum": [
+              "off",
+              "ok",
+              "failing",
+              "paused",
+              "unused"
+            ],
+            "title": "Webhook"
+          },
+          "webhook_detail": {
+            "type": "string",
+            "title": "Webhook Detail"
+          },
+          "last_event": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EventLog"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "last_push": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PushLog"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "not_responding": {
+            "type": "boolean",
+            "title": "Not Responding"
+          },
+          "blocked": {
+            "type": "string",
+            "enum": [
+              "",
+              "hourly",
+              "monthly"
+            ],
+            "title": "Blocked"
+          },
+          "month": {
+            "type": "string",
+            "title": "Month"
+          },
+          "month_fetches": {
+            "type": "integer",
+            "title": "Month Fetches"
+          },
+          "monthly_budget": {
+            "type": "integer",
+            "title": "Monthly Budget"
+          },
+          "hour_fetches": {
+            "type": "integer",
+            "title": "Hour Fetches"
+          },
+          "hourly_cap": {
+            "type": "integer",
+            "title": "Hourly Cap"
+          },
+          "stopped": {
+            "type": "string",
+            "title": "Stopped"
+          }
+        },
+        "type": "object",
+        "required": [
+          "enabled",
+          "watching",
+          "receivers",
+          "webhook",
+          "webhook_detail",
+          "last_event",
+          "last_push",
+          "not_responding",
+          "blocked",
+          "month",
+          "month_fetches",
+          "monthly_budget",
+          "hour_fetches",
+          "hourly_cap",
+          "stopped"
+        ],
+        "title": "FeedStatusResponse"
+      },
+      "FeedTokenCreate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 40,
+            "minLength": 1,
+            "title": "Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "FeedTokenCreate"
+      },
+      "FeedTokenCreated": {
+        "properties": {
+          "token": {
+            "type": "string",
+            "title": "Token"
+          },
+          "info": {
+            "$ref": "#/components/schemas/FeedTokenInfo"
+          }
+        },
+        "type": "object",
+        "required": [
+          "token",
+          "info"
+        ],
+        "title": "FeedTokenCreated"
+      },
+      "FeedTokenInfo": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "prefix": {
+            "type": "string",
+            "title": "Prefix"
+          },
+          "created_at": {
+            "type": "number",
+            "title": "Created At"
+          },
+          "last_used_at": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Used At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "prefix",
+          "created_at",
+          "last_used_at"
+        ],
+        "title": "FeedTokenInfo"
+      },
+      "FeedTokenList": {
+        "properties": {
+          "tokens": {
+            "items": {
+              "$ref": "#/components/schemas/FeedTokenInfo"
+            },
+            "type": "array",
+            "title": "Tokens"
+          }
+        },
+        "type": "object",
+        "required": [
+          "tokens"
+        ],
+        "title": "FeedTokenList"
       },
       "HTTPValidationError": {
         "properties": {
@@ -1461,6 +2449,10 @@
           "show_jyutping": {
             "type": "boolean",
             "title": "Show Jyutping"
+          },
+          "sync_offset_ms": {
+            "type": "integer",
+            "title": "Sync Offset Ms"
           }
         },
         "type": "object",
@@ -1469,7 +2461,8 @@
           "show_album_art",
           "keep_screen_awake",
           "lyrics_source",
-          "show_jyutping"
+          "show_jyutping",
+          "sync_offset_ms"
         ],
         "title": "PreferencesResponse"
       },
@@ -1534,11 +2527,89 @@
               }
             ],
             "title": "Show Jyutping"
+          },
+          "sync_offset_ms": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 3000.0,
+                "minimum": -3000.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sync Offset Ms"
           }
         },
         "type": "object",
         "title": "PreferencesUpdate",
         "description": "All fields optional — PATCH-style partial update. `None` means \"leave as is\",\nwhich is why these can't just reuse PreferencesResponse's non-optional fields."
+      },
+      "PushLog": {
+        "properties": {
+          "at": {
+            "type": "number",
+            "title": "At"
+          },
+          "playing": {
+            "type": "boolean",
+            "title": "Playing"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "artist": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Artist"
+          },
+          "source": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source"
+          }
+        },
+        "type": "object",
+        "required": [
+          "at",
+          "playing",
+          "title",
+          "artist",
+          "source"
+        ],
+        "title": "PushLog"
+      },
+      "RefreshRequest": {
+        "properties": {
+          "confirm_over_budget": {
+            "type": "boolean",
+            "title": "Confirm Over Budget",
+            "default": false
+          }
+        },
+        "type": "object",
+        "title": "RefreshRequest"
       },
       "SearchHit": {
         "properties": {
@@ -1643,6 +2714,66 @@
           "marked_wrong"
         ],
         "title": "SourceStats"
+      },
+      "SourceUpdate": {
+        "properties": {
+          "source": {
+            "type": "string",
+            "enum": [
+              "spotify",
+              "feed"
+            ],
+            "title": "Source"
+          }
+        },
+        "type": "object",
+        "required": [
+          "source"
+        ],
+        "title": "SourceUpdate"
+      },
+      "SourcesResponse": {
+        "properties": {
+          "selected": {
+            "type": "string",
+            "enum": [
+              "spotify",
+              "feed"
+            ],
+            "title": "Selected"
+          },
+          "effective": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "spotify",
+                  "feed"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Effective"
+          },
+          "spotify_connected": {
+            "type": "boolean",
+            "title": "Spotify Connected"
+          },
+          "feed_enabled": {
+            "type": "boolean",
+            "title": "Feed Enabled"
+          }
+        },
+        "type": "object",
+        "required": [
+          "selected",
+          "effective",
+          "spotify_connected",
+          "feed_enabled"
+        ],
+        "title": "SourcesResponse"
       },
       "SpotifyAppRequest": {
         "properties": {
@@ -1967,6 +3098,59 @@
         ],
         "title": "ValidationError"
       },
+      "WebhookSaved": {
+        "properties": {
+          "url": {
+            "type": "string",
+            "title": "Url"
+          },
+          "secret": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Secret"
+          }
+        },
+        "type": "object",
+        "required": [
+          "url",
+          "secret"
+        ],
+        "title": "WebhookSaved"
+      },
+      "WebhookSecret": {
+        "properties": {
+          "secret": {
+            "type": "string",
+            "title": "Secret"
+          }
+        },
+        "type": "object",
+        "required": [
+          "secret"
+        ],
+        "title": "WebhookSecret"
+      },
+      "WebhookUpdate": {
+        "properties": {
+          "url": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 8,
+            "title": "Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "title": "WebhookUpdate"
+      },
       "NowPlayingResponse": {
         "properties": {
           "is_playing": {
@@ -2042,6 +3226,15 @@
           "fetched_at": {
             "title": "Fetched At",
             "type": "number"
+          },
+          "source": {
+            "default": "spotify",
+            "enum": [
+              "spotify",
+              "feed"
+            ],
+            "title": "Source",
+            "type": "string"
           }
         },
         "required": [
@@ -2056,6 +3249,114 @@
         ],
         "title": "NowPlayingResponse",
         "type": "object"
+      },
+      "FetchEvent": {
+        "description": "Read the player once and push the result.",
+        "properties": {
+          "type": {
+            "const": "fetch",
+            "default": "fetch",
+            "title": "Type",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "reason": {
+            "description": "Informational; treat every fetch the same. New reasons may be added within v1.",
+            "enum": [
+              "opened",
+              "track_ending",
+              "skip_check",
+              "paused_check",
+              "refresh",
+              "retry"
+            ],
+            "title": "Reason",
+            "type": "string"
+          },
+          "at": {
+            "description": "Unix ms.",
+            "title": "At",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "reason",
+          "at"
+        ],
+        "title": "FetchEvent",
+        "type": "object"
+      },
+      "PingEvent": {
+        "description": "Sent by the \"Test\" button in settings; needs no answer.",
+        "properties": {
+          "type": {
+            "const": "ping",
+            "default": "ping",
+            "title": "Type",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "at": {
+            "title": "At",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "at"
+        ],
+        "title": "PingEvent",
+        "type": "object"
+      },
+      "StopEvent": {
+        "description": "No screen is open any more: no fetches until the next \"opened\".",
+        "properties": {
+          "type": {
+            "const": "stop",
+            "default": "stop",
+            "title": "Type",
+            "type": "string"
+          },
+          "at": {
+            "title": "At",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "at"
+        ],
+        "title": "StopEvent",
+        "type": "object"
+      },
+      "FeedEvent": {
+        "description": "One event, on the event stream (GET /api/feed/v1/events) or as a webhook body.",
+        "discriminator": {
+          "mapping": {
+            "fetch": "#/components/schemas/FetchEvent",
+            "ping": "#/components/schemas/PingEvent",
+            "stop": "#/components/schemas/StopEvent"
+          },
+          "propertyName": "type"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/FetchEvent"
+          },
+          {
+            "$ref": "#/components/schemas/StopEvent"
+          },
+          {
+            "$ref": "#/components/schemas/PingEvent"
+          }
+        ],
+        "title": "FeedEvent"
       }
     }
   }

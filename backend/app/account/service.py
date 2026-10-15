@@ -4,13 +4,18 @@ only the order of those calls (rows referencing users.id before the user itself)
 from sqlmodel import Session
 
 from app.auth.service import delete_user
+from app.feed.service import FeedRegistry
+from app.feed.store import FeedStore
 from app.lyrics.service import forget_user
 from app.preferences.service import delete_preferences
 from app.spotify.service import PollerRegistry, SpotifyAccounts
 
 
-def delete_account(db: Session, user_id: int, accounts: SpotifyAccounts, pollers: PollerRegistry) -> None:
+def delete_account(
+    db: Session, user_id: int, accounts: SpotifyAccounts, pollers: PollerRegistry, feed_store: FeedStore, feeds: FeedRegistry
+) -> None:
     pollers.restart(user_id)  # stop polling Spotify for them; open screens reconnect and get 401
+    feeds.forget(user_id)  # stop the feed's scheduler and drop what they pushed
     # `db` already holds a read snapshot (it looked the user up). SQLite in WAL mode won't
     # let a connection write from a snapshot that another connection has since committed
     # past ("database is locked"), so `db`'s writes go before SpotifyAccounts, which
@@ -19,4 +24,5 @@ def delete_account(db: Session, user_id: int, accounts: SpotifyAccounts, pollers
     delete_preferences(db, user_id)
     db.commit()  # end db's transaction even if delete_preferences found nothing to write
     accounts.remove_app(user_id)  # Spotify app credentials + tokens
+    feed_store.delete_user(user_id)  # feed tokens, settings, usage
     delete_user(db, user_id)

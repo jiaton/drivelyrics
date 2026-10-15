@@ -147,3 +147,20 @@ PRAGMA user_version = 4;
     with engine.connect() as c:
         assert [tuple(r) for r in c.execute(text("SELECT user_id, spotify_track_id, cantonese FROM cantonesevote"))] == [(1, "t1", 1)]
         assert "trackcantonese" not in {r[0] for r in c.execute(text("SELECT name FROM sqlite_master WHERE type='table'"))}
+
+
+def test_v6_adds_source_and_offset_preferences(tmp_path):
+    path = tmp_path / "v5.db"
+    conn = sqlite3.connect(path)
+    conn.executescript("""
+CREATE TABLE userpreferences (user_id INTEGER PRIMARY KEY, show_translation BOOLEAN NOT NULL, show_album_art BOOLEAN NOT NULL, keep_screen_awake BOOLEAN NOT NULL, lyrics_source VARCHAR NOT NULL DEFAULT 'auto', show_jyutping BOOLEAN NOT NULL DEFAULT 0);
+INSERT INTO userpreferences VALUES (1, 1, 1, 1, 'auto', 0);
+PRAGMA user_version = 5;
+""")
+    conn.close()
+    engine = create_engine(f"sqlite:///{path}")
+    migrations.migrate(engine)
+    with engine.connect() as c:
+        assert tuple(c.execute(text("SELECT now_playing_source, sync_offset_ms FROM userpreferences")).one()) == ("spotify", 0)
+        tables = {r[0] for r in c.execute(text("SELECT name FROM sqlite_master WHERE type='table'"))}
+        assert {"feedtoken", "feedsettings", "feedusage"} <= tables

@@ -5,10 +5,12 @@ import { Privacy } from "./features/landing/components/Privacy";
 import { PairApprove } from "./features/auth/components/PairApprove";
 import { useMe } from "./features/auth/api/useMe";
 import { useSpotifyStatus } from "./features/spotify-setup/api/useSpotifyStatus";
+import { useSources } from "./features/now-playing/api/useSources";
+import { FeedSettingsPage } from "./features/feed/components/FeedSettingsPage";
 import { SpotifySetup } from "./features/spotify-setup/components/SpotifySetup";
 import { AdminStats } from "./features/admin/components/AdminStats";
 import { SearchScreen } from "./features/search/components/SearchScreen";
-import { useLocation } from "./lib/nav";
+import { navigate, useLocation } from "./lib/nav";
 import { LoadingSpinner } from "./components/ui/LoadingSpinner";
 import { ErrorState } from "./components/ui/ErrorState";
 import type { User } from "./features/auth/types";
@@ -17,8 +19,18 @@ import { useI18n } from "./i18n";
 function SignedInApp({ user, lyricsSources }: { user: User; lyricsSources: string[] }) {
   const { t } = useI18n();
   const { status, error, refresh, saveApp, removeApp } = useSpotifyStatus();
+  const { sources, error: sourcesError, refresh: refreshSources, select: selectSource } = useSources();
   const [setupOpen, setSetupOpen] = useState(false);
   const openSetup = useCallback(() => setSetupOpen(true), []);
+  // The Spotify link died, or an app was removed: what screens can show may have changed.
+  const refreshAll = useCallback(() => {
+    refresh();
+    refreshSources();
+  }, [refresh, refreshSources]);
+  const removeAppAndRefresh = useCallback(async () => {
+    await removeApp();
+    refreshSources();
+  }, [removeApp, refreshSources]);
 
   // Back from Spotify's consent screen (?spotify=connected): drop the query string.
   useEffect(() => {
@@ -27,12 +39,34 @@ function SignedInApp({ user, lyricsSources }: { user: User; lyricsSources: strin
     }
   }, []);
 
-  if (error) return <ErrorState message={t.app.backendDown} />;
-  if (!status) return <LoadingSpinner />;
-  if (!status.connected || setupOpen) {
-    return <SpotifySetup user={user} status={status} saveApp={saveApp} removeApp={removeApp} onDone={status.connected ? () => setSetupOpen(false) : undefined} />;
+  if (error || sourcesError) return <ErrorState message={t.app.backendDown} />;
+  if (!status || !sources) return <LoadingSpinner />;
+  if (window.location.pathname === "/feed") {
+    return <FeedSettingsPage sources={sources} onSourcesChanged={refreshSources} selectSource={selectSource} />;
   }
-  return <NowPlayingScreen user={user} lyricsSources={lyricsSources} onSpotifyDisconnected={refresh} onOpenSpotifySetup={openSetup} />;
+  // Spotify or the now-playing feed: either one is enough to show lyrics.
+  if (sources.effective === null || setupOpen) {
+    return (
+      <SpotifySetup
+        user={user}
+        status={status}
+        saveApp={saveApp}
+        removeApp={removeAppAndRefresh}
+        onDone={sources.effective !== null ? () => setSetupOpen(false) : undefined}
+        onUseFeed={() => navigate("/feed")}
+      />
+    );
+  }
+  return (
+    <NowPlayingScreen
+      user={user}
+      lyricsSources={lyricsSources}
+      sources={sources}
+      selectSource={selectSource}
+      onSpotifyDisconnected={refreshAll}
+      onOpenSpotifySetup={openSetup}
+    />
+  );
 }
 
 export default function App() {
