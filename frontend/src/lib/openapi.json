@@ -2818,6 +2818,14 @@
             "type": "boolean",
             "title": "Exact",
             "default": false
+          },
+          "alternatives": {
+            "items": {
+              "$ref": "#/components/schemas/RecognizedAlternative"
+            },
+            "type": "array",
+            "title": "Alternatives",
+            "default": []
           }
         },
         "type": "object",
@@ -2825,6 +2833,29 @@
           "matched"
         ],
         "title": "RecognizeResponse"
+      },
+      "RecognizedAlternative": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "artist": {
+            "type": "string",
+            "title": "Artist"
+          },
+          "track_id": {
+            "type": "string",
+            "title": "Track Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "title",
+          "artist",
+          "track_id"
+        ],
+        "title": "RecognizedAlternative"
       },
       "RecognizerKeyStatus": {
         "properties": {

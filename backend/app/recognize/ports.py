@@ -1,5 +1,11 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Protocol
+
+
+@dataclass
+class Alternative:
+    title: str
+    artist: str
 
 
 @dataclass
@@ -11,6 +17,10 @@ class Recognition:
     spotify_id: str | None
     position_ms: int  # song position at the start of the recording
     exact: bool
+    # Other releases the same audio matched. The same recording is often re-released
+    # under another title (a Vietnamese-titled upload of 最美的期待, 2026-10-18), and the
+    # first match isn't always the one with lyrics.
+    alternatives: list[Alternative] = field(default_factory=list)
 
 
 class RecognizerKeyRejected(Exception):

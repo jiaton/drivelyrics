@@ -1083,6 +1083,20 @@ export interface components {
              * @default false
              */
             exact: boolean;
+            /**
+             * Alternatives
+             * @default []
+             */
+            alternatives: components["schemas"]["RecognizedAlternative"][];
+        };
+        /** RecognizedAlternative */
+        RecognizedAlternative: {
+            /** Title */
+            title: string;
+            /** Artist */
+            artist: string;
+            /** Track Id */
+            track_id: string;
         };
         /** RecognizerKeyStatus */
         RecognizerKeyStatus: {

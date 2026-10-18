@@ -10,7 +10,7 @@ import { LyricsView } from "../../now-playing/components/LyricsView";
 import { useWakeLock } from "../../now-playing/hooks/useWakeLock";
 import type { ClientNowPlaying, LyricLine, TrackRef } from "../../now-playing/types";
 import { usePreferences } from "../../preferences/api/usePreferences";
-import { listenApi, type KeyStatus, type Recognized } from "../api/listenApi";
+import { candidatesOf, firstWithLyrics, listenApi, trackOf, type KeyStatus, type Recognized } from "../api/listenApi";
 import { clockFrom, nextListenAt, positionAt, setPosition } from "../lib/clock";
 import { MicRecorder } from "../lib/recorder";
 import { ListenKeySetup } from "./ListenKeySetup";
@@ -39,6 +39,8 @@ export function ListenScreen() {
   const [activity, setActivity] = useState<Activity>(null);
   const [note, setNote] = useState<string | null>(null);
   const [match, setMatch] = useState<Recognized | null>(null);
+  const [chosen, setChosen] = useState(0); // which candidate's lyrics are shown
+  const [picking, setPicking] = useState(false);
   const clockRef = useRef<ClientNowPlaying | null>(null);
   const recorder = useRef(new MicRecorder());
   const nextTimer = useRef<number | undefined>(undefined);
@@ -89,7 +91,10 @@ export function ListenScreen() {
           const result = await listenApi.recognize(blob, filename, clipMs);
           if (result.matched) {
             clockRef.current = clockFrom(result, startedAt);
+            setActivity("recognizing");
+            setChosen(await firstWithLyrics(candidatesOf(result), result.duration_ms));
             setMatch(result);
+            setPicking(false);
             setView("following");
             scheduleNext();
             return;
@@ -121,10 +126,9 @@ export function ListenScreen() {
   const nudge = (deltaMs: number) => clockRef.current && moveTo(positionAt(clockRef.current, performance.now()) + deltaMs);
   const lockLine = (line: LyricLine) => moveTo(line.t);
 
-  const track = useMemo<TrackRef | null>(
-    () => (match?.track_id && match.title ? { trackId: match.track_id, title: match.title, artist: match.artist ?? "", durationMs: match.duration_ms ?? null } : null),
-    [match],
-  );
+  const candidates = useMemo(() => (match ? candidatesOf(match) : []), [match]);
+  const current = candidates[chosen] ?? candidates[0];
+  const track = useMemo<TrackRef | null>(() => (current ? trackOf(current, match?.duration_ms) : null), [current, match]);
   const sourceKey = !saved ? "" : saved.lyrics_source === "auto" ? `auto:${saved.show_translation}` : saved.lyrics_source;
   const lyrics = useLyrics(saved ? track : null, sourceKey);
   const lastLine = lyrics.lines.length ? lyrics.lines[lyrics.lines.length - 1].t : null;
@@ -214,11 +218,11 @@ export function ListenScreen() {
     <div className="search-screen">
       <header className="search-header">
         {exit}
-        <span className="search-title">
-          {match?.title} — {match?.artist}
+        <button className="search-title search-link" style={{ textAlign: "left" }} onClick={() => setPicking((v) => !v)}>
+          {current?.title} — {current?.artist} ▾
           {match && !match.exact ? ` · ${tl.estimated}` : ""}
           {status ? ` · ${status}` : ""}
-        </span>
+        </button>
         {lyrics.translationLines.length > 0 ? (
           <button className="search-chip" aria-pressed={preferences.show_translation} onClick={() => updatePreferences({ show_translation: !preferences.show_translation })}>
             {t.app.search.translation}
@@ -239,6 +243,24 @@ export function ListenScreen() {
           {tl.resync}
         </Button>
       </header>
+      {picking || (!lyrics.loading && lyrics.lines.length === 0 && current) ? (
+        <div style={{ padding: "0.25rem 1.5rem 0.75rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+          <span className="search-note" style={{ padding: 0 }}>
+            {lyrics.lines.length === 0 && current ? `${fill(tl.recognizedAs, { title: current.title, artist: current.artist })}. ` : ""}
+            {tl.notThisSong}
+          </span>
+          <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+            {candidates.map((c, i) => (
+              <button key={c.track_id} className="search-chip" aria-pressed={i === chosen} onClick={() => { setChosen(i); setPicking(false); }}>
+                {c.title} — {c.artist}
+              </button>
+            ))}
+            <button className="search-chip" onClick={() => navigate(`/search?${new URLSearchParams({ q: current?.title ?? "" })}`)}>
+              {tl.searchLyrics}
+            </button>
+          </div>
+        </div>
+      ) : null}
       <div className="search-body">
         {lyrics.loading && lyrics.lines.length === 0 ? (
           <LoadingSpinner />

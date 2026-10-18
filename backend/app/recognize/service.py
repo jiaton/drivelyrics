@@ -1,3 +1,4 @@
+import logging
 import time
 from collections import Counter
 
@@ -7,7 +8,9 @@ from app.core.crypto import decrypt, encrypt
 from app.lyrics.matching import text_track_id
 from app.recognize.models import RecognizerKey
 from app.recognize.ports import RecognizerPort
-from app.recognize.schemas import RecognizeResponse, RecognizerKeyStatus
+from app.recognize.schemas import RecognizedAlternative, RecognizeResponse, RecognizerKeyStatus
+
+log = logging.getLogger(__name__)
 
 
 class NoKey(Exception):
@@ -51,6 +54,8 @@ class RecognizeService:
         if found is None:
             return RecognizeResponse(matched=False)
         self.counters["recognize:matches"] += 1
+        # Songs only, never who listened: for diagnosing odd matches.
+        log.info("recognized %r — %r (spotify %s); alternatives %s", found.title, found.artist, bool(found.spotify_id), [(a.title, a.artist) for a in found.alternatives])
         return RecognizeResponse(
             matched=True,
             title=found.title,
@@ -60,4 +65,5 @@ class RecognizeService:
             track_id=found.spotify_id or text_track_id(found.title, found.artist),
             position_ms=found.position_ms,
             exact=found.exact,
+            alternatives=[RecognizedAlternative(title=a.title, artist=a.artist, track_id=text_track_id(a.title, a.artist)) for a in found.alternatives],
         )

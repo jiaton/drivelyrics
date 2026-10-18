@@ -108,3 +108,27 @@ async def test_without_spotify_musicbrainz_and_deezer_fill_in():
     assert (found.title, found.duration_ms, found.spotify_id) == ("七里香", 297200, None)
     deezer_only = {"status": "success", "result": {"artist": "A", "title": "T", "timecode": "00:50", "deezer": {"duration": 200}}}
     assert (await AuddRecognizer(transport(deezer_only, ENTERPRISE)).recognize("k", b"a", "c.webm", 6000)).duration_ms == 200_000
+
+
+async def test_other_releases_of_the_same_audio_come_back_as_alternatives():
+    standard = {"status": "success", "result": {"artist": "Thất Dạ", "title": "Những Kì Vọng Đẹp Nhất", "timecode": "01:10"}}
+    enterprise = {"status": "success", "result": [{"songs": [
+        {"title": "Những Kì Vọng Đẹp Nhất", "artist": "Thất Dạ", "timecode": "01:10", "end_offset": 5000},
+        {"title": "最美的期待", "artist": "周笔畅", "timecode": "01:10", "end_offset": 5000},
+        {"title": "最美的期待", "artist": "周笔畅", "timecode": "01:10", "end_offset": 5000},
+    ]}]}
+    found = await AuddRecognizer(transport(standard, enterprise)).recognize("k", b"a", "c.webm", 6000)
+    assert found.title == "Những Kì Vọng Đẹp Nhất"
+    assert [(a.title, a.artist) for a in found.alternatives] == [("最美的期待", "周笔畅")]  # deduplicated, the chosen one left out
+
+
+def test_alternatives_get_track_ids(app_client, monkeypatch):
+    from app.recognize.ports import Alternative
+
+    found = Recognition("Những Kì Vọng Đẹp Nhất", "Thất Dạ", None, None, None, 1000, True, [Alternative("最美的期待", "周笔畅")])
+    monkeypatch.setattr(routes, "service", RecognizeService(FakeRecognizer(found)))
+    a = app_client()
+    sign_in(a, "recognize-alts@example.com")
+    a.put("/api/recognize/key", json={"token": "0123456789abcdef0123"})
+    body = a.post("/api/recognize", files={"audio": ("c.webm", b"x", "audio/webm")}, data={"clip_ms": 6000}).json()
+    assert body["alternatives"][0]["title"] == "最美的期待" and body["alternatives"][0]["track_id"].startswith("feed:")

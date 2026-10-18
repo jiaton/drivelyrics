@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { clockFrom, nextListenAt, positionAt, setPosition, NEXT_SONG_SLACK_MS } from "./clock";
 
-const match = { matched: true, title: "七里香", artist: "Jay Chou", duration_ms: 297_200, track_id: "x", position_ms: 44_740, exact: true, album: null };
+const match = { matched: true, title: "七里香", artist: "Jay Chou", duration_ms: 297_200, track_id: "x", position_ms: 44_740, exact: true, album: null, alternatives: [] };
 
 describe("listen clock", () => {
   it("counts forward from where the song was when recording started", () => {

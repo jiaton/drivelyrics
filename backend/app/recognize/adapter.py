@@ -16,7 +16,7 @@ import unicodedata
 
 import httpx
 
-from app.recognize.ports import Recognition, RecognizerError, RecognizerKeyRejected, RecognizerPort
+from app.recognize.ports import Alternative, Recognition, RecognizerError, RecognizerKeyRejected, RecognizerPort
 
 STANDARD_URL = "https://api.audd.io/"
 ENTERPRISE_URL = "https://enterprise.audd.io/"
@@ -34,9 +34,12 @@ def _seconds(timecode: str) -> int:
     return total
 
 
+def _key(s: str | None) -> str:
+    return unicodedata.normalize("NFKC", s or "").casefold().strip()
+
+
 def _same(a: str | None, b: str | None) -> bool:
-    fold = lambda s: unicodedata.normalize("NFKC", s or "").casefold().strip()  # noqa: E731
-    return bool(a) and fold(a) == fold(b)
+    return bool(a) and _key(a) == _key(b)
 
 
 class AuddRecognizer(RecognizerPort):
@@ -70,9 +73,8 @@ class AuddRecognizer(RecognizerPort):
         precise = [s for chunk in (enterprise.get("result") or []) for s in chunk.get("songs") or []] if isinstance(enterprise, dict) else []
         if not song and not precise:
             return None
-        if song:  # the enterprise match of the same song, if it made one
-            precise = [s for s in precise if _same(s.get("title"), song.get("title"))] or precise
-        best = precise[0] if precise else None
+        same = [s for s in precise if _same(s.get("title"), song.get("title"))] if song else []
+        best = (same or precise or [None])[0]  # the enterprise match of the same song, if it made one
 
         if best and best.get("timecode") and best.get("end_offset") is not None:
             position_ms, exact = _seconds(best["timecode"]) * 1000 - int(best["end_offset"]), True
@@ -91,4 +93,14 @@ class AuddRecognizer(RecognizerPort):
         artist = ", ".join(a.get("name", "") for a in spotify.get("artists") or []) or identity.get("artist") or ""
         duration = spotify.get("duration_ms") or apple.get("durationInMillis") or brainz.get("length") or ((deezer.get("duration") or 0) * 1000)
         album = (spotify.get("album") or {}).get("name") or identity.get("album")
-        return Recognition(title, artist, album, int(duration) if duration else None, spotify.get("id"), max(0, position_ms), exact)
+        others = [(song or {}).get("title")] + [s.get("title") for s in precise]
+        artists = [(song or {}).get("artist")] + [s.get("artist") for s in precise]
+        alternatives: list[Alternative] = []
+        seen = {(_key(title), _key(artist))}
+        for alt_title, alt_artist in zip(others, artists):
+            if alt_title and (_key(alt_title), _key(alt_artist)) not in seen:
+                seen.add((_key(alt_title), _key(alt_artist)))
+                alternatives.append(Alternative(alt_title, alt_artist or ""))
+        return Recognition(
+            title, artist, album, int(duration) if duration else None, spotify.get("id"), max(0, position_ms), exact, alternatives[:5]
+        )
