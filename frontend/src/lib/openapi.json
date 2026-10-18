@@ -1505,6 +1505,127 @@
         }
       }
     },
+    "/api/recognize/key": {
+      "get": {
+        "tags": [
+          "recognize"
+        ],
+        "summary": "Get Key",
+        "operationId": "get_key_api_recognize_key_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecognizerKeyStatus"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "recognize"
+        ],
+        "summary": "Put Key",
+        "operationId": "put_key_api_recognize_key_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecognizerKeyUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecognizerKeyStatus"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "recognize"
+        ],
+        "summary": "Remove Key",
+        "operationId": "remove_key_api_recognize_key_delete",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/recognize": {
+      "post": {
+        "tags": [
+          "recognize"
+        ],
+        "summary": "Recognize",
+        "description": "A few seconds of sound from the user's microphone → the song and where it was\nwhen the recording started. The audio goes to AudD with the user's own key and is\nnot stored.",
+        "operationId": "recognize_api_recognize_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_recognize_api_recognize_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecognizeResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/health": {
       "get": {
         "summary": "Health",
@@ -1524,6 +1645,27 @@
   },
   "components": {
     "schemas": {
+      "Body_recognize_api_recognize_post": {
+        "properties": {
+          "audio": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "Audio"
+          },
+          "clip_ms": {
+            "type": "integer",
+            "maximum": 20000.0,
+            "minimum": 1000.0,
+            "title": "Clip Ms"
+          }
+        },
+        "type": "object",
+        "required": [
+          "audio",
+          "clip_ms"
+        ],
+        "title": "Body_recognize_api_recognize_post"
+      },
       "CandidateSchema": {
         "properties": {
           "source": {
@@ -2599,6 +2741,123 @@
           "source"
         ],
         "title": "PushLog"
+      },
+      "RecognizeResponse": {
+        "properties": {
+          "matched": {
+            "type": "boolean",
+            "title": "Matched"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "artist": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Artist"
+          },
+          "album": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Album"
+          },
+          "duration_ms": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration Ms"
+          },
+          "track_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Track Id"
+          },
+          "position_ms": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Position Ms"
+          },
+          "exact": {
+            "type": "boolean",
+            "title": "Exact",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "matched"
+        ],
+        "title": "RecognizeResponse"
+      },
+      "RecognizerKeyStatus": {
+        "properties": {
+          "configured": {
+            "type": "boolean",
+            "title": "Configured"
+          },
+          "hint": {
+            "type": "string",
+            "title": "Hint"
+          }
+        },
+        "type": "object",
+        "required": [
+          "configured",
+          "hint"
+        ],
+        "title": "RecognizerKeyStatus"
+      },
+      "RecognizerKeyUpdate": {
+        "properties": {
+          "token": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 16,
+            "title": "Token"
+          }
+        },
+        "type": "object",
+        "required": [
+          "token"
+        ],
+        "title": "RecognizerKeyUpdate"
       },
       "RefreshRequest": {
         "properties": {

@@ -36,6 +36,7 @@ export function LyricsView({
   showJyutping,
   syncOffsetMs = 0,
   nowPlayingRef,
+  onLineTap,
 }: {
   lines: LyricLine[];
   translationLines: LyricLine[];
@@ -44,6 +45,9 @@ export function LyricsView({
   showJyutping: boolean;
   syncOffsetMs?: number; // positive = lines change earlier (preference "Lyrics timing")
   nowPlayingRef?: React.RefObject<ClientNowPlaying | null>;
+  /** Following only: a tap on a line calls this (with the line) instead of snapping back
+   *  to the current line — the listen screen's "the song is here now". */
+  onLineTap?: (line: LyricLine) => void;
 }) {
   const following = nowPlayingRef !== undefined;
   const syncOffsetRef = useRef(syncOffsetMs); // read by the tick; a change needs no restart
@@ -60,6 +64,9 @@ export function LyricsView({
   const dragStartYRef = useRef(0);
   const dragStartOffsetRef = useRef(0);
   const samplesRef = useRef<Sample[]>([]);
+  const tappedLineRef = useRef(-1); // the line under the finger at pointerdown
+  const onLineTapRef = useRef(onLineTap);
+  onLineTapRef.current = onLineTap;
   const glidingUntilRef = useRef(0); // performance.now() at which the current fling ends
   const resetTimerRef = useRef<number | null>(null);
 
@@ -183,6 +190,8 @@ export function LyricsView({
         if (shown && shown !== "none") currentOffsetRef.current = new DOMMatrixReadOnly(shown).m42;
         moveTo(currentOffsetRef.current, "none");
       }
+      const lineEl = (e.target as Element).closest?.(".lyrics-line");
+      tappedLineRef.current = lineEl ? lineElsRef.current.indexOf(lineEl as HTMLDivElement) : -1;
       draggingRef.current = true;
       // A tap that stops a glide is a scroll gesture, not "back to the current line".
       dragMovedRef.current = wasGliding;
@@ -210,7 +219,9 @@ export function LyricsView({
       draggingRef.current = false;
 
       if (!dragMovedRef.current) {
-        if (following) resetToAuto(); // tap — snap back immediately
+        const tapped = lines[tappedLineRef.current];
+        if (following && tapped && onLineTapRef.current) onLineTapRef.current(tapped);
+        if (following) resetToAuto(); // tap — back to following (from the tapped line, if it moved the clock)
         return;
       }
       const { min, max } = bounds();

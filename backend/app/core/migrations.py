@@ -18,6 +18,7 @@ from app.core.crypto import encrypt
 from app.lyrics.models import CantoneseVote, LyricsText, TrackMatch  # noqa: F401
 from app.feed.models import FeedSettings, FeedToken, FeedUsage  # noqa: F401
 from app.preferences.models import UserPreferences  # noqa: F401
+from app.recognize.models import RecognizerKey  # noqa: F401
 from app.spotify.models import SpotifyApp, SpotifyToken  # noqa: F401
 
 

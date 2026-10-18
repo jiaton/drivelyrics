@@ -7,6 +7,7 @@ from app.auth.service import delete_user
 from app.feed.service import FeedRegistry
 from app.feed.store import FeedStore
 from app.lyrics.service import forget_user
+from app.recognize.service import delete_key
 from app.preferences.service import delete_preferences
 from app.spotify.service import PollerRegistry, SpotifyAccounts
 
@@ -21,6 +22,7 @@ def delete_account(
     # past ("database is locked"), so `db`'s writes go before SpotifyAccounts, which
     # commits on its own connection; delete_user then starts a fresh transaction.
     forget_user(db, user_id)
+    delete_key(db, user_id)  # their recognition key
     delete_preferences(db, user_id)
     db.commit()  # end db's transaction even if delete_preferences found nothing to write
     accounts.remove_app(user_id)  # Spotify app credentials + tokens

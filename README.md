@@ -26,6 +26,8 @@ This repository is the same code, for reading and for running your own.
   Assistant (e.g. your car's media player) or any script; DriveLyrics tells your side when to
   read the player, about once per track. It never holds your car's credentials. See
   [docs/feed.md](docs/feed.md).
+- **Listen & sing** (phones): recognise the song playing in the room and follow its lyrics —
+  karaoke without searching. Uses [AudD](https://audd.io) with each user's own token.
 - **Multi-user**: Google sign-in; each user links their own Spotify developer app.
   Spotify secrets and tokens are encrypted at rest.
 - English and Chinese UI.

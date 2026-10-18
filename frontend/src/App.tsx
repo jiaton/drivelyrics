@@ -10,6 +10,7 @@ import { FeedSettingsPage } from "./features/feed/components/FeedSettingsPage";
 import { SpotifySetup } from "./features/spotify-setup/components/SpotifySetup";
 import { AdminStats } from "./features/admin/components/AdminStats";
 import { SearchScreen } from "./features/search/components/SearchScreen";
+import { ListenScreen } from "./features/listen/components/ListenScreen";
 import { navigate, useLocation } from "./lib/nav";
 import { LoadingSpinner } from "./components/ui/LoadingSpinner";
 import { ErrorState } from "./components/ui/ErrorState";
@@ -88,6 +89,7 @@ export default function App() {
   else if (window.location.pathname === "/admin" && me.user.role === "admin") screen = <AdminStats />;
   // Before the Spotify check: searching works without a linked Spotify app.
   else if (window.location.pathname === "/search") screen = <SearchScreen />;
+  else if (window.location.pathname === "/listen") screen = <ListenScreen />;
   else screen = <SignedInApp user={me.user} lyricsSources={me.lyrics_sources} />;
 
   return <div style={{ height: "100vh" }}>{screen}</div>;

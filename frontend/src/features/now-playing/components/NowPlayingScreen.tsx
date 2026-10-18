@@ -148,6 +148,12 @@ export function NowPlayingScreen({
               {t.app.wrongLyrics}
             </button>
           ) : null}
+          <button onClick={() => navigate("/listen")} aria-label={t.app.openListen} title={t.app.openListen} style={{ ...headerButton, display: "flex", padding: 4 }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden>
+              <rect x="9" y="3" width="6" height="11" rx="3" />
+              <path d="M5 11a7 7 0 0 0 14 0M12 18v3" />
+            </svg>
+          </button>
           <button onClick={() => navigate("/search")} aria-label={t.app.openSearch} title={t.app.openSearch} style={{ ...headerButton, display: "flex", padding: 4 }}>
             {/* An SVG, not a glyph: the car browser's fonts may not have one. */}
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden>
@@ -164,9 +170,14 @@ export function NowPlayingScreen({
           {!nowPlaying.track_id ? (
             <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", height: "100%", alignItems: "center", justifyContent: "center", color: "var(--color-fg-dim)", fontSize: "var(--font-size-inactive)" }}>
               {isFeed ? t.app.nothingPlayingFeed : t.app.nothingPlaying}
-              <Button variant="secondary" onClick={() => navigate("/search")}>
-                {t.app.openSearch}
-              </Button>
+              <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", justifyContent: "center" }}>
+                <Button variant="secondary" onClick={() => navigate("/search")}>
+                  {t.app.openSearch}
+                </Button>
+                <Button variant="secondary" onClick={() => navigate("/listen")}>
+                  {t.app.openListen}
+                </Button>
+              </div>
             </div>
           ) : loading && lines.length === 0 ? (
             <LoadingSpinner />

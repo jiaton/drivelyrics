@@ -143,6 +143,9 @@ export function SearchScreen() {
             {ts.submit}
           </Button>
         </form>
+        <button className="search-link" onClick={() => navigate("/listen")}>
+          {t.app.openListen}
+        </button>
         <button className="search-link" onClick={exit}>
           {ts.exit}
         </button>

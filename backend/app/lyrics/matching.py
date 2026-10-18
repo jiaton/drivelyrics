@@ -14,6 +14,7 @@ Why each signal exists (all confirmed against the live cache, 2026-10-03):
   duration (拜新年 (2022) vs 拜新年 (2022) (伴奏), both 199s).
 """
 
+import hashlib
 import re
 import unicodedata
 from dataclasses import dataclass
@@ -183,3 +184,14 @@ def is_acceptable(best: ScoredCandidate) -> bool:
     if best.artist_score > 0:
         return best.duration_score > 0
     return best.title_score == 1.0 and best.duration_score == 1.0
+
+
+def text_track_id(title: str | None, artist: str | None) -> str:
+    """A stable track id for songs known only by title and artist (no Spotify id):
+    pushed by the now-playing feed, or recognized from sound without a Spotify match.
+    The same song in 繁/简, another case or artist order maps to one id, so lyrics
+    matching, picks and Cantonese votes are shared. ("feed:" for history: the feed
+    came first; existing ids must keep their value.)"""
+    artists = sorted(fold(a) for a in split_artists(artist or ""))
+    basis = fold(title or "") + "\x1f" + "\x1e".join(artists)
+    return "feed:" + hashlib.sha1(basis.encode()).hexdigest()[:20]

@@ -16,6 +16,7 @@ from app.feed.routes import router as feed_router
 from app.feed.schemas import FeedEvent, FetchEvent, PingEvent, StopEvent
 from app.lyrics.routes import router as lyrics_router
 from app.nowplaying.routes import router as nowplaying_router
+from app.recognize.routes import router as recognize_router
 from app.preferences.routes import router as preferences_router
 from app.spotify.routes import pollers
 from app.spotify.routes import router as spotify_router
@@ -44,6 +45,7 @@ app.include_router(admin_router)
 app.include_router(account_router)
 app.include_router(feed_router)
 app.include_router(nowplaying_router)
+app.include_router(recognize_router)
 app.openapi = with_stream_schemas(app, [NowPlayingResponse, FeedEvent, FetchEvent, StopEvent, PingEvent])  # type: ignore[method-assign]
 
 

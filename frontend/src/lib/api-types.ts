@@ -634,6 +634,47 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/recognize/key": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Key */
+        get: operations["get_key_api_recognize_key_get"];
+        /** Put Key */
+        put: operations["put_key_api_recognize_key_put"];
+        post?: never;
+        /** Remove Key */
+        delete: operations["remove_key_api_recognize_key_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/recognize": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Recognize
+         * @description A few seconds of sound from the user's microphone → the song and where it was
+         *     when the recording started. The audio goes to AudD with the user's own key and is
+         *     not stored.
+         */
+        post: operations["recognize_api_recognize_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/health": {
         parameters: {
             query?: never;
@@ -655,6 +696,13 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** Body_recognize_api_recognize_post */
+        Body_recognize_api_recognize_post: {
+            /** Audio */
+            audio: string;
+            /** Clip Ms */
+            clip_ms: number;
+        };
         /** CandidateSchema */
         CandidateSchema: {
             /** Source */
@@ -1013,6 +1061,40 @@ export interface components {
             artist: string | null;
             /** Source */
             source: string | null;
+        };
+        /** RecognizeResponse */
+        RecognizeResponse: {
+            /** Matched */
+            matched: boolean;
+            /** Title */
+            title?: string | null;
+            /** Artist */
+            artist?: string | null;
+            /** Album */
+            album?: string | null;
+            /** Duration Ms */
+            duration_ms?: number | null;
+            /** Track Id */
+            track_id?: string | null;
+            /** Position Ms */
+            position_ms?: number | null;
+            /**
+             * Exact
+             * @default false
+             */
+            exact: boolean;
+        };
+        /** RecognizerKeyStatus */
+        RecognizerKeyStatus: {
+            /** Configured */
+            configured: boolean;
+            /** Hint */
+            hint: string;
+        };
+        /** RecognizerKeyUpdate */
+        RecognizerKeyUpdate: {
+            /** Token */
+            token: string;
         };
         /** RefreshRequest */
         RefreshRequest: {
@@ -2407,6 +2489,112 @@ export interface operations {
                 };
                 content: {
                     "application/json": unknown;
+                };
+            };
+        };
+    };
+    get_key_api_recognize_key_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RecognizerKeyStatus"];
+                };
+            };
+        };
+    };
+    put_key_api_recognize_key_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RecognizerKeyUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RecognizerKeyStatus"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    remove_key_api_recognize_key_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OkResponse"];
+                };
+            };
+        };
+    };
+    recognize_api_recognize_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_recognize_api_recognize_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RecognizeResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

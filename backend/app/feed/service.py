@@ -9,7 +9,6 @@ because it crashed, or because the server is shutting down."""
 import asyncio
 import collections
 import contextlib
-import hashlib
 import logging
 import secrets
 import time
@@ -21,7 +20,7 @@ from app.feed.ports import WebhookSenderPort
 from app.feed.schedule import RESPONSE_TIMEOUT_MS, Plan, Track, plan_next
 from app.feed.schemas import EventLog, FeedPush, FeedPushAck, FeedStatusResponse, FetchEvent, FetchReason, PingEvent, PushLog, StopEvent
 from app.feed.store import FeedStore, month_of
-from app.lyrics.matching import fold, split_artists
+from app.lyrics.matching import text_track_id as track_key
 
 log = logging.getLogger(__name__)
 
@@ -52,14 +51,6 @@ class RefreshRefused(Exception):
 
 class TooManyReceivers(Exception):
     pass
-
-
-def track_key(title: str | None, artist: str | None) -> str:
-    """A stable track id for lyrics matching and caching (feed tracks have no Spotify
-    id): the same song pushed in 繁/简, other case or artist order maps to one key."""
-    artists = sorted(fold(a) for a in split_artists(artist or ""))
-    basis = fold(title or "") + "\x1f" + "\x1e".join(artists)
-    return "feed:" + hashlib.sha1(basis.encode()).hexdigest()[:20]
 
 
 def _now_ms() -> float:
