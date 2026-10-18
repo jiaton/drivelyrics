@@ -41,6 +41,9 @@ export function ListenScreen() {
   const [match, setMatch] = useState<Recognized | null>(null);
   const [chosen, setChosen] = useState(0); // which candidate's lyrics are shown
   const [picking, setPicking] = useState(false);
+  // The last unrecognised recording, playable on this device only (never uploaded again):
+  // lets the user hear whether the microphone caught the music at all.
+  const [lastClip, setLastClip] = useState<string | null>(null);
   const clockRef = useRef<ClientNowPlaying | null>(null);
   const recorder = useRef(new MicRecorder());
   const nextTimer = useRef<number | undefined>(undefined);
@@ -89,6 +92,12 @@ export function ListenScreen() {
           const { blob, startedAt, filename } = await recorder.current.record(clipMs);
           setActivity("recognizing");
           const result = await listenApi.recognize(blob, filename, clipMs);
+          if (!result.matched) {
+            setLastClip((old) => {
+              if (old) URL.revokeObjectURL(old);
+              return URL.createObjectURL(blob);
+            });
+          }
           if (result.matched) {
             clockRef.current = clockFrom(result, startedAt);
             setActivity("recognizing");
@@ -205,6 +214,12 @@ export function ListenScreen() {
                 {activity ? status : tl.start}
               </button>
               <p style={{ maxWidth: 420, color: "var(--color-fg-dim)", lineHeight: 1.55, margin: 0 }}>{note ?? tl.hint}</p>
+              {note && lastClip ? (
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.4rem", color: "var(--color-fg-dim)", fontSize: "0.85rem" }}>
+                  {tl.lastClip}
+                  <audio controls src={lastClip} style={{ maxWidth: 320 }} />
+                </div>
+              ) : null}
               <p style={{ maxWidth: 420, color: "var(--color-fg-dim)", fontSize: "0.8rem", lineHeight: 1.5, margin: 0 }}>{tl.privacy}</p>
             </>
           )}

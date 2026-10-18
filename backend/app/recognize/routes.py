@@ -54,7 +54,8 @@ async def recognize(
     if not _limit.allow(user.id):
         raise HTTPException(status_code=429, detail="one recognition every 2 seconds")
     try:
-        return await service.recognize(session, user.id, data, audio.filename or "clip.webm", clip_ms)
+        # Only the owner's (admin's) unmatched clips are kept, for diagnosing recognition.
+        return await service.recognize(session, user.id, data, audio.filename or "clip.webm", clip_ms, keep_failures=user.role == "admin")
     except NoKey:
         raise HTTPException(status_code=409, detail="no recognition key")
     except RecognizerKeyRejected as exc:

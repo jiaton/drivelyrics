@@ -220,6 +220,7 @@ export const en = {
       recognizedAs: "Recognised as {title} — {artist}",
       notThisSong: "Not this song? Pick another match, or search:",
       searchLyrics: "Search lyrics",
+      lastClip: "Hear what was recorded:",
       finding: "Finding lyrics…",
       noLyrics: "No synced lyrics found for this song.",
       unsupported: "This browser can't use a microphone — open DriveLyrics on a phone.",

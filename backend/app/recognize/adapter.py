@@ -12,11 +12,14 @@ gives both things needed (measured 2026-10-17 on 36 clips):
 Each counts as one request against the user's key."""
 
 import asyncio
+import logging
 import unicodedata
 
 import httpx
 
 from app.recognize.ports import Alternative, Recognition, RecognizerError, RecognizerKeyRejected, RecognizerPort
+
+log = logging.getLogger(__name__)
 
 STANDARD_URL = "https://api.audd.io/"
 ENTERPRISE_URL = "https://enterprise.audd.io/"
@@ -50,6 +53,10 @@ class AuddRecognizer(RecognizerPort):
         resp = await client.post(url, data={"api_token": token, **extra}, files={"file": (filename, audio)})
         resp.raise_for_status()
         body = resp.json()
+        result = body.get("result")
+        hits = len(result) if isinstance(result, list) else int(bool(result))
+        # What AudD said, never the audio: for telling "no match" from "couldn't read it".
+        log.info("audd %s: status=%s error=%s hits=%s", url.split("//")[1].split(".")[0], body.get("status"), (body.get("error") or {}).get("error_code"), hits)
         if body.get("status") == "error":
             error = body.get("error") or {}
             if error.get("error_code") in _KEY_ERRORS:

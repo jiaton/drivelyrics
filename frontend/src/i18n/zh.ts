@@ -213,6 +213,7 @@ export const zh: Dictionary = {
       recognizedAs: "识别为：{title} — {artist}",
       notThisSong: "不是这首？换一个识别结果，或者搜索：",
       searchLyrics: "搜索歌词",
+      lastClip: "听听刚才录到了什么：",
       finding: "正在找歌词…",
       noLyrics: "这首歌没有找到逐行歌词。",
       unsupported: "这个浏览器用不了麦克风，请在手机上打开 DriveLyrics。",
