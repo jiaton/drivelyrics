@@ -117,6 +117,7 @@ export const zh: Dictionary = {
   app: {
     backendDown: "连不上服务器",
     loading: "加载中",
+    connecting: "正在连接…",
     openSettings: "打开设置",
     closeSettings: "关闭设置",
     nothingPlaying: "Spotify 上没有在播放",

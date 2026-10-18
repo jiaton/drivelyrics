@@ -40,13 +40,16 @@ function SignedInApp({ user, lyricsSources }: { user: User; lyricsSources: strin
     }
   }, []);
 
-  if (error || sourcesError) return <ErrorState message={t.app.backendDown} />;
-  if (!status || !sources) return <LoadingSpinner />;
+  if (sourcesError && !sources) return <ErrorState message={t.app.backendDown} />;
+  if (!sources) return <LoadingSpinner />;
   if (window.location.pathname === "/feed") {
     return <FeedSettingsPage sources={sources} onSourcesChanged={refreshSources} selectSource={selectSource} />;
   }
   // Spotify or the now-playing feed: either one is enough to show lyrics.
   if (sources.effective === null || setupOpen) {
+    // Only the setup page needs the Spotify status; the lyrics screen doesn't wait for it.
+    if (error) return <ErrorState message={t.app.backendDown} />;
+    if (!status) return <LoadingSpinner />;
     return (
       <SpotifySetup
         user={user}

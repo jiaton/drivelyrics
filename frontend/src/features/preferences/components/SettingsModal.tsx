@@ -1,6 +1,7 @@
 import { Button } from "../../../components/ui/Button";
 import { Toggle } from "../../../components/ui/Toggle";
 import { api } from "../../../lib/api";
+import { clearCache } from "../../../lib/cache";
 import { signOut } from "../../auth/api/useMe";
 import { useI18n } from "../../../i18n";
 import { LanguageSwitch } from "../../landing/components/LanguageSwitch";
@@ -220,7 +221,10 @@ export function SettingsModal({
           <button
             onClick={() => {
               if (window.confirm(ts.deleteConfirm)) {
-                api("/api/account", { method: "DELETE" }).then(() => window.location.assign("/"));
+                api("/api/account", { method: "DELETE" }).then(() => {
+                  clearCache();
+                  window.location.assign("/");
+                });
               }
             }}
             style={{ alignSelf: "flex-start", background: "none", border: "none", padding: 0, color: "var(--color-error)", fontSize: "0.85rem", cursor: "pointer", fontFamily: "inherit" }}

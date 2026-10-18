@@ -90,12 +90,10 @@ export function NowPlayingScreen({
 
   useWakeLock(preferences.keep_screen_awake && !!nowPlaying?.is_playing);
 
-  if (!nowPlaying) {
-    return <LoadingSpinner />;
-  }
-
-  const showAlbumArt = preferences.show_album_art && !!nowPlaying.album_art_url;
-  const isFeed = nowPlaying.source === "feed";
+  // No full-screen wait for the first snapshot: the header and its buttons are usable at
+  // once, and only the lyrics area says it's connecting (a car's network can take seconds).
+  const showAlbumArt = preferences.show_album_art && !!nowPlaying?.album_art_url;
+  const isFeed = (nowPlaying?.source ?? sources.effective) === "feed";
   const refreshButton = isFeed ? (
     <button onClick={() => refreshFeed()} aria-label={t.app.refresh} title={t.app.refresh} style={{ ...headerButton, display: "flex", padding: 4 }}>
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -108,7 +106,7 @@ export function NowPlayingScreen({
   return (
     <div className="now-playing-screen">
       {showAlbumArt ? (
-        <div className="album-art-backdrop" style={{ backgroundImage: `url(${nowPlaying.album_art_url})` }} />
+        <div className="album-art-backdrop" style={{ backgroundImage: `url(${nowPlaying?.album_art_url})` }} />
       ) : null}
 
       <div className="now-playing-content">
@@ -127,20 +125,21 @@ export function NowPlayingScreen({
               width: 8,
               height: 8,
               borderRadius: "50%",
-              background: status === "open" ? "var(--color-accent)" : "var(--color-error)",
+              // green connected, grey still connecting, red lost (EventSource retries on its own)
+              background: status === "open" ? "var(--color-accent)" : status === "connecting" ? "var(--color-fg-dim)" : "var(--color-error)",
               flexShrink: 0,
             }}
           />
           {showAlbumArt ? (
-            <img src={nowPlaying.album_art_url!} alt="" width={28} height={28} style={{ borderRadius: 4, flexShrink: 0 }} />
+            <img src={nowPlaying?.album_art_url ?? ""} alt="" width={28} height={28} style={{ borderRadius: 4, flexShrink: 0 }} />
           ) : null}
           {sources.spotify_connected && sources.feed_enabled ? (
             <span style={{ fontSize: "0.7rem", border: "1px solid var(--color-fg-dim)", borderRadius: 999, padding: "0.05rem 0.5rem", flexShrink: 0 }}>
-              {t.app.sourceLabels[nowPlaying.source] ?? nowPlaying.source}
+              {t.app.sourceLabels[nowPlaying?.source ?? sources.effective ?? ""] ?? ""}
             </span>
           ) : null}
           <span style={{ fontSize: "0.9rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>
-            {refreshNote ?? (nowPlaying.track_id ? `${nowPlaying.name} — ${nowPlaying.artist ?? ""}` : "")}
+            {refreshNote ?? (nowPlaying?.track_id ? `${nowPlaying.name} — ${nowPlaying.artist ?? ""}` : "")}
           </span>
           {refreshButton}
           {track && lines.length > 0 ? (
@@ -167,7 +166,11 @@ export function NowPlayingScreen({
         </header>
 
         <div style={{ flex: 1, minHeight: 0 }}>
-          {!nowPlaying.track_id ? (
+          {!nowPlaying ? (
+            <div style={{ display: "flex", height: "100%", alignItems: "center", justifyContent: "center", color: "var(--color-fg-dim)", fontSize: "1rem" }}>
+              {t.app.connecting}
+            </div>
+          ) : !nowPlaying.track_id ? (
             <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", height: "100%", alignItems: "center", justifyContent: "center", color: "var(--color-fg-dim)", fontSize: "var(--font-size-inactive)" }}>
               {isFeed ? t.app.nothingPlayingFeed : t.app.nothingPlaying}
               <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", justifyContent: "center" }}>

@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { api } from "../../../lib/api";
+import { clearCache, readCache, writeCache } from "../../../lib/cache";
 import type { Me } from "../types";
 
 export function useMe() {
-  const [me, setMe] = useState<Me | null>(null);
+  // Last known answer first (drawn at once), then the server's (see lib/cache).
+  const [me, setMe] = useState<Me | null>(() => readCache<Me>("me"));
   const [error, setError] = useState<string | null>(null);
 
   const refresh = useCallback(() => {
@@ -11,6 +13,7 @@ export function useMe() {
       .then((body) => {
         setMe(body);
         setError(null);
+        writeCache("me", body);
       })
       .catch((err: Error) => setError(err.message));
   }, []);
@@ -22,6 +25,7 @@ export function useMe() {
 
 export async function signOut() {
   await api("/api/auth/logout", { method: "POST" });
+  clearCache();
   window.location.assign("/");
 }
 

@@ -124,6 +124,7 @@ export const en = {
   app: {
     backendDown: "Could not reach the server",
     loading: "Loading",
+    connecting: "Connecting…",
     openSettings: "Open settings",
     closeSettings: "Close settings",
     nothingPlaying: "Nothing playing on Spotify",

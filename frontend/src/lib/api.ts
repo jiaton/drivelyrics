@@ -1,3 +1,5 @@
+import { clearCache } from "./cache";
+
 export class ApiError extends Error {
   constructor(
     readonly status: number,
@@ -20,6 +22,7 @@ export async function api<T>(path: string, init?: RequestInit & { json?: unknown
     body: json !== undefined ? JSON.stringify(json) : rest.body,
   });
   if (res.status === 401 && path !== "/api/auth/me") {
+    clearCache(); // a cached "signed in" would bring the reload right back here
     window.location.assign("/");
     throw new ApiError(401, "signed out");
   }
