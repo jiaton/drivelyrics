@@ -118,6 +118,7 @@ export function ListenScreen() {
           setNote(err instanceof Error ? err.message : String(err));
         }
       } finally {
+        recorder.current.close(); // not listening any more: the mic indicator goes off
         busy.current = false;
         setActivity(null);
       }

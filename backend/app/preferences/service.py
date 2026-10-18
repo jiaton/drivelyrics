@@ -1,3 +1,4 @@
+from sqlalchemy.exc import IntegrityError, OperationalError
 from sqlmodel import Session
 
 from app.preferences.models import UserPreferences
@@ -7,10 +8,15 @@ from app.preferences.schemas import PreferencesUpdate
 def get_preferences(session: Session, user_id: int) -> UserPreferences:
     prefs = session.get(UserPreferences, user_id)
     if prefs is None:
-        prefs = UserPreferences(user_id=user_id)
-        session.add(prefs)
-        session.commit()
-        session.refresh(prefs)
+        try:
+            session.add(UserPreferences(user_id=user_id))
+            session.commit()
+        except (IntegrityError, OperationalError):
+            # A concurrent first request created the row (IntegrityError), or committed
+            # after this session's read snapshot so SQLite (WAL) refuses the write
+            # ("database is locked"). Either way: start over and read what's there.
+            session.rollback()
+        prefs = session.get(UserPreferences, user_id) or UserPreferences(user_id=user_id)
     return prefs
 
 

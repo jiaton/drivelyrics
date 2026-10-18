@@ -1,8 +1,9 @@
 /**
- * The microphone, opened once per listen session (so auto-listening for the next song
- * doesn't ask for permission again) and recorded in short clips. Browser audio
- * processing is turned off: echo cancellation and noise suppression are tuned for
- * speech and eat the music a fingerprint needs.
+ * The microphone, opened for one recognition (a clip or two) and closed right after —
+ * the phone's "microphone in use" indicator must not stay on while lyrics just play
+ * (owner, 2026-10-18). A site already allowed doesn't get asked again on re-opening.
+ * Browser audio processing is turned off: echo cancellation and noise suppression are
+ * tuned for speech and eat the music a fingerprint needs.
  */
 export class MicRecorder {
   private stream: MediaStream | null = null;
