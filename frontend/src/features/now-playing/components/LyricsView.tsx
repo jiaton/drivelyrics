@@ -37,6 +37,7 @@ export function LyricsView({
   syncOffsetMs = 0,
   nowPlayingRef,
   onLineTap,
+  onSettle,
 }: {
   lines: LyricLine[];
   translationLines: LyricLine[];
@@ -48,6 +49,10 @@ export function LyricsView({
   /** Following only: a tap on a line calls this (with the line) instead of snapping back
    *  to the current line — the listen screen's "the song is here now". */
   onLineTap?: (line: LyricLine) => void;
+  /** After a drag (static or following), the line that comes to rest at the centre —
+   *  the search screen's play-along: "this is being sung now". Replaces the 5 s
+   *  snap-back: the parent re-anchors its clock there instead. */
+  onSettle?: (line: LyricLine) => void;
 }) {
   const following = nowPlayingRef !== undefined;
   const syncOffsetRef = useRef(syncOffsetMs); // read by the tick; a change needs no restart
@@ -67,6 +72,10 @@ export function LyricsView({
   const tappedLineRef = useRef(-1); // the line under the finger at pointerdown
   const onLineTapRef = useRef(onLineTap);
   onLineTapRef.current = onLineTap;
+  const onSettleRef = useRef(onSettle);
+  onSettleRef.current = onSettle;
+  const mountedRef = useRef(false);
+  const prevLinesRef = useRef(lines);
   const glidingUntilRef = useRef(0); // performance.now() at which the current fling ends
   const resetTimerRef = useRef<number | null>(null);
 
@@ -82,6 +91,18 @@ export function LyricsView({
   const romanizationByTime = useMemo(() => new Map(romanizationLines.map((line) => [line.t, line.text])), [romanizationLines]);
 
   useLayoutEffect(() => {
+    const sameLines = mountedRef.current && prevLinesRef.current === lines;
+    mountedRef.current = true;
+    prevLinesRef.current = lines;
+    if (sameLines) {
+      // Only switched between static and following (play-along started or stopped):
+      // stay where the reader is; when following, the tick glides on from here.
+      lineElsRef.current.forEach((el) => el?.classList.remove("active"));
+      activeIndexRef.current = -1;
+      isManualRef.current = false;
+      if (trackRef.current) trackRef.current.style.transition = following ? "" : "none";
+      return;
+    }
     activeIndexRef.current = -1;
     currentOffsetRef.current = 0;
     isManualRef.current = false;
@@ -167,6 +188,18 @@ export function LyricsView({
       return { min: Math.min(min, max), max };
     };
 
+    /** The line whose centre is at the viewport's centre when the track is at `offset`. */
+    const lineAt = (offset: number): LyricLine | undefined => {
+      let best = -1;
+      let bestDistance = Infinity;
+      lineElsRef.current.forEach((el, i) => {
+        if (!el || i >= lines.length) return;
+        const distance = Math.abs(-offset - (el.offsetTop + el.clientHeight / 2));
+        if (distance < bestDistance) [best, bestDistance] = [i, distance];
+      });
+      return lines[best];
+    };
+
     const moveTo = (offset: number, transition: string) => {
       currentOffsetRef.current = offset;
       const track = trackRef.current;
@@ -220,7 +253,7 @@ export function LyricsView({
 
       if (!dragMovedRef.current) {
         const tapped = lines[tappedLineRef.current];
-        if (following && tapped && onLineTapRef.current) onLineTapRef.current(tapped);
+        if (tapped && onLineTapRef.current) onLineTapRef.current(tapped);
         if (following) resetToAuto(); // tap — back to following (from the tapped line, if it moved the clock)
         return;
       }
@@ -238,6 +271,12 @@ export function LyricsView({
         }
       }
       glidingUntilRef.current = glideMs ? performance.now() + glideMs : 0;
+      if (onSettleRef.current) {
+        const resting = lineAt(currentOffsetRef.current); // where the glide will stop
+        if (resting) onSettleRef.current(resting);
+        if (following) resetToAuto();
+        return;
+      }
       if (following) scheduleResetTimer(glideMs); // real drag — 5s after it comes to rest, back to the current line
     };
 

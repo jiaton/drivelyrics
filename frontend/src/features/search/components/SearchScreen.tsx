@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Button } from "../../../components/ui/Button";
 import { LoadingSpinner } from "../../../components/ui/LoadingSpinner";
 import { ApiError } from "../../../lib/api";
@@ -11,6 +11,8 @@ import { useWakeLock } from "../../now-playing/hooks/useWakeLock";
 import { usePreferences } from "../../preferences/api/usePreferences";
 import { fetchSong, searchSongs } from "../api/search";
 import type { SearchHit } from "../types";
+import type { ClientNowPlaying, LyricLine } from "../../now-playing/types";
+import { clearAnchor, clockAt, loadAnchor, resumePosition, saveAnchor } from "../lib/playAlong";
 import "./SearchScreen.css";
 
 const hitKey = (h: SearchHit) => `${h.source}:${h.song_id}`;
@@ -36,6 +38,32 @@ export function SearchScreen() {
   const [lyrics, setLyrics] = useState<LyricsData | null>(null);
   const [songError, setSongError] = useState<string | null>(null);
   const { preferences, updatePreferences } = usePreferences();
+  // Play-along: null = static (read freely); else the clock the lyrics follow.
+  const clockRef = useRef<ClientNowPlaying | null>(null);
+  const [following, setFollowing] = useState(false);
+
+  const anchor = (line: LyricLine) => {
+    clockRef.current = clockAt(line.t, performance.now());
+    saveAnchor({ song, positionMs: line.t, at: Date.now() });
+    setFollowing(true);
+  };
+  const stopFollowing = () => {
+    clockRef.current = null;
+    clearAnchor();
+    setFollowing(false);
+  };
+
+  // A song opened (or reopened) whose anchor is still running: carry on from where it is now.
+  useEffect(() => {
+    clockRef.current = null;
+    setFollowing(false);
+    if (!lyrics || lyrics.lines.length === 0) return;
+    const position = resumePosition(loadAnchor(), song, lyrics.lines[lyrics.lines.length - 1].t, Date.now());
+    if (position !== null) {
+      clockRef.current = clockAt(position, performance.now());
+      setFollowing(true);
+    }
+  }, [lyrics, song]);
 
   useWakeLock(preferences.keep_screen_awake && !!lyrics);
 
@@ -94,6 +122,11 @@ export function SearchScreen() {
               {ts.translation}
             </button>
           ) : null}
+          {following ? (
+            <button className="search-chip" aria-pressed onClick={stopFollowing}>
+              {ts.stopFollow}
+            </button>
+          ) : null}
           {lyrics?.cantonese ? (
             <button className="search-chip" aria-pressed={preferences.show_jyutping} onClick={() => updatePreferences({ show_jyutping: !preferences.show_jyutping })}>
               {ts.jyutping}
@@ -117,9 +150,15 @@ export function SearchScreen() {
               showTranslation={preferences.show_translation}
               romanizationLines={lyrics.romanizationLines}
               showJyutping={preferences.show_jyutping}
+              nowPlayingRef={following ? clockRef : undefined}
+              onSettle={anchor}
+              onLineTap={anchor}
             />
           )}
         </div>
+        {lyrics && !following ? (
+          <p style={{ margin: 0, padding: "0.5rem 1.5rem 0.9rem", color: "var(--color-fg-dim)", fontSize: "0.8rem", textAlign: "center" }}>{ts.followHint}</p>
+        ) : null}
       </div>
     );
   }

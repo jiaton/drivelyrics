@@ -244,6 +244,8 @@ export const zh: Dictionary = {
       failed: "搜索失败，请再试一次。",
       translation: "翻译",
       jyutping: "粤拼",
+      followHint: "拖到（或点一下）正在唱的那一行，歌词就从那里开始自动滚动。",
+      stopFollow: "停止跟随",
     },
     sourceNames: { netease: "网易云", lrclib: "LRCLIB" },
     settings: {

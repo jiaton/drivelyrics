@@ -251,6 +251,8 @@ export const en = {
       failed: "Search failed. Try again.",
       translation: "Translation",
       jyutping: "Jyutping",
+      followHint: "Drag to — or tap — the line being sung: the lyrics follow along from there.",
+      stopFollow: "Stop following",
     },
     sourceNames: { netease: "NetEase", lrclib: "LRCLIB" } as Record<string, string>,
     settings: {
