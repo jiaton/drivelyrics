@@ -80,8 +80,9 @@ export function LinkApprove({ me, onSignedIn }: { me: Me; onSignedIn: () => void
             {fill(tl.intro, { name })} <b>{me.user.email}</b>
           </p>
           <p style={{ margin: 0, color: "var(--color-fg-dim)", lineHeight: 1.55 }}>{tl.scope}</p>
-          <p style={{ margin: 0 }}>
-            {tl.codeCheck} <b style={{ fontFamily: "monospace", fontSize: "1.2rem", letterSpacing: "0.08em" }}>{info?.code}</b>
+          <p style={{ margin: 0 }}>{tl.codeCheck}</p>
+          <p style={{ margin: 0, fontFamily: "monospace", fontSize: "1.6rem", fontWeight: 700, letterSpacing: "0.12em", whiteSpace: "nowrap" }}>
+            {info?.code}
           </p>
           <Toggle label={tl.useFeed} checked={useFeed} onChange={setUseFeed} />
           {state === "error" ? <p style={{ margin: 0, color: "var(--color-error)" }}>{message === "code not found or expired" ? tl.expired : message}</p> : null}
