@@ -6,6 +6,7 @@ from sse_starlette.sse import EventSourceResponse
 
 from app.auth.deps import current_user
 from app.auth.models import User
+from app.auth.schemas import OkResponse
 from app.core.db import get_session
 from app.core.nowplaying import DISCONNECTED, RESUBSCRIBE
 from app.feed.deps import bearer_token, feed_user
@@ -42,6 +43,13 @@ def feed_me(
         token_name=feed_store.token_name(bearer_token(authorization)) or "",
         feed_selected=sources.info(session, user_id).effective == "feed",
     )
+
+
+@router.delete("/api/feed/v1/me", response_model=OkResponse, tags=["feed"])
+def feed_forget_me(user_id: int = Depends(feed_user), authorization: str | None = Header(default=None)):
+    """Revoke the token this request carries: a receiver being uninstalled."""
+    feed_store.revoke_by_token(bearer_token(authorization))
+    return OkResponse(ok=True)
 
 
 async def _stream(user: User, session: Session):

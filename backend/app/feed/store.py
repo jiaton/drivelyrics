@@ -66,6 +66,18 @@ class FeedStore:
             db.commit()
             return True
 
+    def revoke_by_token(self, token: str) -> bool:
+        """A receiver removing its own token (it knows the token, not its id)."""
+        if not token.startswith(TOKEN_PREFIX):
+            return False
+        with Session(engine) as db:
+            row = db.exec(select(FeedToken).where(FeedToken.token_hash == _hash(token))).first()
+            if row is None:
+                return False
+            db.delete(row)
+            db.commit()
+            return True
+
     def token_name(self, token: str) -> str | None:
         if not token.startswith(TOKEN_PREFIX):
             return None

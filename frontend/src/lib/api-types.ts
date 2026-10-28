@@ -713,7 +713,11 @@ export interface paths {
         get: operations["feed_me_api_feed_v1_me_get"];
         put?: never;
         post?: never;
-        delete?: never;
+        /**
+         * Feed Forget Me
+         * @description Revoke the token this request carries: a receiver being uninstalled.
+         */
+        delete: operations["feed_forget_me_api_feed_v1_me_delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -2853,6 +2857,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["FeedMe"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    feed_forget_me_api_feed_v1_me_delete: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OkResponse"];
                 };
             };
             /** @description Validation Error */

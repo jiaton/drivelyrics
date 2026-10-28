@@ -1740,6 +1740,55 @@
             }
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "now-playing",
+          "feed"
+        ],
+        "summary": "Feed Forget Me",
+        "description": "Revoke the token this request carries: a receiver being uninstalled.",
+        "operationId": "feed_forget_me_api_feed_v1_me_delete",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/now-playing/stream": {

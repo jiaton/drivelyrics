@@ -87,3 +87,14 @@ def test_link_endpoints_are_rate_limited(app_client):
 
 def test_me_rejects_bad_tokens(app_client):
     assert app_client().get("/api/feed/v1/me", headers={"Authorization": "Bearer dlf_nope"}).status_code == 401
+
+
+def test_a_receiver_can_revoke_its_own_token(app_client):
+    user = app_client()
+    sign_in(user, "feed-forget@example.com")
+    token = user.post("/api/feed/tokens", json={"name": "Home Assistant"}).json()["token"]
+    auth = {"Authorization": f"Bearer {token}"}
+    receiver = app_client()
+    assert receiver.delete("/api/feed/v1/me", headers=auth).status_code == 200
+    assert receiver.get("/api/feed/v1/me", headers=auth).status_code == 401
+    assert user.get("/api/feed/tokens").json()["tokens"] == []

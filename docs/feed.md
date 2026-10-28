@@ -23,6 +23,10 @@ Machine-readable contract: [`feed/v1/push.schema.json`](feed/v1/push.schema.json
 
 ## Set up
 
+**Home Assistant:** install the [DriveLyrics integration](https://github.com/jiaton/drivelyrics-homeassistant)
+(HACS), add it, pick your player, approve in DriveLyrics. No token to copy, nothing to
+expose, no YAML. The rest of this page is for writing your own receiver.
+
 1. **Settings → Now-playing feed → Create token.** Give it the name of where it will live
    ("Home Assistant"). The token (`dlf_…`) is shown once; keep it like a password. It can
    only *write* what you're playing and *receive* fetch events — nothing else.
@@ -172,7 +176,10 @@ player's state as one JSON object in the push format:
 DRIVELYRICS_TOKEN=dlf_… python3 feed_client.py --command "./read-player.sh"
 ```
 
-### Home Assistant blueprint
+### Home Assistant blueprint (being retired)
+
+Use the integration above instead; this webhook-based blueprint needs Home Assistant
+reachable from the internet and a YAML edit, and will be removed.
 
 Needs Home Assistant reachable over HTTPS from the internet (your own domain, or Nabu
 Casa's cloud webhooks) and a `media_player` entity for the player — e.g. the Tesla Fleet
@@ -219,6 +226,31 @@ Home Assistant webhooks can't check the signature; the random webhook ID is what
 the URL private. Media players don't report when their position was read, so the push
 uses the entity's `last_reported` time (when Home Assistant last received its state) as
 `measured_at`.
+
+## Link a receiver without copying a token
+
+For apps that set themselves up (the Home Assistant integration does this). Like signing
+in a TV: the receiver shows the user a code, the user approves it in DriveLyrics, the
+receiver gets its own token.
+
+1. `POST /api/feed/v1/link` with `{"client_name": "Home Assistant"}` (no token; at most one
+   every 2 s per address) → `{"code": "ABCD-EFGH", "verify_url": "…/link?code=ABCDEFGH",
+   "poll_secret": "…", "interval_s": 3, "expires_in_s": 600}`.
+2. Show the user `verify_url` (or open it) and the code. They sign in, check the code and
+   approve; the approval page also offers to switch **Now playing from** to the feed.
+3. `POST /api/feed/v1/link/poll` with `{"poll_secret": "…"}`, no more often than
+   `interval_s` → `{"status": "pending"}`, then once `{"status": "approved", "token":
+   "dlf_…"}` (the token is handed out this once), or `denied` / `expired`.
+
+The token is named after `client_name` in Settings and can be revoked there like any other.
+
+## Check or remove a token
+
+- `GET /api/feed/v1/me` (with the token) → `{"token_name": "Home Assistant",
+  "feed_selected": true}`. `feed_selected` false means the user's screens show Spotify:
+  pushes are kept but not shown — worth telling the user.
+- `DELETE /api/feed/v1/me` revokes the token the request carries — for a receiver being
+  uninstalled.
 
 ## Versioning
 
