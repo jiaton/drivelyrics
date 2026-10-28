@@ -16,8 +16,10 @@ import "./feed.css";
 
 const STATUS_EVERY_MS = 3000;
 const DOCS_URL = `${SOURCE_URL}/blob/main/docs/feed.md`;
-const BLUEPRINT_URL = `${DOCS_URL}#home-assistant-blueprint`;
-const BLUEPRINT_IMPORT_URL = `https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=${encodeURIComponent(`${SOURCE_URL}/blob/main/docs/feed/homeassistant/drivelyrics_feed.yaml`)}`;
+const HA_REPO_URL = "https://github.com/jiaton/drivelyrics-homeassistant";
+// my.home-assistant.io links open the user's own Home Assistant at the right page.
+const HA_HACS_URL = "https://my.home-assistant.io/redirect/hacs_repository/?owner=jiaton&repository=drivelyrics-homeassistant&category=integration";
+const HA_ADD_URL = "https://my.home-assistant.io/redirect/config_flow_start/?domain=drivelyrics";
 
 /**
  * /feed: the now-playing feed — tokens, when fetches are sent, limits, the optional
@@ -67,12 +69,6 @@ export function FeedSettingsPage({
         <a href={DOCS_URL} target="_blank" rel="noreferrer" style={{ color: "var(--color-accent)" }}>
           {tf.docs}
         </a>
-        <a href={BLUEPRINT_URL} target="_blank" rel="noreferrer" style={{ color: "var(--color-accent)" }}>
-          {tf.blueprint}
-        </a>
-        <a href={BLUEPRINT_IMPORT_URL} target="_blank" rel="noreferrer" style={{ color: "var(--color-accent)" }}>
-          {tf.blueprintImport}
-        </a>
       </div>
       <h1 style={{ margin: 0 }}>{tf.title}</h1>
       <p className="feed-hint">{rich(tf.intro)}</p>
@@ -91,6 +87,27 @@ export function FeedSettingsPage({
         )
       ) : null}
       {error ? <p className="feed-warning">{error}</p> : null}
+      <section className="feed-section">
+        <h2>{tf.haTitle}</h2>
+        <p className="feed-hint">{rich(tf.haIntro)}</p>
+        <ol className="feed-hint" style={{ margin: 0, paddingLeft: "1.2rem", lineHeight: 1.7 }}>
+          <li>
+            <a href={HA_HACS_URL} target="_blank" rel="noreferrer" style={{ color: "var(--color-accent)" }}>
+              {tf.haInstall}
+            </a>{" "}
+            {tf.haInstallNote}
+          </li>
+          <li>
+            <a href={HA_ADD_URL} target="_blank" rel="noreferrer" style={{ color: "var(--color-accent)" }}>
+              {tf.haAdd}
+            </a>{" "}
+            {tf.haAddNote}
+          </li>
+        </ol>
+        <a href={HA_REPO_URL} target="_blank" rel="noreferrer" className="feed-hint" style={{ color: "var(--color-accent)" }}>
+          {tf.haMore}
+        </a>
+      </section>
       <section className="feed-section">
         <h2>{tf.status}</h2>
         {status ? <FeedStatusPanel status={status} /> : null}
