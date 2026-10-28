@@ -181,7 +181,7 @@ read the player once (for a Tesla: one `vehicle_data` call), waits a few seconds
 pushes what it plays. Checked in a car with Spotify playing (2026-10-27): title,
 artist, album, duration and position all arrive; position is whole seconds.
 
-1. Once, in `configuration.yaml` (then restart Home Assistant):
+1. Once, in `configuration.yaml`:
 
    ```yaml
    rest_command:
@@ -189,10 +189,19 @@ artist, album, duration and position all arrive; position is whole seconds.
        url: https://drivelyrics.com/api/feed/v1/now-playing
        method: POST
        headers:
-         Authorization: !secret drivelyrics_feed_auth   # "Bearer dlf_…" in secrets.yaml
+         Authorization: !secret drivelyrics_feed_auth
        content_type: application/json
        payload: "{{ payload }}"
    ```
+
+   and in `secrets.yaml` — note the `Bearer ` in front of the token (without it every
+   push is answered `401`):
+
+   ```yaml
+   drivelyrics_feed_auth: "Bearer dlf_…"
+   ```
+
+   Reload with Developer tools → YAML → REST commands (no restart needed).
 
 2. Import the blueprint:
    [`feed/homeassistant/drivelyrics_feed.yaml`](feed/homeassistant/drivelyrics_feed.yaml)
