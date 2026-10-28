@@ -139,6 +139,7 @@ export const zh: Dictionary = {
         "自己告诉 DriveLyrics 正在播什么——来自车机、Home Assistant 或任何脚本。DriveLyrics 从不拿你车或播放器的凭据：需要更新时它发一个 **fetch** 事件，你那边读一次播放器，把结果推回来。",
       docs: "说明文档：设置、示例和完整协议",
       blueprint: "Home Assistant 蓝图",
+      blueprintImport: "一键导入 Home Assistant",
       sourceOn: "你的屏幕正在显示推送通道。",
       sourceOff: "你的屏幕正在显示 Spotify。可以在 设置 → 正在播放来源 切换，或者直接：",
       useFeed: "改用推送通道",

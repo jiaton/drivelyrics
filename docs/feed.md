@@ -203,11 +203,13 @@ artist, album, duration and position all arrive; position is whole seconds.
 
    Reload with Developer tools → YAML → REST commands (no restart needed).
 
-2. Import the blueprint:
-   [`feed/homeassistant/drivelyrics_feed.yaml`](feed/homeassistant/drivelyrics_feed.yaml)
-   (Settings → Automations & scenes → Blueprints → Import blueprint, with the URL
-   `https://github.com/jiaton/drivelyrics/blob/main/docs/feed/homeassistant/drivelyrics_feed.yaml`),
-   and create an automation from it: pick the media player, and as webhook ID a long
+2. Import the blueprint — one click:
+
+   [![Open your Home Assistant instance and show the blueprint import dialog.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fjiaton%2Fdrivelyrics%2Fblob%2Fmain%2Fdocs%2Ffeed%2Fhomeassistant%2Fdrivelyrics_feed.yaml)
+
+   (or Settings → Automations & scenes → Blueprints → Import blueprint, with
+   `https://github.com/jiaton/drivelyrics/blob/main/docs/feed/homeassistant/drivelyrics_feed.yaml`).
+   Then create an automation from it: pick the media player, and as webhook ID a long
    random string.
 3. In DriveLyrics, set the webhook URL to
    `https://<your-home-assistant>/api/webhook/<that webhook ID>` and press Test — the

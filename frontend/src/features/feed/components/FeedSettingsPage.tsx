@@ -17,6 +17,7 @@ import "./feed.css";
 const STATUS_EVERY_MS = 3000;
 const DOCS_URL = `${SOURCE_URL}/blob/main/docs/feed.md`;
 const BLUEPRINT_URL = `${DOCS_URL}#home-assistant-blueprint`;
+const BLUEPRINT_IMPORT_URL = `https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=${encodeURIComponent(`${SOURCE_URL}/blob/main/docs/feed/homeassistant/drivelyrics_feed.yaml`)}`;
 
 /**
  * /feed: the now-playing feed — tokens, when fetches are sent, limits, the optional
@@ -68,6 +69,9 @@ export function FeedSettingsPage({
         </a>
         <a href={BLUEPRINT_URL} target="_blank" rel="noreferrer" style={{ color: "var(--color-accent)" }}>
           {tf.blueprint}
+        </a>
+        <a href={BLUEPRINT_IMPORT_URL} target="_blank" rel="noreferrer" style={{ color: "var(--color-accent)" }}>
+          {tf.blueprintImport}
         </a>
       </div>
       <h1 style={{ margin: 0 }}>{tf.title}</h1>

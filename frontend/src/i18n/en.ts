@@ -146,6 +146,7 @@ export const en = {
         "Tell DriveLyrics what's playing yourself — from your car's media system, Home Assistant or any script. DriveLyrics never gets credentials for your car or player: when it needs an update it sends a **fetch** event, your side reads the player once and pushes the result.",
       docs: "Guide: setup, recipes and the full contract",
       blueprint: "Home Assistant blueprint",
+      blueprintImport: "Import into Home Assistant",
       sourceOn: "Your screens show this feed.",
       sourceOff: "Your screens show Spotify. Switch in Settings → Now playing from, or here:",
       useFeed: "Show the feed",
