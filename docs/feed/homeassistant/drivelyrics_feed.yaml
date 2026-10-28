@@ -1,0 +1,85 @@
+blueprint:
+  name: DriveLyrics now-playing feed
+  description: >-
+    Answers DriveLyrics' fetch events: reads your media player once and pushes what it
+    plays, so DriveLyrics shows lyrics for it. Set this automation's webhook URL in
+    DriveLyrics (Settings → Now-playing feed → Webhook). Needs the one-time
+    `rest_command.drivelyrics_push` from the setup guide:
+    https://github.com/jiaton/drivelyrics/blob/main/docs/feed.md#home-assistant-blueprint
+  domain: automation
+  source_url: https://github.com/jiaton/drivelyrics/blob/main/docs/feed/homeassistant/drivelyrics_feed.yaml
+  input:
+    player:
+      name: Media player
+      description: The player whose songs you want lyrics for, e.g. your Tesla's.
+      selector:
+        entity:
+          filter:
+            - domain: media_player
+    webhook_id:
+      name: Webhook ID
+      description: >-
+        A long random string; it is the secret part of the webhook URL
+        (https://<your-home-assistant>/api/webhook/<this>). Use a password generator.
+    refresh:
+      name: Refresh the player first
+      description: >-
+        Ask the integration to read the player before pushing. Needed for players that
+        are not polled continuously (Tesla Fleet: one vehicle_data call per fetch).
+        Turn off for players that update on their own.
+      default: true
+      selector:
+        boolean:
+    settle:
+      name: Wait after refreshing
+      description: How long the integration needs to bring the new state in.
+      default: 3
+      selector:
+        number:
+          min: 0
+          max: 15
+          unit_of_measurement: s
+
+mode: queued
+max: 3
+
+triggers:
+  - trigger: webhook
+    webhook_id: !input webhook_id
+    allowed_methods: [POST]
+    local_only: false
+
+conditions:
+  # ping (the Test button) and stop need no answer.
+  - condition: template
+    value_template: "{{ trigger.json is mapping and trigger.json.type == 'fetch' }}"
+
+variables:
+  player: !input player
+  refresh: !input refresh
+
+actions:
+  - if:
+      - condition: template
+        value_template: "{{ refresh }}"
+    then:
+      - action: homeassistant.update_entity
+        target:
+          entity_id: !input player
+      - delay:
+          seconds: !input settle
+  - action: rest_command.drivelyrics_push
+    data:
+      payload: >-
+        {%- set s = states[player] -%}
+        {{ {
+          "playing": s is not none and s.state == "playing",
+          "title": state_attr(player, "media_title") or none,
+          "artist": state_attr(player, "media_artist") or none,
+          "album": state_attr(player, "media_album_name") or none,
+          "duration_ms": ((state_attr(player, "media_duration") or 0) * 1000) | int,
+          "position_ms": ((state_attr(player, "media_position") or 0) * 1000) | int,
+          "measured_at": ((as_timestamp(s.last_reported, 0) if s is not none else 0) * 1000) | int,
+          "source": state_attr(player, "source"),
+          "fetch_id": trigger.json.id
+        } | to_json }}

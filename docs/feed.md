@@ -172,65 +172,42 @@ player's state as one JSON object in the push format:
 DRIVELYRICS_TOKEN=dlf_… python3 feed_client.py --command "./read-player.sh"
 ```
 
-### Home Assistant (webhook)
+### Home Assistant blueprint
 
 Needs Home Assistant reachable over HTTPS from the internet (your own domain, or Nabu
 Casa's cloud webhooks) and a `media_player` entity for the player — e.g. the Tesla Fleet
-integration's vehicle media player. A sketch to adapt (check the attribute names in
-Developer Tools → States first; Home Assistant media players report `media_duration`
-and `media_position` in seconds):
+integration's vehicle media player. On each fetch the automation asks the integration to
+read the player once (for a Tesla: one `vehicle_data` call), waits a few seconds and
+pushes what it plays. Checked in a car with Spotify playing (2026-10-27): title,
+artist, album, duration and position all arrive; position is whole seconds.
 
-```yaml
-# configuration.yaml
-rest_command:
-  drivelyrics_push:
-    url: https://drivelyrics.com/api/feed/v1/now-playing
-    method: POST
-    headers:
-      Authorization: !secret drivelyrics_feed_auth   # "Bearer dlf_…" in secrets.yaml
-    content_type: application/json
-    payload: "{{ payload }}"
-```
+1. Once, in `configuration.yaml` (then restart Home Assistant):
 
-```yaml
-# an automation
-alias: DriveLyrics now-playing feed
-mode: queued
-triggers:
-  - trigger: webhook
-    webhook_id: drivelyrics-REPLACE-WITH-RANDOM   # the URL's secret part
-    allowed_methods: [POST]
-    local_only: false
-conditions:
-  - condition: template
-    value_template: "{{ trigger.json.type == 'fetch' }}"
-actions:
-  - action: homeassistant.update_entity   # one vehicle_data call for a Tesla
-    target:
-      entity_id: media_player.my_car
-  - delay: "00:00:02"
-  - variables:
-      car: media_player.my_car
-  - action: rest_command.drivelyrics_push
-    data:
-      payload: >-
-        {{ {
-          "playing": is_state(car, "playing"),
-          "title": state_attr(car, "media_title"),
-          "artist": state_attr(car, "media_artist"),
-          "album": state_attr(car, "media_album_name"),
-          "duration_ms": ((state_attr(car, "media_duration") or 0) * 1000) | int,
-          "position_ms": ((state_attr(car, "media_position") or 0) * 1000) | int,
-          "measured_at": (as_timestamp(state_attr(car, "media_position_updated_at"), 0) * 1000) | int,
-          "source": state_attr(car, "source"),
-          "fetch_id": trigger.json.id
-        } | to_json }}
-```
+   ```yaml
+   rest_command:
+     drivelyrics_push:
+       url: https://drivelyrics.com/api/feed/v1/now-playing
+       method: POST
+       headers:
+         Authorization: !secret drivelyrics_feed_auth   # "Bearer dlf_…" in secrets.yaml
+       content_type: application/json
+       payload: "{{ payload }}"
+   ```
 
-Then set the webhook URL in DriveLyrics to
-`https://<your-home-assistant>/api/webhook/drivelyrics-REPLACE-WITH-RANDOM`. Home
-Assistant webhooks can't check the signature; the random webhook id is what keeps the
-URL private.
+2. Import the blueprint:
+   [`feed/homeassistant/drivelyrics_feed.yaml`](feed/homeassistant/drivelyrics_feed.yaml)
+   (Settings → Automations & scenes → Blueprints → Import blueprint, with the URL
+   `https://github.com/jiaton/drivelyrics/blob/main/docs/feed/homeassistant/drivelyrics_feed.yaml`),
+   and create an automation from it: pick the media player, and as webhook ID a long
+   random string.
+3. In DriveLyrics, set the webhook URL to
+   `https://<your-home-assistant>/api/webhook/<that webhook ID>` and press Test — the
+   automation's trace shows the ping arriving (pings are not answered).
+
+Home Assistant webhooks can't check the signature; the random webhook ID is what keeps
+the URL private. Media players don't report when their position was read, so the push
+uses the entity's `last_reported` time (when Home Assistant last received its state) as
+`measured_at`.
 
 ## Versioning
 
