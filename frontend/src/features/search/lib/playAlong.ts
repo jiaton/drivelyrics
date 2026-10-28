@@ -23,6 +23,7 @@ export function clockAt(positionMs: number, nowPerf: number): ClientNowPlaying {
     progress_ms: Math.max(0, Math.round(positionMs)),
     fetched_at: Date.now() / 1000,
     source: "feed",
+    notice: null,
     receivedAtPerf: nowPerf,
   };
 }

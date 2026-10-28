@@ -45,10 +45,12 @@ export function FeedSchedule({ settings, onSaved }: { settings: FeedSettings; on
       </section>
       <section className="feed-section">
         <h2>{tf.limits}</h2>
+        <p className="feed-hint">{tf.limitsHint}</p>
         <div className="feed-row">
           <label htmlFor="feed-budget">{tf.monthlyBudget}</label>
           <input id="feed-budget" className="feed-number" type="number" min={0} max={100000} value={budget} onChange={(e) => setBudget(e.target.value)} />
         </div>
+        {Number(budget) > 0 ? <p className="feed-hint">{fill(tf.monthlyCost, { usd: (Number(budget) * 0.002).toFixed(2) })}</p> : null}
         <div className="feed-row">
           <label htmlFor="feed-cap">{tf.hourlyCap}</label>
           <input id="feed-cap" className="feed-number" type="number" min={1} max={600} value={cap} onChange={(e) => setCap(e.target.value)} />

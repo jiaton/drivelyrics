@@ -118,6 +118,23 @@
       "default": null,
       "description": "The id of the fetch event this answers, if any.",
       "title": "Fetch Id"
+    },
+    "limited": {
+      "anyOf": [
+        {
+          "enum": [
+            "hourly",
+            "monthly"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Set when this answer is what the sender already knew, without reading the player, because the sender's own read limit is reached. Shown on the user's screens.",
+      "title": "Limited"
     }
   },
   "required": [

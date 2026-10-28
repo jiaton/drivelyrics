@@ -56,6 +56,7 @@ Content-Type: application/json
 | `measured_at` | int | Unix ms when `position_ms` was read, if not "just now". Ignored when more than 5 minutes off DriveLyrics' clock. |
 | `source` | string | Shown to you only ("Spotify", "Bluetooth"). |
 | `fetch_id` | string | The `id` of the fetch event you are answering, if any. |
+| `limited` | string | `"hourly"` or `"monthly"`: you answered with what you already knew, without reading the player, because your own read limit is reached. Screens say so; leave it out otherwise. |
 
 Unknown fields are ignored. You may push at any time, not only in answer to a fetch (at
 most 2 pushes a second).
@@ -148,11 +149,21 @@ Defaults ask about **once per track**:
 Optional (Settings): **skip check** every 30 or 60 s while playing (off by default), and
 **paused check** every 60 or 120 s while paused (off by default).
 
-If reading your player costs money — a Tesla Fleet API `vehicle_data` call is billed per
-request, with a monthly credit shared by all your integrations — set the limits in
-Settings: a **monthly budget** of fetches (default 1000; when used up, automatic fetches
-stop and refresh asks you to confirm) and an **hourly cap** (default 60, a guard against
-bugs). Only fetches that reached your side are counted.
+If reading your player costs money, both limits are yours to set in Settings. For a Tesla:
+each Fleet API `vehicle_data` read costs $0.002 (500 for $1), and Tesla credits $10 a month
+(5,000 reads) shared by everything on your account, Home Assistant's own polling included.
+
+- **Monthly budget** — default 800 (about $1.60, leaving most of the credit for
+  everything else). When it's used up, automatic fetches stop and refresh asks you to
+  confirm each one.
+- **Per hour** — default 60, as a token bucket: up to 10 fetches back to back (opening a
+  screen, skipping, tapping refresh), then one a minute on average. A slower rate gives
+  a smaller burst. Skip checks every 30 s need more than 60 an hour.
+
+Only fetches that reached your side are counted. While a limit stops fetches, open
+screens show it. A receiver should have a limit of its own too (the Home Assistant
+integration does), so it never spends more than you allow whatever it is asked, and
+report it with `limited`.
 
 ## Recipes
 

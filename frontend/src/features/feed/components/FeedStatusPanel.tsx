@@ -30,11 +30,13 @@ export function FeedStatusPanel({ status }: { status: FeedStatus }) {
           used: String(status.month_fetches),
           budget: String(status.monthly_budget),
           hour: String(status.hour_fetches),
+          left: String(status.hour_left),
           cap: String(status.hourly_cap),
         })}
       </p>
       {status.not_responding ? <p className="feed-warning">{tf.notResponding}</p> : null}
       {status.blocked ? <p className="feed-warning">{tf.blocked[status.blocked]}</p> : null}
+      {status.receiver_limited ? <p className="feed-warning">{tf.receiverLimited[status.receiver_limited]}</p> : null}
     </>
   );
 }

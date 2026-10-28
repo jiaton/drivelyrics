@@ -17,6 +17,9 @@ class NowPlaying:
     progress_ms: int | None
     fetched_at: float  # unix timestamp this snapshot was read at
     source: str = "spotify"  # "spotify" | "feed"
+    # Why the feed may not be up to date: a limit stops reads ("hourly" / "monthly": this
+    # app's; "receiver_hourly" / "receiver_monthly": the user's side's own). None = fine.
+    notice: str | None = None
 
 
 # Broadcast sentinels besides NowPlaying snapshots:

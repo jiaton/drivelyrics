@@ -23,8 +23,10 @@ class FeedSettings(SQLModel, table=True):
     user_id: int = Field(primary_key=True, foreign_key="users.id")
     skip_check_s: int = Field(default=0)  # 0 = off; else check for a skipped track this often
     paused_check_s: int = Field(default=0)  # 0 = off; else check a paused player this often
-    monthly_budget: int = Field(default=1000)  # fetch events per calendar month (UTC)
-    hourly_cap: int = Field(default=60)  # fetch events per rolling hour: a guard against bugs
+    # Defaults leave most of Tesla's $10 monthly Fleet API credit (5,000 data reads) for
+    # Home Assistant itself and anything else the owner runs.
+    monthly_budget: int = Field(default=800)  # fetch events per calendar month (UTC)
+    hourly_cap: int = Field(default=60)  # token bucket (feed/limits.py): per hour on average, bursts of 10
     webhook_url_enc: str = Field(default="")  # Fernet; "" = no webhook
     webhook_secret_enc: str = Field(default="")  # Fernet; HMAC key for X-DriveLyrics-Signature
     webhook_paused: bool = Field(default=False)  # set after repeated failures; saving the URL clears it

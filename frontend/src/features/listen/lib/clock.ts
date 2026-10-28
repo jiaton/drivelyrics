@@ -20,6 +20,7 @@ export function clockFrom(match: Recognized, recordedAt: number): ClientNowPlayi
     progress_ms: match.position_ms ?? 0,
     fetched_at: Date.now() / 1000,
     source: "feed",
+    notice: null,
     receivedAtPerf: recordedAt,
   };
 }

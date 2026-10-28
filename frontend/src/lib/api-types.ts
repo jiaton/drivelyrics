@@ -941,6 +941,11 @@ export interface components {
              * @description The id of the fetch event this answers, if any.
              */
             fetch_id?: string | null;
+            /**
+             * Limited
+             * @description Set when this answer is what the sender already knew, without reading the player, because the sender's own read limit is reached. Shown on the user's screens.
+             */
+            limited?: ("hourly" | "monthly") | null;
         };
         /**
          * FeedPushAck
@@ -1024,6 +1029,15 @@ export interface components {
             hour_fetches: number;
             /** Hourly Cap */
             hourly_cap: number;
+            /** Hour Burst */
+            hour_burst: number;
+            /** Hour Left */
+            hour_left: number;
+            /**
+             * Receiver Limited
+             * @enum {string}
+             */
+            receiver_limited: "" | "hourly" | "monthly";
             /** Stopped */
             stopped: string;
         };
@@ -1517,6 +1531,11 @@ export interface components {
              * @enum {string}
              */
             source: "spotify" | "feed";
+            /**
+             * Notice
+             * @default null
+             */
+            notice: ("hourly" | "monthly" | "receiver_hourly" | "receiver_monthly") | null;
         };
         /**
          * FetchEvent

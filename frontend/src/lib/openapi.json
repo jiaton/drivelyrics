@@ -2340,6 +2340,22 @@
             ],
             "title": "Fetch Id",
             "description": "The id of the fetch event this answers, if any."
+          },
+          "limited": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "hourly",
+                  "monthly"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Limited",
+            "description": "Set when this answer is what the sender already knew, without reading the player, because the sender's own read limit is reached. Shown on the user's screens."
           }
         },
         "type": "object",
@@ -2571,6 +2587,23 @@
             "type": "integer",
             "title": "Hourly Cap"
           },
+          "hour_burst": {
+            "type": "integer",
+            "title": "Hour Burst"
+          },
+          "hour_left": {
+            "type": "integer",
+            "title": "Hour Left"
+          },
+          "receiver_limited": {
+            "type": "string",
+            "enum": [
+              "",
+              "hourly",
+              "monthly"
+            ],
+            "title": "Receiver Limited"
+          },
           "stopped": {
             "type": "string",
             "title": "Stopped"
@@ -2592,6 +2625,9 @@
           "monthly_budget",
           "hour_fetches",
           "hourly_cap",
+          "hour_burst",
+          "hour_left",
+          "receiver_limited",
           "stopped"
         ],
         "title": "FeedStatusResponse"
@@ -3982,6 +4018,24 @@
             ],
             "title": "Source",
             "type": "string"
+          },
+          "notice": {
+            "anyOf": [
+              {
+                "enum": [
+                  "hourly",
+                  "monthly",
+                  "receiver_hourly",
+                  "receiver_monthly"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Notice"
           }
         },
         "required": [

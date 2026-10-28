@@ -29,6 +29,10 @@ class FeedPush(BaseModel):
     source: str | None = Field(default=None, max_length=40, description='Shown to the user only, e.g. "Spotify", "Bluetooth".')
     measured_at: int | None = Field(default=None, ge=0, description="Unix ms when position_ms was read; ignored when more than 5 minutes off the server clock.")
     fetch_id: str | None = Field(default=None, max_length=64, description="The id of the fetch event this answers, if any.")
+    limited: Literal["hourly", "monthly"] | None = Field(
+        default=None,
+        description="Set when this answer is what the sender already knew, without reading the player, because the sender's own read limit is reached. Shown on the user's screens.",
+    )
 
     @field_validator("title", "artist", "album", "source")
     @classmethod
@@ -210,6 +214,9 @@ class FeedStatusResponse(BaseModel):
     month: str
     month_fetches: int
     monthly_budget: int
-    hour_fetches: int
-    hourly_cap: int
+    hour_fetches: int  # in the last 60 minutes
+    hourly_cap: int  # per hour on average (token bucket)
+    hour_burst: int  # at most this many back to back
+    hour_left: int  # may go out right now
+    receiver_limited: Literal["", "hourly", "monthly"]  # the user's side's own limit, from its last push
     stopped: str  # why the scheduler last stopped ("" while running or never ran)

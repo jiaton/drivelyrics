@@ -38,3 +38,4 @@ class NowPlayingResponse(BaseModel):
     progress_ms: int | None
     fetched_at: float
     source: Literal["spotify", "feed"] = "spotify"
+    notice: Literal["hourly", "monthly", "receiver_hourly", "receiver_monthly"] | None = None

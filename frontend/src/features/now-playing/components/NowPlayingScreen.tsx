@@ -138,6 +138,16 @@ export function NowPlayingScreen({
               {t.app.sourceLabels[nowPlaying?.source ?? sources.effective ?? ""] ?? ""}
             </span>
           ) : null}
+          {isFeed && nowPlaying?.notice ? (
+            // A status, not a popup: shown while a limit stops reads, gone when it lifts.
+            <button
+              onClick={() => navigate("/feed")}
+              title={`${t.app.notices[nowPlaying.notice] ?? ""}. ${t.app.noticeHint}`}
+              style={{ ...headerButton, fontSize: "0.7rem", color: "var(--color-error)", border: "1px solid var(--color-error)", borderRadius: 999, padding: "0.05rem 0.5rem", whiteSpace: "nowrap" }}
+            >
+              {t.app.notices[nowPlaying.notice] ?? ""}
+            </button>
+          ) : null}
           <span style={{ fontSize: "0.9rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>
             {refreshNote ?? (nowPlaying?.track_id ? `${nowPlaying.name} — ${nowPlaying.artist ?? ""}` : "")}
           </span>

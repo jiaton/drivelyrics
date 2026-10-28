@@ -16,6 +16,7 @@ from collections import Counter
 from enum import Enum
 
 from app.core.nowplaying import RESUBSCRIBE, Broadcaster, NowPlaying
+from app.feed.limits import TokenBucket, burst_for
 from app.feed.ports import WebhookSenderPort
 from app.feed.schedule import RESPONSE_TIMEOUT_MS, Plan, Track, plan_next
 from app.feed.schemas import EventLog, FeedPush, FeedPushAck, FeedStatusResponse, FetchEvent, FetchReason, PingEvent, PushLog, StopEvent
@@ -76,11 +77,13 @@ class UserFeed:
         self._soon: Plan | None = None  # a refresh, or a fetch for a newly connected receiver
         self._soon_over_budget = False
         self._last_refresh_request_ms = 0.0
-        self._hour: collections.deque[float] = collections.deque()
+        self._hour: collections.deque[float] = collections.deque()  # for the status page only
+        self._bucket: TokenBucket | None = None  # the hourly limit; built on first use
         self._blocked_until = 0.0
         self._webhook_failures = 0
         # Status, for the settings page.
         self.blocked = ""
+        self.receiver_limited = ""  # the user's side's own limit, from its last push
         self.last_event: EventLog | None = None
         self.last_push: PushLog | None = None
         self.webhook_detail = ""
@@ -99,13 +102,14 @@ class UserFeed:
     def snapshot(self) -> NowPlaying:
         now = self._clock()
         track = self.track
+        notice = self.blocked or (f"receiver_{self.receiver_limited}" if self.receiver_limited else "") or None
         if track is None or now - track.measured_ms > STALE_TRACK_MS:
-            return NowPlaying(False, None, None, None, None, None, None, now / 1000, source="feed")
+            return NowPlaying(False, None, None, None, None, None, None, now / 1000, source="feed", notice=notice)
         position = track.position_at(now)
         playing = track.playing
         if playing and track.duration_ms and position > track.duration_ms + OVERRUN_MS:
             playing, position = False, track.duration_ms  # the update it needed never came
-        return NowPlaying(playing, track.key, track.title, track.artist, None, track.duration_ms, position, now / 1000, source="feed")
+        return NowPlaying(playing, track.key, track.title, track.artist, None, track.duration_ms, position, now / 1000, source="feed", notice=notice)
 
     def subscribe_screen(self) -> asyncio.Queue:
         self.screens.publish(self.snapshot())  # fresh, not whatever was cached hours ago
@@ -128,6 +132,7 @@ class UserFeed:
         self.last_push = PushLog(at=now / 1000, playing=push.playing, title=title, artist=artist, source=push.source)
         self._awaiting = None
         self._missed = 0
+        self.receiver_limited = push.limited or ""
         self._counters["feed:pushes"] += 1
         self.screens.publish(self.snapshot())
         self._wake.set()
@@ -150,8 +155,7 @@ class UserFeed:
         now = self._clock()
         if now - self._last_refresh_request_ms < REFRESH_MIN_INTERVAL_MS and self._soon is None:
             raise RefreshRefused("too_soon")
-        self._prune_hour(now)
-        if len(self._hour) >= self._store.settings(self.user_id).hourly_cap:
+        if self._bucket_now(now).available(now) < 1:
             raise RefreshRefused("hourly")
         if not confirm_over_budget and self._over_budget(now):
             raise RefreshRefused("monthly")
@@ -161,7 +165,7 @@ class UserFeed:
 
     def settings_changed(self) -> None:
         self._blocked_until = 0.0
-        self.blocked = ""
+        self._set_blocked("")
         self._wake.set()
 
     async def ping(self) -> bool:
@@ -234,6 +238,19 @@ class UserFeed:
             return self._soon
         return planned
 
+    def _bucket_now(self, now: float) -> TokenBucket:
+        per_hour = self._store.settings(self.user_id).hourly_cap
+        if self._bucket is None:
+            self._bucket = TokenBucket.full(per_hour, now)
+        elif self._bucket.per_hour != per_hour:
+            self._bucket.set_rate(per_hour, now)
+        return self._bucket
+
+    def _set_blocked(self, blocked: str) -> None:
+        if blocked != self.blocked:
+            self.blocked = blocked
+            self.screens.publish(self.snapshot())  # screens say why nothing updates
+
     def _prune_hour(self, now: float) -> None:
         while self._hour and now - self._hour[0] >= 3_600_000:
             self._hour.popleft()
@@ -243,15 +260,16 @@ class UserFeed:
 
     async def _fetch(self, reason: FetchReason, over_budget: bool) -> None:
         now = self._clock()
-        self._prune_hour(now)
-        settings = self._store.settings(self.user_id)
-        if len(self._hour) >= settings.hourly_cap:
-            self.blocked, self._blocked_until = "hourly", self._hour[0] + 3_600_000
+        bucket = self._bucket_now(now)
+        if bucket.available(now) < 1:
+            self._blocked_until = bucket.next_at(now)
+            self._set_blocked("hourly")
             return
         if not over_budget and self._over_budget(now):
-            self.blocked, self._blocked_until = "monthly", now + 60_000  # re-checked; settings changes wake it
+            self._blocked_until = now + 60_000  # re-checked; settings changes wake it
+            self._set_blocked("monthly")
             return
-        self.blocked = ""
+        self._set_blocked("")
         event = FetchEvent(id=secrets.token_urlsafe(8), reason=reason, at=int(now))
         self._last_fetch_ms = now  # even when undelivered: never spin
         # Awaiting from before sending: the answer can arrive before the webhook call returns.
@@ -259,6 +277,8 @@ class UserFeed:
         delivered = await self._deliver(event, count=True)
         self.last_event = EventLog(at=now / 1000, reason=reason, delivered=delivered)
         if delivered:
+            bucket.take(now)
+            self._prune_hour(now)
             self._hour.append(now)
             self._store.count_fetch(self.user_id, month_of(now / 1000))
         elif self._awaiting and self._awaiting[0] == event.id:
@@ -305,6 +325,10 @@ class UserFeed:
         self._prune_hour(self._clock())
         return len(self._hour)
 
+    def hour_left(self) -> int:
+        now = self._clock()
+        return self._bucket_now(now).available(now)
+
     @property
     def not_responding(self) -> bool:
         return self._missed > 0
@@ -329,6 +353,9 @@ def feed_status(feed: UserFeed, store: FeedStore) -> FeedStatusResponse:
         monthly_budget=settings.monthly_budget,
         hour_fetches=feed.hour_fetches(),
         hourly_cap=settings.hourly_cap,
+        hour_burst=burst_for(settings.hourly_cap),
+        hour_left=feed.hour_left(),
+        receiver_limited=feed.receiver_limited,
         stopped=feed.stopped,
     )
 
