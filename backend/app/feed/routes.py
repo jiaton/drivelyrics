@@ -6,15 +6,17 @@ stay on the event loop's thread."""
 import secrets
 import time
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sse_starlette.sse import EventSourceResponse
 
 from app.auth.deps import current_user
 from app.auth.models import User
 from app.auth.schemas import OkResponse
+from app.core.config import settings as app_settings
 from app.core.rate_limit import MinInterval
 from app.feed.adapter import HttpWebhookSender
 from app.feed.deps import feed_user
+from app.feed.linking import LINK_TTL_SECONDS, POLL_INTERVAL_SECONDS, LinkRegistry, display_code
 from app.feed.schemas import (
     DeliveryResult,
     FeedPush,
@@ -26,6 +28,12 @@ from app.feed.schemas import (
     FeedTokenCreated,
     FeedTokenInfo,
     FeedTokenList,
+    LinkDecision,
+    LinkInfo,
+    LinkPoll,
+    LinkPollResult,
+    LinkStart,
+    LinkStarted,
     PingEvent,
     RefreshRequest,
     WebhookSaved,
@@ -39,9 +47,12 @@ router = APIRouter(prefix="/api/feed", tags=["feed"])
 store = FeedStore()
 sender = HttpWebhookSender()
 feeds = FeedRegistry(store, sender)
+links = LinkRegistry()
 
 _push_limit = MinInterval(0.5)  # two pushes a second per user
 _test_limit = MinInterval(10.0)
+_link_start_limit = MinInterval(2.0)  # per client address
+_link_poll_limit = MinInterval(POLL_INTERVAL_SECONDS - 0.5)  # per poll secret
 
 KEEPALIVE_SECONDS = 15
 
@@ -73,6 +84,33 @@ async def events(user_id: int = Depends(feed_user)):
             feed.detach_receiver(queue)
 
     return EventSourceResponse(stream(), ping=KEEPALIVE_SECONDS)
+
+
+def _client_address(request: Request) -> str:
+    # Behind Cloudflare → Caddy: the visitor's address is in Cf-Connecting-Ip.
+    return request.headers.get("cf-connecting-ip") or (request.client.host if request.client else "")
+
+
+@router.post("/v1/link", response_model=LinkStarted)
+async def link_start(body: LinkStart, request: Request):
+    if not _link_start_limit.allow(_client_address(request)):
+        raise HTTPException(status_code=429, detail="one link request every 2 seconds")
+    code, poll_secret = links.start(body.client_name)
+    return LinkStarted(
+        code=display_code(code),
+        verify_url=f"{app_settings.public_base_url}/link?code={code}",
+        poll_secret=poll_secret,
+        interval_s=POLL_INTERVAL_SECONDS,
+        expires_in_s=LINK_TTL_SECONDS,
+    )
+
+
+@router.post("/v1/link/poll", response_model=LinkPollResult)
+async def link_poll(body: LinkPoll):
+    if not _link_poll_limit.allow(body.poll_secret):
+        raise HTTPException(status_code=429, detail=f"poll at most every {POLL_INTERVAL_SECONDS} seconds")
+    status, token = links.poll(body.poll_secret)
+    return LinkPollResult(status=status, token=token)
 
 
 # --- The signed-in user's feed ------------------------------------------------------
@@ -175,4 +213,32 @@ async def refresh(body: RefreshRequest, user: User = Depends(current_user)):
         feeds.feed(user.id).request_refresh(body.confirm_over_budget)
     except RefreshRefused as refused:
         raise HTTPException(status_code=409 if refused.reason == "monthly" else 429, detail=refused.reason)
+    return OkResponse(ok=True)
+
+
+@router.get("/link", response_model=LinkInfo)
+async def link_info(code: str, user: User = Depends(current_user)):
+    link = links.pending(code)
+    if link is None:
+        raise HTTPException(status_code=404, detail="code not found or expired")
+    return LinkInfo(code=display_code(link.code), client_name=link.client_name)
+
+
+@router.post("/link/approve", response_model=FeedTokenInfo)
+async def link_approve(body: LinkDecision, user: User = Depends(current_user)):
+    link = links.pending(body.code)
+    if link is None:
+        raise HTTPException(status_code=404, detail="code not found or expired")
+    try:
+        token, row = store.create_token(user.id, link.client_name)
+    except TooManyTokens:
+        raise HTTPException(status_code=409, detail="at most 10 tokens; revoke one first")
+    links.approve(body.code, token)
+    return _token_info(row)
+
+
+@router.post("/link/deny", response_model=OkResponse)
+async def link_deny(body: LinkDecision, user: User = Depends(current_user)):
+    if not links.deny(body.code):
+        raise HTTPException(status_code=404, detail="code not found or expired")
     return OkResponse(ok=True)

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://drivelyrics.com/docs/feed/v1/link-poll.schema.json",
+  "properties": {
+    "poll_secret": {
+      "maxLength": 100,
+      "title": "Poll Secret",
+      "type": "string"
+    }
+  },
+  "required": [
+    "poll_secret"
+  ],
+  "title": "LinkPoll",
+  "type": "object"
+}

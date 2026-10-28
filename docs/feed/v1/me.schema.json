@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://drivelyrics.com/docs/feed/v1/me.schema.json",
+  "description": "What a token is (GET /api/feed/v1/me): for a receiver to check its token and\nwhether the user's screens will show what it pushes.",
+  "properties": {
+    "token_name": {
+      "title": "Token Name",
+      "type": "string"
+    },
+    "feed_selected": {
+      "description": "The user's screens show the feed (Settings → Now playing from); false = pushes are kept but not shown.",
+      "title": "Feed Selected",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "token_name",
+    "feed_selected"
+  ],
+  "title": "FeedMe",
+  "type": "object"
+}

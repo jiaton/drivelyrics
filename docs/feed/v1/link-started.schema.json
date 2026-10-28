@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://drivelyrics.com/docs/feed/v1/link-started.schema.json",
+  "properties": {
+    "code": {
+      "description": "Shown to the user, e.g. \"ABCD-EFGH\".",
+      "title": "Code",
+      "type": "string"
+    },
+    "verify_url": {
+      "description": "Where the user approves, with the code filled in.",
+      "title": "Verify Url",
+      "type": "string"
+    },
+    "poll_secret": {
+      "description": "Keep it to yourself; poll with it.",
+      "title": "Poll Secret",
+      "type": "string"
+    },
+    "interval_s": {
+      "description": "Poll no more often than this.",
+      "title": "Interval S",
+      "type": "integer"
+    },
+    "expires_in_s": {
+      "title": "Expires In S",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "code",
+    "verify_url",
+    "poll_secret",
+    "interval_s",
+    "expires_in_s"
+  ],
+  "title": "LinkStarted",
+  "type": "object"
+}

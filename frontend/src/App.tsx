@@ -7,6 +7,7 @@ import { useMe } from "./features/auth/api/useMe";
 import { useSpotifyStatus } from "./features/spotify-setup/api/useSpotifyStatus";
 import { useSources } from "./features/now-playing/api/useSources";
 import { FeedSettingsPage } from "./features/feed/components/FeedSettingsPage";
+import { LinkApprove } from "./features/feed/components/LinkApprove";
 import { SpotifySetup } from "./features/spotify-setup/components/SpotifySetup";
 import { AdminStats } from "./features/admin/components/AdminStats";
 import { SearchScreen } from "./features/search/components/SearchScreen";
@@ -79,7 +80,7 @@ export default function App() {
   useLocation(); // re-render on in-app navigation (lib/nav)
   // Stable: the pairing poller restarts whenever this changes.
   const onSignedIn = useCallback(() => {
-    window.history.replaceState(null, "", window.location.pathname === "/pair" ? window.location.pathname + window.location.search : "/");
+    window.history.replaceState(null, "", ["/pair", "/link"].includes(window.location.pathname) ? window.location.pathname + window.location.search : "/");
     refresh();
   }, [refresh]);
 
@@ -88,6 +89,7 @@ export default function App() {
   else if (error) screen = <ErrorState message={t.app.backendDown} />;
   else if (!me) screen = <LoadingSpinner />;
   else if (window.location.pathname === "/pair") screen = <PairApprove me={me} onSignedIn={onSignedIn} />;
+  else if (window.location.pathname === "/link") screen = <LinkApprove me={me} onSignedIn={onSignedIn} />;
   else if (!me.user) screen = <Landing me={me} onSignedIn={onSignedIn} />;
   else if (window.location.pathname === "/admin" && me.user.role === "admin") screen = <AdminStats />;
   // Before the Spotify check: searching works without a linked Spotify app.

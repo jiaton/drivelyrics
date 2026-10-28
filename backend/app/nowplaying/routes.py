@@ -1,6 +1,6 @@
 import asyncio
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, Header, HTTPException
 from sqlmodel import Session
 from sse_starlette.sse import EventSourceResponse
 
@@ -8,7 +8,9 @@ from app.auth.deps import current_user
 from app.auth.models import User
 from app.core.db import get_session
 from app.core.nowplaying import DISCONNECTED, RESUBSCRIBE
+from app.feed.deps import bearer_token, feed_user
 from app.feed.routes import feeds
+from app.feed.schemas import FeedMe
 from app.feed.routes import store as feed_store
 from app.nowplaying.schemas import SourcesResponse, SourceUpdate
 from app.nowplaying.service import NowPlayingSources
@@ -27,6 +29,19 @@ def get_sources(user: User = Depends(current_user), session: Session = Depends(g
 @router.put("/api/now-playing/source", response_model=SourcesResponse)
 async def put_source(body: SourceUpdate, user: User = Depends(current_user), session: Session = Depends(get_session)):
     return sources.select(session, user.id, body.source)  # async: it notifies open streams
+
+
+# Part of the feed's public contract (v1), but it needs the source choice, which lives here.
+@router.get("/api/feed/v1/me", response_model=FeedMe, tags=["feed"])
+def feed_me(
+    user_id: int = Depends(feed_user),
+    authorization: str | None = Header(default=None),
+    session: Session = Depends(get_session),
+):
+    return FeedMe(
+        token_name=feed_store.token_name(bearer_token(authorization)) or "",
+        feed_selected=sources.info(session, user_id).effective == "feed",
+    )
 
 
 async def _stream(user: User, session: Session):

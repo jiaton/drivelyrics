@@ -14,13 +14,23 @@ OUT = ROOT.parent / "docs" / "feed" / "v1"
 
 
 def schemas() -> dict[str, str]:
-    from app.feed.schemas import FeedEvent, FeedPush, FeedPushAck
+    from app.feed.schemas import FeedEvent, FeedMe, FeedPush, FeedPushAck, LinkPoll, LinkPollResult, LinkStart, LinkStarted
 
-    files = {"push.schema.json": FeedPush, "push-response.schema.json": FeedPushAck, "event.schema.json": FeedEvent}
+    files = {
+        "push.schema.json": FeedPush,
+        "push-response.schema.json": FeedPushAck,
+        "event.schema.json": FeedEvent,
+        "me.schema.json": FeedMe,
+        "link-start.schema.json": LinkStart,
+        "link-started.schema.json": LinkStarted,
+        "link-poll.schema.json": LinkPoll,
+        "link-poll-result.schema.json": LinkPollResult,
+    }
+    requests = (FeedPush, LinkStart, LinkPoll)
     out = {}
     for name, model in files.items():
         schema = {"$schema": "https://json-schema.org/draft/2020-12/schema", "$id": f"https://drivelyrics.com/docs/feed/v1/{name}"}
-        schema |= model.model_json_schema(mode="validation" if model is FeedPush else "serialization")
+        schema |= model.model_json_schema(mode="validation" if model in requests else "serialization")
         out[name] = json.dumps(schema, indent=2, ensure_ascii=False) + "\n"
     return out
 

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://drivelyrics.com/docs/feed/v1/link-start.schema.json",
+  "description": "Ask to be linked to someone's account without a token (POST /api/feed/v1/link).",
+  "properties": {
+    "client_name": {
+      "description": "Becomes the token's name, e.g. \"Home Assistant\".",
+      "maxLength": 40,
+      "minLength": 1,
+      "title": "Client Name",
+      "type": "string"
+    }
+  },
+  "required": [
+    "client_name"
+  ],
+  "title": "LinkStart",
+  "type": "object"
+}

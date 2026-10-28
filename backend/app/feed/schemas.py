@@ -77,6 +77,39 @@ class FeedEvent(RootModel[Annotated[FetchEvent | StopEvent | PingEvent, Field(di
     """One event, on the event stream (GET /api/feed/v1/events) or as a webhook body."""
 
 
+class FeedMe(BaseModel):
+    """What a token is (GET /api/feed/v1/me): for a receiver to check its token and
+    whether the user's screens will show what it pushes."""
+
+    token_name: str
+    feed_selected: bool = Field(description="The user's screens show the feed (Settings → Now playing from); false = pushes are kept but not shown.")
+
+
+class LinkStart(BaseModel):
+    """Ask to be linked to someone's account without a token (POST /api/feed/v1/link)."""
+
+    model_config = ConfigDict(extra="ignore", str_strip_whitespace=True)
+
+    client_name: str = Field(min_length=1, max_length=40, description='Becomes the token\'s name, e.g. "Home Assistant".')
+
+
+class LinkStarted(BaseModel):
+    code: str = Field(description='Shown to the user, e.g. "ABCD-EFGH".')
+    verify_url: str = Field(description="Where the user approves, with the code filled in.")
+    poll_secret: str = Field(description="Keep it to yourself; poll with it.")
+    interval_s: int = Field(description="Poll no more often than this.")
+    expires_in_s: int
+
+
+class LinkPoll(BaseModel):
+    poll_secret: str = Field(max_length=100)
+
+
+class LinkPollResult(BaseModel):
+    status: Literal["pending", "approved", "denied", "expired"]
+    token: str | None = Field(default=None, description="With approved: the new feed token, handed out this once.")
+
+
 # --- The signed-in user's management of their feed ----------------------------------
 
 
@@ -99,6 +132,17 @@ class FeedTokenCreated(BaseModel):
 
 class FeedTokenList(BaseModel):
     tokens: list[FeedTokenInfo]
+
+
+class LinkInfo(BaseModel):
+    """A pending link, as the approval page shows it."""
+
+    code: str
+    client_name: str
+
+
+class LinkDecision(BaseModel):
+    code: str = Field(max_length=20)
 
 
 class FeedSettingsResponse(BaseModel):

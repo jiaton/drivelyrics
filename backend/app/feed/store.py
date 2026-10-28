@@ -66,6 +66,13 @@ class FeedStore:
             db.commit()
             return True
 
+    def token_name(self, token: str) -> str | None:
+        if not token.startswith(TOKEN_PREFIX):
+            return None
+        with Session(engine) as db:
+            row = db.exec(select(FeedToken).where(FeedToken.token_hash == _hash(token))).first()
+            return row.name if row else None
+
     def user_for_token(self, token: str) -> int | None:
         if not token.startswith(TOKEN_PREFIX):
             return None

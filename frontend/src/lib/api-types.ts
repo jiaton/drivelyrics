@@ -444,6 +444,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/feed/v1/link": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Link Start */
+        post: operations["link_start_api_feed_v1_link_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/feed/v1/link/poll": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Link Poll */
+        post: operations["link_poll_api_feed_v1_link_poll_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/feed/status": {
         parameters: {
             query?: never;
@@ -583,6 +617,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/feed/link": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Link Info */
+        get: operations["link_info_api_feed_link_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/feed/link/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Link Approve */
+        post: operations["link_approve_api_feed_link_approve_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/feed/link/deny": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Link Deny */
+        post: operations["link_deny_api_feed_link_deny_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/now-playing/sources": {
         parameters: {
             query?: never;
@@ -610,6 +695,23 @@ export interface paths {
         get?: never;
         /** Put Source */
         put: operations["put_source_api_now_playing_source_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/feed/v1/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Feed Me */
+        get: operations["feed_me_api_feed_v1_me_get"];
+        put?: never;
         post?: never;
         delete?: never;
         options?: never;
@@ -781,6 +883,20 @@ export interface components {
             delivered: boolean;
         };
         /**
+         * FeedMe
+         * @description What a token is (GET /api/feed/v1/me): for a receiver to check its token and
+         *     whether the user's screens will show what it pushes.
+         */
+        FeedMe: {
+            /** Token Name */
+            token_name: string;
+            /**
+             * Feed Selected
+             * @description The user's screens show the feed (Settings → Now playing from); false = pushes are kept but not shown.
+             */
+            feed_selected: boolean;
+        };
+        /**
          * FeedPush
          * @description What is playing right now, pushed by the user's side (POST /api/feed/v1/now-playing).
          */
@@ -940,6 +1056,75 @@ export interface components {
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /** LinkDecision */
+        LinkDecision: {
+            /** Code */
+            code: string;
+        };
+        /**
+         * LinkInfo
+         * @description A pending link, as the approval page shows it.
+         */
+        LinkInfo: {
+            /** Code */
+            code: string;
+            /** Client Name */
+            client_name: string;
+        };
+        /** LinkPoll */
+        LinkPoll: {
+            /** Poll Secret */
+            poll_secret: string;
+        };
+        /** LinkPollResult */
+        LinkPollResult: {
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "pending" | "approved" | "denied" | "expired";
+            /**
+             * Token
+             * @description With approved: the new feed token, handed out this once.
+             */
+            token?: string | null;
+        };
+        /**
+         * LinkStart
+         * @description Ask to be linked to someone's account without a token (POST /api/feed/v1/link).
+         */
+        LinkStart: {
+            /**
+             * Client Name
+             * @description Becomes the token's name, e.g. "Home Assistant".
+             */
+            client_name: string;
+        };
+        /** LinkStarted */
+        LinkStarted: {
+            /**
+             * Code
+             * @description Shown to the user, e.g. "ABCD-EFGH".
+             */
+            code: string;
+            /**
+             * Verify Url
+             * @description Where the user approves, with the code filled in.
+             */
+            verify_url: string;
+            /**
+             * Poll Secret
+             * @description Keep it to yourself; poll with it.
+             */
+            poll_secret: string;
+            /**
+             * Interval S
+             * @description Poll no more often than this.
+             */
+            interval_s: number;
+            /** Expires In S */
+            expires_in_s: number;
         };
         /** LyricLineSchema */
         LyricLineSchema: {
@@ -2151,6 +2336,72 @@ export interface operations {
             };
         };
     };
+    link_start_api_feed_v1_link_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LinkStart"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LinkStarted"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    link_poll_api_feed_v1_link_poll_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LinkPoll"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LinkPollResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     status_api_feed_status_get: {
         parameters: {
             query?: never;
@@ -2434,6 +2685,103 @@ export interface operations {
             };
         };
     };
+    link_info_api_feed_link_get: {
+        parameters: {
+            query: {
+                code: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LinkInfo"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    link_approve_api_feed_link_approve_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LinkDecision"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeedTokenInfo"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    link_deny_api_feed_link_deny_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LinkDecision"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OkResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_sources_api_now_playing_sources_get: {
         parameters: {
             query?: never;
@@ -2474,6 +2822,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SourcesResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    feed_me_api_feed_v1_me_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeedMe"];
                 };
             };
             /** @description Validation Error */

@@ -1098,6 +1098,88 @@
         }
       }
     },
+    "/api/feed/v1/link": {
+      "post": {
+        "tags": [
+          "feed"
+        ],
+        "summary": "Link Start",
+        "operationId": "link_start_api_feed_v1_link_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LinkStart"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LinkStarted"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/feed/v1/link/poll": {
+      "post": {
+        "tags": [
+          "feed"
+        ],
+        "summary": "Link Poll",
+        "operationId": "link_poll_api_feed_v1_link_poll_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LinkPoll"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LinkPollResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/feed/status": {
       "get": {
         "tags": [
@@ -1424,6 +1506,130 @@
         }
       }
     },
+    "/api/feed/link": {
+      "get": {
+        "tags": [
+          "feed"
+        ],
+        "summary": "Link Info",
+        "operationId": "link_info_api_feed_link_get",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Code"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LinkInfo"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/feed/link/approve": {
+      "post": {
+        "tags": [
+          "feed"
+        ],
+        "summary": "Link Approve",
+        "operationId": "link_approve_api_feed_link_approve_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LinkDecision"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedTokenInfo"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/feed/link/deny": {
+      "post": {
+        "tags": [
+          "feed"
+        ],
+        "summary": "Link Deny",
+        "operationId": "link_deny_api_feed_link_deny_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LinkDecision"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/now-playing/sources": {
       "get": {
         "tags": [
@@ -1469,6 +1675,56 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SourcesResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/feed/v1/me": {
+      "get": {
+        "tags": [
+          "now-playing",
+          "feed"
+        ],
+        "summary": "Feed Me",
+        "operationId": "feed_me_api_feed_v1_me_get",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedMe"
                 }
               }
             }
@@ -1905,6 +2161,26 @@
           "delivered"
         ],
         "title": "EventLog"
+      },
+      "FeedMe": {
+        "properties": {
+          "token_name": {
+            "type": "string",
+            "title": "Token Name"
+          },
+          "feed_selected": {
+            "type": "boolean",
+            "title": "Feed Selected",
+            "description": "The user's screens show the feed (Settings → Now playing from); false = pushes are kept but not shown."
+          }
+        },
+        "type": "object",
+        "required": [
+          "token_name",
+          "feed_selected"
+        ],
+        "title": "FeedMe",
+        "description": "What a token is (GET /api/feed/v1/me): for a receiver to check its token and\nwhether the user's screens will show what it pushes."
       },
       "FeedPush": {
         "properties": {
@@ -2371,6 +2647,138 @@
         },
         "type": "object",
         "title": "HTTPValidationError"
+      },
+      "LinkDecision": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "maxLength": 20,
+            "title": "Code"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code"
+        ],
+        "title": "LinkDecision"
+      },
+      "LinkInfo": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "client_name": {
+            "type": "string",
+            "title": "Client Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "client_name"
+        ],
+        "title": "LinkInfo",
+        "description": "A pending link, as the approval page shows it."
+      },
+      "LinkPoll": {
+        "properties": {
+          "poll_secret": {
+            "type": "string",
+            "maxLength": 100,
+            "title": "Poll Secret"
+          }
+        },
+        "type": "object",
+        "required": [
+          "poll_secret"
+        ],
+        "title": "LinkPoll"
+      },
+      "LinkPollResult": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "approved",
+              "denied",
+              "expired"
+            ],
+            "title": "Status"
+          },
+          "token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Token",
+            "description": "With approved: the new feed token, handed out this once."
+          }
+        },
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "title": "LinkPollResult"
+      },
+      "LinkStart": {
+        "properties": {
+          "client_name": {
+            "type": "string",
+            "maxLength": 40,
+            "minLength": 1,
+            "title": "Client Name",
+            "description": "Becomes the token's name, e.g. \"Home Assistant\"."
+          }
+        },
+        "type": "object",
+        "required": [
+          "client_name"
+        ],
+        "title": "LinkStart",
+        "description": "Ask to be linked to someone's account without a token (POST /api/feed/v1/link)."
+      },
+      "LinkStarted": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code",
+            "description": "Shown to the user, e.g. \"ABCD-EFGH\"."
+          },
+          "verify_url": {
+            "type": "string",
+            "title": "Verify Url",
+            "description": "Where the user approves, with the code filled in."
+          },
+          "poll_secret": {
+            "type": "string",
+            "title": "Poll Secret",
+            "description": "Keep it to yourself; poll with it."
+          },
+          "interval_s": {
+            "type": "integer",
+            "title": "Interval S",
+            "description": "Poll no more often than this."
+          },
+          "expires_in_s": {
+            "type": "integer",
+            "title": "Expires In S"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "verify_url",
+          "poll_secret",
+          "interval_s",
+          "expires_in_s"
+        ],
+        "title": "LinkStarted"
       },
       "LyricLineSchema": {
         "properties": {
