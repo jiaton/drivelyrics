@@ -1,6 +1,9 @@
 import { useI18n } from "../../../i18n";
 
 export const SOURCE_URL = "https://github.com/jiaton/drivelyrics";
+export const HA_REPO_URL = "https://github.com/jiaton/drivelyrics-homeassistant";
+// my.home-assistant.io links open the user's own Home Assistant at the right page.
+export const HA_HACS_URL = "https://my.home-assistant.io/redirect/hacs_repository/?owner=jiaton&repository=drivelyrics-homeassistant&category=integration";
 
 /** The GitHub mark linking to the source, for the top-right of the public pages. */
 export function GitHubLink() {

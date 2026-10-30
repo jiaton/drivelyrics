@@ -4,7 +4,7 @@ import { Page } from "../../../components/ui/Page";
 import { rich } from "../../../i18n/rich";
 import { useI18n } from "../../../i18n";
 import { navigate } from "../../../lib/nav";
-import { SOURCE_URL } from "../../landing/components/GitHubLink";
+import { HA_HACS_URL, HA_REPO_URL, SOURCE_URL } from "../../landing/components/GitHubLink";
 import type { Sources, SourceName } from "../../now-playing/api/useSources";
 import { feedApi } from "../api/feedApi";
 import type { FeedSettings, FeedStatus } from "../types";
@@ -16,9 +16,6 @@ import "./feed.css";
 
 const STATUS_EVERY_MS = 3000;
 const DOCS_URL = `${SOURCE_URL}/blob/main/docs/feed.md`;
-const HA_REPO_URL = "https://github.com/jiaton/drivelyrics-homeassistant";
-// my.home-assistant.io links open the user's own Home Assistant at the right page.
-const HA_HACS_URL = "https://my.home-assistant.io/redirect/hacs_repository/?owner=jiaton&repository=drivelyrics-homeassistant&category=integration";
 const HA_ADD_URL = "https://my.home-assistant.io/redirect/config_flow_start/?domain=drivelyrics";
 
 /**

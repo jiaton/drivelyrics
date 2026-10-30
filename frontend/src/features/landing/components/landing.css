@@ -62,6 +62,15 @@
 .privacy-band h3 { margin: 0.1rem 0 0.3rem; font-size: 1.05rem; }
 .privacy-band li p { margin: 0; color: var(--color-fg-dim); line-height: 1.6; }
 .privacy-more { display: inline-block; margin-top: 1.8rem; color: var(--color-fg); }
+.code-link { display: inline-block; margin-top: 0.4rem; font-size: 0.9rem; color: var(--hl-b); text-decoration: none; }
+.code-link:hover { text-decoration: underline; }
+
+/* Home Assistant band */
+.ha-band { border: 1px solid var(--card-border); border-radius: 24px; padding: 2.5rem; background: var(--card); }
+.ha-band h2 { margin: 1rem 0 0.6rem; }
+.ha-band ul { list-style: none; margin: 1.8rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.4rem 2.5rem; }
+.ha-band h3 { margin: 0 0 0.3rem; font-size: 1.05rem; }
+.ha-band li p { margin: 0; color: var(--color-fg-dim); line-height: 1.6; }
 
 /* Also used in the signed-in settings modal, outside .site: hence the fallbacks. */
 .lang-switch { display: flex; border: 1px solid var(--card-border, rgba(255, 255, 255, 0.12)); border-radius: 999px; overflow: hidden; flex-shrink: 0; }
@@ -214,8 +223,8 @@
 
 @media (max-width: 900px) {
   .hero { grid-template-columns: 1fr; gap: 2.5rem; padding-top: 1.5rem; }
-  .steps, .features, .privacy-band ul { grid-template-columns: 1fr; }
-  .privacy-band { padding: 1.6rem; }
+  .steps, .features, .privacy-band ul, .ha-band ul { grid-template-columns: 1fr; }
+  .privacy-band, .ha-band { padding: 1.6rem; }
   .nav-link { display: none; }
 }
 @media (max-width: 640px) {

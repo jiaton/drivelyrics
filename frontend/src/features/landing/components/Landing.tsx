@@ -3,7 +3,7 @@ import { devSignIn, googleSignInUrl } from "../../auth/api/useMe";
 import { usePairing } from "../../auth/api/usePairing";
 import type { Me } from "../../auth/types";
 import { Brand } from "./Brand";
-import { GitHubLink } from "./GitHubLink";
+import { GitHubLink, HA_HACS_URL, HA_REPO_URL, SOURCE_URL } from "./GitHubLink";
 import { LanguageSwitch } from "./LanguageSwitch";
 import { LyricsDemo } from "./LyricsDemo";
 import { SiteFooter } from "./SiteFooter";
@@ -73,6 +73,28 @@ export function Landing({ me, onSignedIn }: { me: Me; onSignedIn: () => void }) 
           <LyricsDemo />
         </section>
 
+        <section className="section">
+          <div className="privacy-band">
+            <h2>{t.privacyBand.title}</h2>
+            <p className="lead">{t.privacyBand.lead}</p>
+            <ul>
+              {t.privacyBand.items.map((item, i) => (
+                <li key={i}>
+                  <span className="check" aria-hidden>✓</span>
+                  <div>
+                    <h3>{item.title}</h3>
+                    <p>{item.body}</p>
+                    <a className="code-link" href={item.code ? `${SOURCE_URL}/blob/main/${item.code}` : SOURCE_URL} target="_blank" rel="noreferrer">
+                      {t.privacyBand.code} →
+                    </a>
+                  </div>
+                </li>
+              ))}
+            </ul>
+            <a href="/privacy" className="privacy-more">{t.footer.privacy} →</a>
+          </div>
+        </section>
+
         <section id="how" className="section">
           <h2>{t.steps.title}</h2>
           <ol className="steps">
@@ -86,22 +108,23 @@ export function Landing({ me, onSignedIn }: { me: Me; onSignedIn: () => void }) 
           </ol>
         </section>
 
-        <section className="section">
-          <div className="privacy-band">
-            <h2>{t.privacyBand.title}</h2>
-            <p className="lead">{t.privacyBand.lead}</p>
+        <section id="home-assistant" className="section">
+          <div className="ha-band">
+            <span className="eyebrow">{t.homeAssistant.eyebrow}</span>
+            <h2>{t.homeAssistant.title}</h2>
+            <p className="lead">{t.homeAssistant.lead}</p>
             <ul>
-              {t.privacyBand.items.map((item, i) => (
+              {t.homeAssistant.points.map((point, i) => (
                 <li key={i}>
-                  <span className="check" aria-hidden>✓</span>
-                  <div>
-                    <h3>{item.title}</h3>
-                    <p>{item.body}</p>
-                  </div>
+                  <h3>{point.title}</h3>
+                  <p>{point.body}</p>
                 </li>
               ))}
             </ul>
-            <a href="/privacy" className="privacy-more">{t.footer.privacy} →</a>
+            <div className="hero-actions">
+              <a className="btn btn-primary" href={HA_HACS_URL} target="_blank" rel="noreferrer">{t.homeAssistant.install}</a>
+              <a className="btn btn-ghost" href={HA_REPO_URL} target="_blank" rel="noreferrer">{t.homeAssistant.more}</a>
+            </div>
           </div>
         </section>
 
