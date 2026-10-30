@@ -6,7 +6,7 @@ import { fill } from "../../../i18n/rich";
 import { useI18n } from "../../../i18n";
 import { api } from "../../../lib/api";
 import type { Schema } from "../../../lib/schema";
-import { devSignIn, googleSignInUrl } from "../../auth/api/useMe";
+import { SignInOptions } from "../../auth/components/SignInOptions";
 import type { Me } from "../../auth/types";
 
 type LinkInfo = Schema<"LinkInfo">;
@@ -39,12 +39,7 @@ export function LinkApprove({ me, onSignedIn }: { me: Me; onSignedIn: () => void
       <Page>
         <h1 style={{ margin: 0 }}>{tl.title}</h1>
         <p style={{ margin: 0, color: "var(--color-fg-dim)", lineHeight: 1.5 }}>{tl.needSignIn}</p>
-        {me.google_enabled ? <Button onClick={() => window.location.assign(googleSignInUrl(here))}>{t.hero.google}</Button> : null}
-        {me.dev_login ? (
-          <Button variant="secondary" onClick={() => devSignIn(window.prompt("Dev email") ?? "").then(onSignedIn)}>
-            Dev sign-in
-          </Button>
-        ) : null}
+        <SignInOptions me={me} next={here} onSignedIn={onSignedIn} />
       </Page>
     );
   }

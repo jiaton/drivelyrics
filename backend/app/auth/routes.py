@@ -1,15 +1,20 @@
+import re
 from urllib.parse import quote, urlsplit
 
+import httpx
 import segno
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import JSONResponse, RedirectResponse
 from sqlmodel import Session
 
-from app.auth.adapter import GoogleOAuthClient
+from app.auth.adapter import GitHubOAuthClient, GoogleOAuthClient, ResendMailer
 from app.auth.deps import current_user, optional_user, session_cookie_header
 from app.auth.models import User
 from app.auth.schemas import (
     DevLoginRequest,
+    EmailStartRequest,
+    EmailStartResponse,
+    EmailVerifyRequest,
     MeResponse,
     OkResponse,
     PairApproveRequest,
@@ -20,12 +25,18 @@ from app.auth.schemas import (
 )
 from app.auth.service import (
     COOKIE_NAME,
+    EMAIL_CODE_TTL_SECONDS,
+    EMAIL_RESEND_AFTER,
     PAIR_TTL_SECONDS,
     SessionError,
+    TooSoon,
     create_session,
     delete_session,
+    email_codes,
     pairings,
     user_for_dev_login,
+    user_for_email,
+    user_for_github,
     user_for_google,
 )
 from app.core.config import settings
@@ -34,12 +45,17 @@ from app.core.one_time_states import OneTimeStates
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 google = GoogleOAuthClient()
-google_states: OneTimeStates[str] = OneTimeStates()  # payload: where to go after sign-in
+github = GitHubOAuthClient()
+mailer = ResendMailer()
+# OAuth state for Google and GitHub; payload: where to go after sign-in.
+oauth_states: OneTimeStates[str] = OneTimeStates()
 # Session handoff from an old hostname (payload: user id). Short-lived: it is used by an
 # immediate redirect, never shown to a person.
 handoffs: OneTimeStates[int] = OneTimeStates(ttl_seconds=120)
 
 GOOGLE_REDIRECT_URI = f"{settings.public_base_url}/api/auth/google/callback"
+GITHUB_REDIRECT_URI = f"{settings.public_base_url}/api/auth/github/callback"
+_EMAIL = re.compile(r"[^@\s]+@[^@\s]+\.[^@\s]+")
 
 
 def _safe_next(next_path: str | None) -> str:
@@ -59,6 +75,8 @@ def me(user: User | None = Depends(optional_user)):
     return MeResponse(
         user=UserSchema.model_validate(user, from_attributes=True) if user else None,
         google_enabled=bool(settings.google_client_id),
+        github_enabled=bool(settings.github_client_id),
+        email_enabled=mailer.enabled,
         dev_login=settings.dev_login,
         lyrics_sources=(["netease"] if settings.netease_api_base_url else []) + ["lrclib"],
     )
@@ -68,7 +86,7 @@ def me(user: User | None = Depends(optional_user)):
 def google_start(next: str | None = Query(None)):
     if not settings.google_client_id:
         raise HTTPException(status_code=503, detail="Google sign-in is not configured")
-    state = google_states.issue(_safe_next(next))
+    state = oauth_states.issue(_safe_next(next))
     return RedirectResponse(google.build_authorize_url(state, GOOGLE_REDIRECT_URI))
 
 
@@ -80,7 +98,7 @@ async def google_callback(
     error: str | None = None,
     db: Session = Depends(get_session),
 ):
-    next_path = google_states.consume(state) if state else None
+    next_path = oauth_states.consume(state) if state else None
     if error or not code or next_path is None:
         return RedirectResponse("/?signin=failed")
     try:
@@ -90,6 +108,88 @@ async def google_callback(
         return RedirectResponse("/?signin=failed")
     token = create_session(db, user.id, "google", request.headers.get("user-agent", ""))
     return _signed_in(RedirectResponse(next_path, status_code=303), token)
+
+
+@router.get("/github/start")
+def github_start(next: str | None = Query(None)):
+    if not settings.github_client_id:
+        raise HTTPException(status_code=503, detail="GitHub sign-in is not configured")
+    state = oauth_states.issue(_safe_next(next))
+    return RedirectResponse(github.build_authorize_url(state, GITHUB_REDIRECT_URI))
+
+
+@router.get("/github/callback")
+async def github_callback(
+    request: Request,
+    code: str | None = None,
+    state: str | None = None,
+    error: str | None = None,
+    db: Session = Depends(get_session),
+):
+    next_path = oauth_states.consume(state) if state else None
+    if error or not code or next_path is None:
+        return RedirectResponse("/?signin=failed")
+    try:
+        identity = await github.identify(code, GITHUB_REDIRECT_URI)
+        user = user_for_github(db, identity)
+    except (SessionError, httpx.HTTPError):
+        return RedirectResponse("/?signin=failed")
+    token = create_session(db, user.id, "github", request.headers.get("user-agent", ""))
+    return _signed_in(RedirectResponse(next_path, status_code=303), token)
+
+
+_MAIL = {
+    "en": (
+        "DriveLyrics sign-in code: {code}",
+        "Your DriveLyrics sign-in code is {code}\n\nIt works for 10 minutes. "
+        "If you didn't ask for it, ignore this email: nobody can sign in without the code.\n\n"
+        "DriveLyrics · https://drivelyrics.com",
+    ),
+    "zh": (
+        "DriveLyrics 登录验证码：{code}",
+        "你的 DriveLyrics 登录验证码是 {code}\n\n10 分钟内有效。"
+        "如果不是你本人操作，忽略这封邮件即可：没有验证码谁也登录不了。\n\n"
+        "DriveLyrics · https://drivelyrics.com",
+    ),
+}
+
+
+def _clean_email(raw: str) -> str:
+    email = raw.strip().lower()
+    if len(email) > 254 or not _EMAIL.fullmatch(email):
+        raise HTTPException(status_code=422, detail="not an email address")
+    return email
+
+
+@router.post("/email/start", response_model=EmailStartResponse)
+async def email_start(body: EmailStartRequest, request: Request):
+    """Mails a sign-in code. Answers the same whether or not the address has an
+    account: the form must not tell anyone who uses DriveLyrics."""
+    if not mailer.enabled:
+        raise HTTPException(status_code=503, detail="email sign-in is not configured")
+    email = _clean_email(body.email)
+    ip = request.headers.get("cf-connecting-ip") or (request.client.host if request.client else "")
+    try:
+        code = email_codes.issue(email, ip)
+    except TooSoon:
+        raise HTTPException(status_code=429, detail="too many codes, try again later")
+    subject, text = _MAIL.get(body.lang, _MAIL["en"])
+    if not await mailer.send(email, subject.format(code=code), text.format(code=code)):
+        email_codes.withdraw(email)
+        raise HTTPException(status_code=502, detail="the email could not be sent")
+    return EmailStartResponse(expires_in=EMAIL_CODE_TTL_SECONDS, resend_after=EMAIL_RESEND_AFTER)
+
+
+@router.post("/email/verify", response_model=UserSchema)
+def email_verify(body: EmailVerifyRequest, request: Request, db: Session = Depends(get_session)):
+    # A wrong code is a 400, not a 401: five tries per code are the guard, and a typo
+    # shouldn't feed fail2ban.
+    email = _clean_email(body.email)
+    if not email_codes.check(email, body.code):
+        raise HTTPException(status_code=400, detail="wrong or expired code")
+    user = user_for_email(db, email)
+    token = create_session(db, user.id, "email", request.headers.get("user-agent", ""))
+    return _signed_in(JSONResponse(UserSchema.model_validate(user, from_attributes=True).model_dump()), token)
 
 
 @router.post("/dev-login", response_model=UserSchema)

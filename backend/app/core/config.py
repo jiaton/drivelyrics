@@ -16,6 +16,14 @@ class Settings(BaseSettings):
     google_client_id: str = ""
     google_client_secret: str = ""
 
+    # GitHub OAuth App. Empty = GitHub login disabled.
+    github_client_id: str = ""
+    github_client_secret: str = ""
+
+    # Sign-in codes by email, sent through Resend. Empty key = email sign-in disabled.
+    resend_api_key: str = ""
+    mail_from: str = "DriveLyrics <signin@drivelyrics.com>"
+
     # Owner account: the pre-multi-user data (Spotify link, preferences) is migrated to
     # this email, which is also the one admin. Matched on first Google login.
     owner_email: str = ""

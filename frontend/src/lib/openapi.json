@@ -152,6 +152,215 @@
         }
       }
     },
+    "/api/auth/github/start": {
+      "get": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Github Start",
+        "operationId": "github_start_api_auth_github_start_get",
+        "parameters": [
+          {
+            "name": "next",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Next"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/github/callback": {
+      "get": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Github Callback",
+        "operationId": "github_callback_api_auth_github_callback_get",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Code"
+            }
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "State"
+            }
+          },
+          {
+            "name": "error",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Error"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/email/start": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Email Start",
+        "description": "Mails a sign-in code. Answers the same whether or not the address has an\naccount: the form must not tell anyone who uses DriveLyrics.",
+        "operationId": "email_start_api_auth_email_start_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmailStartRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmailStartResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/email/verify": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Email Verify",
+        "operationId": "email_verify_api_auth_email_verify_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmailVerifyRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/auth/dev-login": {
       "post": {
         "tags": [
@@ -2188,6 +2397,60 @@
         ],
         "title": "DevLoginRequest"
       },
+      "EmailStartRequest": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "lang": {
+            "type": "string",
+            "title": "Lang",
+            "default": "en"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email"
+        ],
+        "title": "EmailStartRequest"
+      },
+      "EmailStartResponse": {
+        "properties": {
+          "expires_in": {
+            "type": "integer",
+            "title": "Expires In"
+          },
+          "resend_after": {
+            "type": "integer",
+            "title": "Resend After"
+          }
+        },
+        "type": "object",
+        "required": [
+          "expires_in",
+          "resend_after"
+        ],
+        "title": "EmailStartResponse"
+      },
+      "EmailVerifyRequest": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "code"
+        ],
+        "title": "EmailVerifyRequest"
+      },
       "EventLog": {
         "properties": {
           "at": {
@@ -2951,6 +3214,14 @@
             "type": "boolean",
             "title": "Google Enabled"
           },
+          "github_enabled": {
+            "type": "boolean",
+            "title": "Github Enabled"
+          },
+          "email_enabled": {
+            "type": "boolean",
+            "title": "Email Enabled"
+          },
           "dev_login": {
             "type": "boolean",
             "title": "Dev Login"
@@ -2967,6 +3238,8 @@
         "required": [
           "user",
           "google_enabled",
+          "github_enabled",
+          "email_enabled",
           "dev_login",
           "lyrics_sources"
         ],

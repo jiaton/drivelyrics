@@ -6,12 +6,28 @@ export const en = {
     subtitle:
       "DriveLyrics shows the lyrics of whatever you're playing, line by line, in time with the music — from Spotify, or from your car itself through Home Assistant. On the car's screen, a tablet, or any browser.",
     google: "Continue with Google",
+    github: "Continue with GitHub",
     newHere: "New here? Your account is created the first time you continue — no separate sign-up.",
     learnMore: "How it works",
     pairTitle: "On a car screen?",
     pairBody: "Scan with your phone (signed in there) to sign in this screen. Nothing to type.",
     pairOr: "or open drivelyrics.com/pair on your phone and enter",
     signinFailed: "Sign-in didn't complete. Please try again.",
+  },
+  signin: {
+    or: "or with your email",
+    email: "Email",
+    send: "Send code",
+    sentTo: "We sent a 6-digit code to",
+    code: "Code from the email",
+    submit: "Sign in",
+    resend: "Send a new code",
+    resendIn: "New code in {s} s",
+    other: "Use another email",
+    wrong: "That code is wrong or has expired.",
+    tooMany: "Too many codes for now. Please wait a few minutes.",
+    notSent: "The email couldn't be sent. Please try again.",
+    invalid: "That doesn't look like an email address.",
   },
   demo: {
     lines: [
@@ -26,7 +42,7 @@ export const en = {
   steps: {
     title: "Up and running in three steps",
     items: [
-      { title: "Continue with Google", body: "Only your email and name. Nothing else." },
+      { title: "Sign in", body: "With Google, GitHub or a code sent to your email. Only your email and name. Nothing else." },
       { title: "Connect what's playing", body: "Spotify (needs Premium; a guided two-minute setup), or your car through Home Assistant." },
       { title: "Scan in the car", body: "Open drivelyrics.com on the car screen and scan with your phone." },
     ],
@@ -37,7 +53,7 @@ export const en = {
     code: "See the code",
     // `code`: a path in the public repo ("" is the repo itself).
     items: [
-      { title: "Google: email and name only", body: "Used purely to sign you in. No contacts, no Drive, no profile picture, no other access to your Google account.", code: "backend/app/auth/models.py" },
+      { title: "Sign-in: email and name only", body: "Google or GitHub is used purely to sign you in: no contacts, no Drive, no repositories, no profile picture. Or skip both and use a code sent to your email.", code: "backend/app/auth/adapter.py" },
       { title: "Spotify: only what's playing", body: "Read-only: the current song and position, and only while a DriveLyrics screen is open. Nothing you play is saved. Your app secret and tokens are stored encrypted.", code: "backend/app/spotify/adapter.py" },
       { title: "Your car: never its keys", body: "With Home Assistant, your car's account stays in your home. DriveLyrics asks for an update only while a screen is open, and keeps the answer in memory — never on disk.", code: "backend/app/feed/service.py" },
       { title: "No ads, no tracking", body: "No analytics, no third-party scripts. The only cookie keeps you signed in.", code: "frontend/index.html" },
@@ -113,12 +129,12 @@ export const en = {
   },
   privacy: {
     title: "Privacy",
-    updated: "Last updated October 15, 2026",
+    updated: "Last updated October 30, 2026",
     sections: [
       {
         h: "What we store",
         p: [
-          "From Google sign-in: your email address and name — nothing else (Google also sends a profile picture link; we discard it). We use them only to identify your account.",
+          "Your email address and name, from Google or GitHub sign-in — nothing else (both also send a profile picture link; we discard it) — or just your email if you sign in with a code. We use them only to identify your account. Whichever way you sign in, the same email is the same account.",
           "The Spotify developer app Client ID and Client secret you enter, and the Spotify access and refresh tokens from connecting it. The secret and tokens are encrypted at rest.",
           "Your display preferences, and the lyric fixes and per-song source choices you make.",
           "Sign-in sessions: a random token in a cookie (we keep only a hash of it) and the browser's user-agent string, so you can tell your devices apart.",
@@ -136,7 +152,7 @@ export const en = {
         h: "Who else is involved",
         p: [
           "Lyrics are looked up by our server at NetEase Cloud Music and LRCLIB. They receive a song's title and artist — never anything about you.",
-          "Cloudflare carries the site's traffic. Google and Spotify handle their own sign-in screens.",
+          "Cloudflare carries the site's traffic. Google, GitHub and Spotify handle their own sign-in screens. Sign-in codes are emailed through Resend (resend.com), which receives your email address and the code.",
           "If you set a now-playing feed webhook, our server sends fetch events to that address. They contain only an event type, an id and a time — nothing about you.",
           "Listen & sing: only when you tap Listen (or when a recognised song ends), a few seconds of microphone sound go through our server to AudD (audd.io) with your own AudD token, to recognise the song. We don't store the recordings; your AudD token is stored encrypted.",
           "No ads, no analytics, no tracking cookies. The only cookie is your sign-in session.",
@@ -147,7 +163,7 @@ export const en = {
         p: [
           "Data is kept on a privately operated server in the United States for as long as your account exists.",
           "Delete your account in Settings at any time: your account, Spotify credentials and tokens, now-playing feed tokens and settings, preferences and sessions are removed immediately. Lyric fixes you made stay, no longer linked to you.",
-          "You can also revoke access at spotify.com/account/apps and myaccount.google.com/permissions.",
+          "You can also revoke access at spotify.com/account/apps, myaccount.google.com/permissions and github.com/settings/applications.",
         ],
       },
       { h: "Children", p: ["DriveLyrics is not directed at children under 13."] },

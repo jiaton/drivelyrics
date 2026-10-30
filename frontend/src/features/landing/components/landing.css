@@ -159,8 +159,6 @@
 .pair-card p { margin: 0.3rem 0 0; color: var(--color-fg-dim); font-size: 0.9rem; line-height: 1.5; }
 .pair-code { color: var(--color-fg); font-family: ui-monospace, monospace; font-size: 1.05rem; letter-spacing: 0.15em; white-space: nowrap; }
 
-.dev-signin { display: flex; gap: 0.5rem; margin-top: 1rem; }
-.dev-signin input { background: transparent; color: var(--color-fg); border: 1px solid var(--card-border); border-radius: 999px; padding: 0.45rem 0.9rem; font: inherit; }
 
 /* lyrics demo */
 .demo {

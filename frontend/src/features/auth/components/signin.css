@@ -1,0 +1,41 @@
+/* The sign-in options (SignInOptions): front page, /pair and /link. Plain tokens only,
+   so it looks the same inside the landing page and on the app's own pages. */
+
+.signin { display: flex; flex-direction: column; gap: 0.9rem; max-width: 26rem; }
+.signin-providers { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+
+.signin-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.55rem;
+  padding: 0.75rem 1.3rem; border-radius: 999px; font: inherit; font-weight: 600;
+  color: var(--color-fg); background: transparent; border: 1px solid rgba(255, 255, 255, 0.18);
+  cursor: pointer; white-space: nowrap;
+}
+.signin-btn:hover:not(:disabled) { background: rgba(255, 255, 255, 0.06); }
+.signin-btn:disabled { opacity: 0.45; cursor: default; }
+.signin-primary { background: var(--color-fg); color: var(--color-bg); border-color: var(--color-fg); }
+.signin-primary:hover:not(:disabled) { background: #fff; }
+
+.signin-or {
+  display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.7rem;
+  color: var(--color-fg-dim); font-size: 0.85rem;
+}
+.signin-or::before, .signin-or::after { content: ""; flex: 1; height: 1px; background: rgba(255, 255, 255, 0.12); }
+
+.signin-row { display: flex; gap: 0.5rem; }
+.signin-row input {
+  flex: 1; min-width: 0; padding: 0.7rem 1rem; border-radius: 999px; font: inherit;
+  color: var(--color-fg); background: transparent; border: 1px solid rgba(255, 255, 255, 0.18);
+  user-select: text; -webkit-user-select: text;
+}
+.signin-row input:focus { outline: none; border-color: var(--color-fg-dim); }
+.signin-row .signin-code { font-family: ui-monospace, monospace; letter-spacing: 0.3em; font-size: 1.1rem; }
+
+.signin-note { margin: 0 0 0.6rem; color: var(--color-fg-dim); font-size: 0.9rem; overflow-wrap: anywhere; }
+.signin-note b { color: var(--color-fg); font-weight: 600; }
+.signin-links { display: flex; gap: 1.2rem; margin-top: 0.6rem; }
+.signin-links button {
+  padding: 0; border: 0; background: none; font: inherit; font-size: 0.85rem;
+  color: var(--color-fg-dim); text-decoration: underline; cursor: pointer;
+}
+.signin-links button:disabled { text-decoration: none; cursor: default; opacity: 0.7; }
+.signin-error { margin: 0.6rem 0 0; color: var(--color-error); font-size: 0.9rem; }

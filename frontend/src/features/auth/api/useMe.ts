@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { api } from "../../../lib/api";
 import { clearCache, readCache, writeCache } from "../../../lib/cache";
-import type { Me } from "../types";
+import type { EmailStart, Me } from "../types";
 
 export function useMe() {
   // Last known answer first (drawn at once), then the server's (see lib/cache).
@@ -35,4 +35,16 @@ export async function devSignIn(email: string) {
 
 export function googleSignInUrl(next: string = "/") {
   return `/api/auth/google/start?next=${encodeURIComponent(next)}`;
+}
+
+export function githubSignInUrl(next: string = "/") {
+  return `/api/auth/github/start?next=${encodeURIComponent(next)}`;
+}
+
+export async function sendEmailCode(email: string, lang: string) {
+  return api<EmailStart>("/api/auth/email/start", { method: "POST", json: { email, lang } });
+}
+
+export async function emailSignIn(email: string, code: string) {
+  await api("/api/auth/email/verify", { method: "POST", json: { email, code } });
 }

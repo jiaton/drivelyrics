@@ -14,12 +14,29 @@ class MeResponse(BaseModel):
 
     user: UserSchema | None
     google_enabled: bool
+    github_enabled: bool
+    email_enabled: bool  # sign-in by a code sent to the email
     dev_login: bool
     lyrics_sources: list[str]  # providers this deployment has, e.g. ["netease", "lrclib"]
 
 
 class DevLoginRequest(BaseModel):
     email: str
+
+
+class EmailStartRequest(BaseModel):
+    email: str
+    lang: str = "en"  # "en" | "zh": the language of the mail
+
+
+class EmailStartResponse(BaseModel):
+    expires_in: int
+    resend_after: int
+
+
+class EmailVerifyRequest(BaseModel):
+    email: str
+    code: str
 
 
 class PairStartResponse(BaseModel):

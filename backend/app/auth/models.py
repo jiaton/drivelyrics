@@ -2,14 +2,16 @@ from sqlmodel import Field, SQLModel
 
 
 class User(SQLModel, table=True):
-    """Google is the only way in. A row can exist before its first login (the owner,
-    created by the migration from OWNER_EMAIL) — google_sub is filled on that login."""
+    """One account per email, however it signs in: Google, GitHub or a code sent to the
+    email. A row can exist before its first login (the owner, created by the migration
+    from OWNER_EMAIL); google_sub / github_id are filled on that provider's first login."""
 
     __tablename__ = "users"
 
     id: int | None = Field(default=None, primary_key=True)
     email: str = Field(unique=True, index=True)
     google_sub: str | None = Field(default=None, unique=True, index=True)
+    github_id: str | None = Field(default=None, unique=True, index=True)
     name: str = Field(default="")
     picture_url: str = Field(default="")  # unused, always "": we don't keep Google's profile picture
     role: str = Field(default="user")  # "user" | "admin"
@@ -25,5 +27,5 @@ class AuthSession(SQLModel, table=True):
     user_id: int = Field(foreign_key="users.id", index=True)
     created_at: float
     last_seen_at: float
-    via: str  # "google" | "pairing" | "dev"
+    via: str  # "google" | "github" | "email" | "pairing" | "handoff" | "dev"
     user_agent: str = Field(default="")

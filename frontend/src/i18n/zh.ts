@@ -7,6 +7,7 @@ export const zh: Dictionary = {
     title: "每一程，\n都能跟着唱。",
     subtitle: "DriveLyrics 实时显示你正在放的歌的歌词，一句一句跟着音乐走——来自 Spotify，或者通过 Home Assistant 直接来自你的车。车机屏幕、平板或任何浏览器都能用。",
     google: "用 Google 继续",
+    github: "用 GitHub 继续",
     newHere: "第一次用？继续后会自动创建账号，不用另外注册。",
     learnMore: "如何使用",
     pairTitle: "在车机屏幕上？",
@@ -14,12 +15,27 @@ export const zh: Dictionary = {
     pairOr: "或者在手机上打开 drivelyrics.com/pair 并输入",
     signinFailed: "登录没有完成，请再试一次。",
   },
+  signin: {
+    or: "或者用邮箱",
+    email: "邮箱",
+    send: "发送验证码",
+    sentTo: "6 位验证码已发到",
+    code: "邮件里的验证码",
+    submit: "登录",
+    resend: "重新发送",
+    resendIn: "{s} 秒后可重发",
+    other: "换一个邮箱",
+    wrong: "验证码不对或已过期。",
+    tooMany: "验证码发得太多了，请过几分钟再试。",
+    notSent: "邮件没发出去，请再试一次。",
+    invalid: "这看起来不是邮箱地址。",
+  },
   // Same invented English lines in both languages (owner's call: no Chinese in the demo).
   demo: en.demo,
   steps: {
     title: "三步开始",
     items: [
-      { title: "用 Google 继续", body: "只用你的邮箱和名字，别的都不碰。" },
+      { title: "登录", body: "用 Google、GitHub 或邮箱验证码。只用你的邮箱和名字，别的都不碰。" },
       { title: "连上正在放的歌", body: "Spotify（需要 Premium，两分钟引导设置），或者通过 Home Assistant 连上你的车。" },
       { title: "车上扫码", body: "车机打开 drivelyrics.com，手机扫一下就好。" },
     ],
@@ -29,7 +45,7 @@ export const zh: Dictionary = {
     lead: "我们只存你是谁和你的设置——从不存你放过什么歌、开去过哪里。每一条都附上了实现它的代码。",
     code: "看代码",
     items: [
-      { title: "Google：只拿邮箱和名字", body: "只用来登录。不碰你的联系人、云端硬盘和头像，也没有你 Google 账号的其他任何权限。", code: "backend/app/auth/models.py" },
+      { title: "登录：只拿邮箱和名字", body: "Google 或 GitHub 只用来登录：不碰联系人、云端硬盘、代码仓库和头像。也可以都不用，收一封邮件验证码登录。", code: "backend/app/auth/adapter.py" },
       { title: "Spotify：只读正在播放", body: "只读当前这首歌和播放进度，而且只在 DriveLyrics 页面打开时读取。你放过的歌一首都不存。你的应用密钥和令牌都加密保存。", code: "backend/app/spotify/adapter.py" },
       { title: "你的车：从不碰它的钥匙", body: "用 Home Assistant 时，车的账号留在你自己家里。DriveLyrics 只在页面打开时请求更新，拿到的结果只放在内存里，从不写进磁盘。", code: "backend/app/feed/service.py" },
       { title: "没有广告，没有追踪", body: "没有统计分析，没有第三方脚本。唯一的 cookie 只用来保持登录。", code: "frontend/index.html" },
@@ -105,12 +121,12 @@ export const zh: Dictionary = {
   },
   privacy: {
     title: "隐私说明",
-    updated: "最后更新：2026 年 10 月 15 日",
+    updated: "最后更新：2026 年 10 月 30 日",
     sections: [
       {
         h: "我们保存什么",
         p: [
-          "来自 Google 登录：你的邮箱和名字，别的都不要（Google 还会附带头像链接，我们直接丢弃）。只用来识别你的账号。",
+          "来自 Google 或 GitHub 登录的邮箱和名字，别的都不要（两边都会附带头像链接，我们直接丢弃）；用验证码登录则只有邮箱。只用来识别你的账号。不管用哪种方式登录，同一个邮箱就是同一个账号。",
           "你填入的 Spotify 开发者应用 Client ID 和 Client secret，以及连接后得到的 Spotify 访问令牌和刷新令牌。Secret 和令牌都加密保存。",
           "你的显示设置，以及你做的歌词纠正和单曲来源选择。",
           "登录会话：cookie 里的一个随机令牌（我们只保存它的哈希值），以及浏览器的 User-Agent，方便你分辨自己的设备。",
@@ -128,7 +144,7 @@ export const zh: Dictionary = {
         h: "还有谁参与",
         p: [
           "歌词由我们的服务器向网易云音乐和 LRCLIB 查询，它们只会收到歌名和歌手——不会收到任何关于你的信息。",
-          "网站流量经过 Cloudflare。Google 和 Spotify 负责各自的登录页面。",
+          "网站流量经过 Cloudflare。Google、GitHub 和 Spotify 负责各自的登录页面。登录验证码通过 Resend（resend.com）发送，它会收到你的邮箱地址和验证码。",
           "如果你设置了推送通道的 webhook，我们的服务器会向这个地址发送读取事件。事件里只有事件类型、编号和时间，不含任何关于你的信息。",
           "听歌识别：只有在你点「开始识别」（或认出的歌结束）时，才会录几秒麦克风声音，经我们的服务器用你自己的 AudD 密钥发给 AudD（audd.io）识别歌曲。录音我们不保存；你的 AudD 密钥加密保存。",
           "没有广告，没有统计分析，没有追踪 cookie。唯一的 cookie 是你的登录会话。",
@@ -139,7 +155,7 @@ export const zh: Dictionary = {
         p: [
           "数据保存在美国一台私人运营的服务器上，保存到你删除账号为止。",
           "随时可以在设置里删除账号：账号、Spotify 凭据和令牌、推送通道的密钥和设置、显示设置和登录会话会立即删除。你做过的歌词纠正会保留，但不再与你关联。",
-          "你也可以在 spotify.com/account/apps 和 myaccount.google.com/permissions 撤销授权。",
+          "你也可以在 spotify.com/account/apps、myaccount.google.com/permissions 和 github.com/settings/applications 撤销授权。",
         ],
       },
       { h: "儿童", p: ["DriveLyrics 不面向 13 岁以下儿童。"] },

@@ -135,6 +135,14 @@ def _v6_now_playing_source(conn: Connection) -> None:
         conn.execute(text("ALTER TABLE userpreferences ADD COLUMN sync_offset_ms INTEGER NOT NULL DEFAULT 0"))
 
 
+def _v7_github_sign_in(conn: Connection) -> None:
+    """GitHub sign-in (2026-10-29): the account's GitHub user id."""
+    if "users" not in _tables(conn) or "github_id" in _columns(conn, "users"):
+        return
+    conn.execute(text("ALTER TABLE users ADD COLUMN github_id VARCHAR"))
+    conn.execute(text("CREATE UNIQUE INDEX IF NOT EXISTS ix_users_github_id ON users (github_id)"))
+
+
 STEPS: list[Callable[[Connection], None]] = [
     _v1_multi_user,
     _v2_lyrics_source,
@@ -142,6 +150,7 @@ STEPS: list[Callable[[Connection], None]] = [
     _v4_cantonese,
     _v5_cantonese_votes,
     _v6_now_playing_source,
+    _v7_github_sign_in,
 ]
 
 
