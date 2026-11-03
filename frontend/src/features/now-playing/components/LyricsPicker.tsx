@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../../../components/ui/Button";
 import { useI18n } from "../../../i18n";
 import { fill } from "../../../i18n/rich";
@@ -6,10 +6,12 @@ import { chooseCandidate, useCandidates } from "../api/useCandidates";
 import type { LyricsData } from "../api/useLyrics";
 import type { Candidate, TrackRef } from "../types";
 import { formatDuration } from "../../../lib/format";
-
+import { fetchSong } from "../../search/api/search";
 
 /**
- * "Wrong lyrics?" — every plausible match from every source, best first.
+ * "Wrong lyrics?" — every plausible match from every source, best first. Tapping one
+ * shows its lyrics first (a title alone often can't tell two versions apart); the pick
+ * is made from there.
  * - A pick from the source being shown corrects that source's match, for everyone.
  * - A pick from the other source first asks whether the shown lyrics were the wrong song:
  *   yes → that source is skipped for this track for everyone; no → it's only this
@@ -32,6 +34,7 @@ export function LyricsPicker({
   const [busy, setBusy] = useState<string | null>(null);
   const [chooseError, setChooseError] = useState<string | null>(null);
   const [confirming, setConfirming] = useState<Candidate | null>(null);
+  const [previewing, setPreviewing] = useState<Candidate | null>(null);
 
   const submit = (c: Candidate, wrongSource?: string) => {
     setConfirming(null);
@@ -44,6 +47,7 @@ export function LyricsPicker({
   };
 
   const choose = (c: Candidate) => {
+    setPreviewing(null);
     if (shownSource && c.source !== shownSource) setConfirming(c);
     else submit(c);
   };
@@ -90,9 +94,11 @@ export function LyricsPicker({
               {tp.back}
             </Button>
           </div>
+        ) : previewing ? (
+          <Preview candidate={previewing} onUse={() => choose(previewing)} onBack={() => setPreviewing(null)} />
         ) : null}
 
-        <div style={{ overflowY: "auto", padding: "0.5rem 1rem 1rem", touchAction: "pan-y", display: confirming ? "none" : undefined }}>
+        <div style={{ overflowY: "auto", padding: "0.5rem 1rem 1rem", touchAction: "pan-y", display: confirming || previewing ? "none" : undefined }}>
           {error || chooseError ? <p style={{ color: "var(--color-error)", padding: "0 0.5rem" }}>{error ?? chooseError}</p> : null}
           {candidates === null && !error ? <p style={{ color: "var(--color-fg-dim)", padding: "0 0.5rem" }}>{tp.searching}</p> : null}
           {candidates?.length === 0 ? <p style={{ color: "var(--color-fg-dim)", padding: "0 0.5rem" }}>{tp.nothingFound}</p> : null}
@@ -102,7 +108,7 @@ export function LyricsPicker({
             return (
               <button
                 key={key}
-                onClick={() => choose(c)}
+                onClick={() => setPreviewing(c)}
                 disabled={busy !== null}
                 style={{
                   display: "flex",
@@ -138,11 +144,66 @@ export function LyricsPicker({
             );
           })}
         </div>
-        <div style={{ padding: "0.75rem 1.5rem 1.25rem", borderTop: "1px solid rgba(255,255,255,0.12)", color: "var(--color-fg-dim)", fontSize: "0.8rem" }}>
+        <div style={{ padding: "0.75rem 1.5rem 1.25rem", display: previewing ? "none" : undefined, borderTop: "1px solid rgba(255,255,255,0.12)", color: "var(--color-fg-dim)", fontSize: "0.8rem" }}>
           {shownSource
             ? fill(tp.footerShown, { source: shownLabel })
             : tp.footerNone}
         </div>
+      </div>
+    </div>
+  );
+}
+
+/** A candidate's lyrics, read before picking it. Fetched like a search result's (cached, and it touches no track's match). */
+function Preview({ candidate, onUse, onBack }: { candidate: Candidate; onUse: () => void; onBack: () => void }) {
+  const { t } = useI18n();
+  const tp = t.app.picker;
+  const [data, setData] = useState<LyricsData | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let live = true;
+    fetchSong(candidate.source, candidate.song_id)
+      .then((d) => live && setData(d))
+      .catch((err: Error) => live && setError(err.message === "that song has no synced lyrics" ? tp.noSynced : err.message));
+    return () => {
+      live = false;
+    };
+  }, [candidate, tp.noSynced]);
+
+  const translations = new Map((data?.translationLines ?? []).map((line) => [line.t, line.text]));
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", minHeight: 0, flex: 1 }}>
+      <div style={{ padding: "0.25rem 1.5rem 0.5rem", color: "var(--color-fg)" }}>
+        <div style={{ fontWeight: 600 }}>{candidate.name}</div>
+        <div style={{ color: "var(--color-fg-dim)", fontSize: "0.85rem" }}>
+          {candidate.artists.join(", ")}
+          {candidate.album ? ` · ${candidate.album}` : ""} · {formatDuration(candidate.duration_ms)} · {t.app.sourceNames[candidate.source] ?? candidate.source}
+        </div>
+      </div>
+      <div style={{ overflowY: "auto", padding: "0.5rem 1.5rem", touchAction: "pan-y", flex: 1, borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+        {error ? <p style={{ color: "var(--color-error)" }}>{error}</p> : null}
+        {!data && !error ? <p style={{ color: "var(--color-fg-dim)" }}>{tp.loading}</p> : null}
+        {data?.lines
+          .filter((line) => line.text.trim())
+          .map((line, i) => (
+            <div key={i} style={{ padding: "0.3rem 0", lineHeight: 1.4 }}>
+              <span style={{ color: "var(--color-fg-dim)", fontSize: "0.75rem", fontFamily: "ui-monospace, monospace", marginRight: "0.75rem" }}>
+                {formatDuration(line.t)}
+              </span>
+              <span style={{ color: "var(--color-fg)" }}>{line.text}</span>
+              {translations.get(line.t) ? <div style={{ color: "var(--color-fg-dim)", fontSize: "0.85rem", marginLeft: "3.2rem" }}>{translations.get(line.t)}</div> : null}
+            </div>
+          ))}
+      </div>
+      <div style={{ display: "flex", gap: "0.75rem", padding: "0.75rem 1.5rem 1.25rem", borderTop: "1px solid rgba(255,255,255,0.12)" }}>
+        <Button onClick={onUse} disabled={!data}>
+          {tp.use}
+        </Button>
+        <Button variant="ghost" onClick={onBack}>
+          {tp.back}
+        </Button>
       </div>
     </div>
   );
