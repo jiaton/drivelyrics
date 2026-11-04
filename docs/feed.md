@@ -24,7 +24,7 @@ Machine-readable contract: [`feed/v1/push.schema.json`](feed/v1/push.schema.json
 ## Set up
 
 **Home Assistant:** install the [DriveLyrics integration](https://github.com/jiaton/drivelyrics-homeassistant)
-(HACS), add it, pick your player, approve in DriveLyrics. No token to copy, nothing to
+(in HACS: search for DriveLyrics), add it, pick your player, approve in DriveLyrics. No token to copy, nothing to
 expose, no YAML. The rest of this page is for writing your own receiver.
 
 1. **Settings → Now-playing feed → Create token.** Give it the name of where it will live
