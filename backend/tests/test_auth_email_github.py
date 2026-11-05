@@ -5,7 +5,8 @@ from sqlmodel import Session
 
 from app.auth import routes
 from app.auth.ports import GitHubIdentity, GoogleIdentity
-from app.auth.service import EmailCodes, SessionError, TooSoon, user_for_email, user_for_github, user_for_google
+from app.auth.email_codes import EmailCodes, TooSoon
+from app.auth.service import SessionError, user_for_email, user_for_github, user_for_google
 from app.core.db import engine
 
 

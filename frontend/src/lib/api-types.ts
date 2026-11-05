@@ -232,6 +232,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/auth/pair/info": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Pair Info
+         * @description Which device shows this code, for the phone to check before approving.
+         */
+        get: operations["pair_info_api_auth_pair_info_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/auth/pair/approve": {
         parameters: {
             query?: never;
@@ -243,6 +263,63 @@ export interface paths {
         put?: never;
         /** Pair Approve */
         post: operations["pair_approve_api_auth_pair_approve_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Sessions
+         * @description Every browser signed in to this account, most recently used first.
+         */
+        get: operations["sessions_api_auth_sessions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/sessions/{sid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Sign Out Session */
+        delete: operations["sign_out_session_api_auth_sessions__sid__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/logout-everywhere": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Logout Everywhere
+         * @description Ends every session of this account, this one included.
+         */
+        post: operations["logout_everywhere_api_auth_logout_everywhere_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1292,6 +1369,18 @@ export interface components {
             /** Code */
             code: string;
         };
+        /**
+         * PairInfoResponse
+         * @description Which device is asking to be signed in, so nobody approves a screen that isn't theirs.
+         */
+        PairInfoResponse: {
+            /** Device */
+            device: string;
+            /** Location */
+            location: string;
+            /** Asked At */
+            asked_at: number;
+        };
         /** PairPollRequest */
         PairPollRequest: {
             /** Poll Secret */
@@ -1440,6 +1529,26 @@ export interface components {
         SearchResponse: {
             /** Results */
             results: components["schemas"]["SearchHit"][];
+        };
+        /** SessionInfo */
+        SessionInfo: {
+            /** Id */
+            id: string;
+            /** Device */
+            device: string;
+            /** Via */
+            via: string;
+            /** Created At */
+            created_at: number;
+            /** Last Seen At */
+            last_seen_at: number;
+            /** Current */
+            current: boolean;
+        };
+        /** SessionList */
+        SessionList: {
+            /** Sessions */
+            sessions: components["schemas"]["SessionInfo"][];
         };
         /** SourceStats */
         SourceStats: {
@@ -2074,6 +2183,37 @@ export interface operations {
             };
         };
     };
+    pair_info_api_auth_pair_info_get: {
+        parameters: {
+            query?: {
+                code?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PairInfoResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     pair_approve_api_auth_pair_approve_post: {
         parameters: {
             query?: never;
@@ -2103,6 +2243,77 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    sessions_api_auth_sessions_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SessionList"];
+                };
+            };
+        };
+    };
+    sign_out_session_api_auth_sessions__sid__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OkResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    logout_everywhere_api_auth_logout_everywhere_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OkResponse"];
                 };
             };
         };

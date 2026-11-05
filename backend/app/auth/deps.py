@@ -12,6 +12,16 @@ def session_cookie_header(token: str, max_age: int = COOKIE_MAX_AGE) -> str:
     return f"{COOKIE_NAME}={token}; Path=/; Max-Age={max_age}; HttpOnly; SameSite=Lax{secure}"
 
 
+def signed_in(response, token: str):
+    """The response, now also signing this browser in with the session `token`."""
+    response.headers.append("set-cookie", session_cookie_header(token))
+    return response
+
+
+def client_ip(request: Request) -> str:
+    return request.headers.get("cf-connecting-ip") or (request.client.host if request.client else "")
+
+
 def optional_user(request: Request, db: Session = Depends(get_session)) -> User | None:
     token = request.cookies.get(COOKIE_NAME)
     if not token:

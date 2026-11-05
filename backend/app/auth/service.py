@@ -1,7 +1,6 @@
 import hashlib
 import secrets
 import time
-from dataclasses import dataclass, field
 
 from sqlmodel import Session, select
 
@@ -20,6 +19,10 @@ COOKIE_REFRESH_AFTER = 86_400
 
 class SessionError(Exception):
     pass
+
+
+class AccountConflict(SessionError):
+    """The email's account is already linked to a different account at the provider."""
 
 
 def _hash(token: str) -> str:
@@ -58,6 +61,59 @@ def delete_session(db: Session, token: str) -> None:
         db.commit()
 
 
+def session_id(row: AuthSession) -> str:
+    """What the account page calls a session: a prefix of its token's hash (never the
+    token), enough to tell one apart and to sign it out."""
+    return row.token_hash[:16]
+
+
+def session_id_of_token(token: str) -> str:
+    return _hash(token)[:16] if token else ""
+
+
+def list_sessions(db: Session, user_id: int) -> list[AuthSession]:
+    rows = db.exec(select(AuthSession).where(AuthSession.user_id == user_id)).all()
+    return sorted(rows, key=lambda r: r.last_seen_at, reverse=True)
+
+
+def delete_user_session(db: Session, user_id: int, sid: str) -> bool:
+    for row in list_sessions(db, user_id):
+        if session_id(row) == sid:
+            db.delete(row)
+            db.commit()
+            return True
+    return False
+
+
+def delete_all_sessions(db: Session, user_id: int) -> int:
+    rows = list_sessions(db, user_id)
+    for row in rows:
+        db.delete(row)
+    db.commit()
+    return len(rows)
+
+
+def describe_device(user_agent: str) -> str:
+    """A short name for a browser from its user agent ("Tesla browser", "Chrome on
+    Windows"); "" when it says nothing useful."""
+    ua = user_agent or ""
+    if "Tesla" in ua:
+        return "Tesla browser"
+    browser = next(
+        (name for key, name in (("Edg/", "Edge"), ("OPR/", "Opera"), ("Firefox/", "Firefox"), ("CriOS/", "Chrome"),
+                                ("Chrome/", "Chrome"), ("Safari/", "Safari")) if key in ua),
+        "",
+    )
+    system = next(
+        (name for key, name in (("iPhone", "iPhone"), ("iPad", "iPad"), ("Android", "Android"), ("Windows", "Windows"),
+                                ("Mac OS X", "Mac"), ("CrOS", "ChromeOS"), ("Linux", "Linux")) if key in ua),
+        "",
+    )
+    if browser and system:
+        return f"{browser} on {system}"
+    return browser or system
+
+
 def prune_dead_sessions(db: Session) -> int:
     """Sessions unused for longer than the cookie lives: no browser can present them
     any more. Keeps the table from only ever growing (one row per sign-in/device)."""
@@ -91,9 +147,13 @@ def user_for_google(db: Session, identity: GoogleIdentity) -> User:
     email = identity.email.strip().lower()
     user = db.exec(select(User).where(User.google_sub == identity.sub)).first()
     if user is None:
-        user = db.exec(select(User).where(User.email == email, User.google_sub == None)).first()  # noqa: E711
+        user = db.exec(select(User).where(User.email == email)).first()
+        if user is not None and user.google_sub is not None:
+            raise AccountConflict("email belongs to an account linked to another Google account")
     if user is None:
         user = User(email=email, role=_role_for(email), created_at=time.time())
+    if user.email != email and db.exec(select(User).where(User.email == email, User.id != user.id)).first():
+        raise AccountConflict("the Google account's new email belongs to another account")
     user.google_sub = identity.sub
     user.email = email
     user.name = identity.name
@@ -113,7 +173,7 @@ def user_for_github(db: Session, identity: GitHubIdentity) -> User:
     if user is None:
         user = db.exec(select(User).where(User.email == email)).first()
         if user is not None and user.github_id is not None:
-            raise SessionError("email belongs to an account linked to another GitHub user")
+            raise AccountConflict("email belongs to an account linked to another GitHub user")
     if user is None:
         user = User(email=email, name=identity.name, role=_role_for(email), created_at=time.time())
     user.github_id = identity.id
@@ -146,152 +206,3 @@ def user_for_dev_login(db: Session, email: str) -> User:
         db.commit()
         db.refresh(user)
     return user
-
-
-# --- Device pairing -----------------------------------------------------------------
-# The car shows a QR code (and the same short code as text); a phone that's already
-# signed in opens it and approves; the car, polling with a secret only it holds, then
-# receives its own session cookie. Nothing is typed in the car and Google sign-in never
-# runs in the car's browser.
-
-PAIR_TTL_SECONDS = 600
-_CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"  # no 0/O, 1/I lookalikes
-_CODE_LENGTH = 6
-_MAX_PENDING_PAIRINGS = 500
-
-
-@dataclass
-class _Pairing:
-    code: str
-    poll_secret_hash: str
-    created_at: float
-    approved_user_id: int | None = None
-    user_agent: str = ""
-
-
-@dataclass
-class PairingRegistry:
-    _by_code: dict[str, _Pairing] = field(default_factory=dict)
-
-    def start(self, user_agent: str = "") -> tuple[str, str]:
-        """Returns (code, poll_secret). The code is public (it's on screen); the poll
-        secret never leaves the requesting browser."""
-        self._prune()
-        while len(self._by_code) >= _MAX_PENDING_PAIRINGS:
-            del self._by_code[next(iter(self._by_code))]
-        code = "".join(secrets.choice(_CODE_ALPHABET) for _ in range(_CODE_LENGTH))
-        poll_secret = secrets.token_urlsafe(32)
-        self._by_code[code] = _Pairing(code, _hash(poll_secret), time.time(), user_agent=user_agent[:200])
-        return code, poll_secret
-
-    def approve(self, code: str, user_id: int) -> bool:
-        self._prune()
-        pairing = self._by_code.get(normalize_code(code))
-        if pairing is None or pairing.approved_user_id is not None:
-            return False
-        pairing.approved_user_id = user_id
-        return True
-
-    def poll(self, poll_secret: str) -> tuple[str, int | None, str]:
-        """("pending" | "approved" | "expired", user_id, user_agent). Approval is handed
-        out once; the pairing is gone after that."""
-        self._prune()
-        wanted = _hash(poll_secret)
-        for code, pairing in self._by_code.items():
-            if secrets.compare_digest(pairing.poll_secret_hash, wanted):
-                if pairing.approved_user_id is None:
-                    return "pending", None, ""
-                del self._by_code[code]
-                return "approved", pairing.approved_user_id, pairing.user_agent
-        return "expired", None, ""
-
-    def _prune(self) -> None:
-        now = time.time()
-        for code in [c for c, p in self._by_code.items() if now - p.created_at > PAIR_TTL_SECONDS]:
-            del self._by_code[code]
-
-
-def normalize_code(code: str) -> str:
-    return "".join(ch for ch in code.upper() if ch.isalnum())
-
-
-pairings = PairingRegistry()
-
-
-# --- Sign-in codes by email ---------------------------------------------------------
-# Six digits, valid 10 minutes, five tries; then a new code has to be sent. Sending is
-# limited per address, per visitor IP and overall (the mail service's daily quota), so
-# the form can't be used to flood someone's inbox. In memory: a restart just means
-# "send a new code".
-
-EMAIL_CODE_TTL_SECONDS = 600
-EMAIL_CODE_TRIES = 5
-EMAIL_RESEND_AFTER = 60
-_EMAIL_PER_ADDRESS_HOUR = 5
-_EMAIL_PER_IP_HOUR = 10
-_EMAIL_PER_DAY = 90  # Resend's free plan sends 100 a day
-_MAX_PENDING_CODES = 1000
-
-
-class TooSoon(Exception):
-    pass
-
-
-@dataclass
-class _EmailCode:
-    code_hash: str
-    created_at: float
-    tries_left: int = EMAIL_CODE_TRIES
-
-
-@dataclass
-class EmailCodes:
-    _by_email: dict[str, _EmailCode] = field(default_factory=dict)
-    _sent: list[tuple[float, str, str]] = field(default_factory=list)  # (at, email, ip)
-
-    def issue(self, email: str, ip: str) -> str:
-        """A new code for the address (replacing any earlier one). TooSoon when a limit
-        is reached."""
-        now = time.time()
-        self._prune(now)
-        hour = [(e, i) for at, e, i in self._sent if now - at < 3600]
-        last = max((at for at, e, _ in self._sent if e == email), default=0.0)
-        if (
-            now - last < EMAIL_RESEND_AFTER
-            or sum(e == email for e, _ in hour) >= _EMAIL_PER_ADDRESS_HOUR
-            or (ip and sum(i == ip for _, i in hour) >= _EMAIL_PER_IP_HOUR)
-            or len(self._sent) >= _EMAIL_PER_DAY
-        ):
-            raise TooSoon
-        while len(self._by_email) >= _MAX_PENDING_CODES:
-            del self._by_email[next(iter(self._by_email))]
-        code = f"{secrets.randbelow(1_000_000):06d}"
-        self._by_email[email] = _EmailCode(_hash(f"{email}:{code}"), now)
-        self._sent.append((now, email, ip))
-        return code
-
-    def withdraw(self, email: str) -> None:
-        """The mail didn't go out: the code is useless, but the send still counts."""
-        self._by_email.pop(email, None)
-
-    def check(self, email: str, code: str) -> bool:
-        """True once for the right code; a wrong one uses up a try."""
-        self._prune(time.time())
-        entry = self._by_email.get(email)
-        if entry is None:
-            return False
-        if secrets.compare_digest(entry.code_hash, _hash(f"{email}:{code.strip()}")):
-            del self._by_email[email]
-            return True
-        entry.tries_left -= 1
-        if entry.tries_left <= 0:
-            del self._by_email[email]
-        return False
-
-    def _prune(self, now: float) -> None:
-        for email in [e for e, c in self._by_email.items() if now - c.created_at > EMAIL_CODE_TTL_SECONDS]:
-            del self._by_email[email]
-        self._sent = [s for s in self._sent if now - s[0] < 86_400]
-
-
-email_codes = EmailCodes()

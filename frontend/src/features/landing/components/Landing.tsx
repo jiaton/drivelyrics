@@ -21,7 +21,7 @@ function formatCode(code: string) {
 export function Landing({ me, onSignedIn }: { me: Me; onSignedIn: () => void }) {
   const { t } = useI18n();
   const { pairing } = usePairing(onSignedIn);
-  const failed = new URLSearchParams(window.location.search).get("signin") === "failed";
+  const signin = new URLSearchParams(window.location.search).get("signin");
   const canSignIn = me.google_enabled || me.github_enabled || me.email_enabled || me.dev_login;
 
   return (
@@ -45,7 +45,8 @@ export function Landing({ me, onSignedIn }: { me: Me; onSignedIn: () => void }) 
             <span className="eyebrow">{t.hero.eyebrow}</span>
             <h1>{t.hero.title}</h1>
             <p className="lead">{t.hero.subtitle}</p>
-            {failed ? <p className="error">{t.hero.signinFailed}</p> : null}
+            {signin === "failed" ? <p className="error">{t.hero.signinFailed}</p> : null}
+            {signin === "conflict" ? <p className="error">{t.hero.signinConflict}</p> : null}
             <div className="hero-actions" id="signin">
               <SignInOptions me={me} onSignedIn={onSignedIn} />
             </div>

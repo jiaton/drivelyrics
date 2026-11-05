@@ -3,6 +3,7 @@ import { NowPlayingScreen } from "./features/now-playing/components/NowPlayingSc
 import { Landing } from "./features/landing/components/Landing";
 import { Privacy } from "./features/landing/components/Privacy";
 import { PairApprove } from "./features/auth/components/PairApprove";
+import { DevicesPage } from "./features/auth/components/DevicesPage";
 import { useMe } from "./features/auth/api/useMe";
 import { useSpotifyStatus } from "./features/spotify-setup/api/useSpotifyStatus";
 import { useSources } from "./features/now-playing/api/useSources";
@@ -43,6 +44,7 @@ function SignedInApp({ user, lyricsSources }: { user: User; lyricsSources: strin
 
   if (sourcesError && !sources) return <ErrorState message={t.app.backendDown} />;
   if (!sources) return <LoadingSpinner />;
+  if (window.location.pathname === "/devices") return <DevicesPage />;
   if (window.location.pathname === "/feed") {
     return <FeedSettingsPage sources={sources} onSourcesChanged={refreshSources} selectSource={selectSource} />;
   }

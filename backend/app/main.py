@@ -7,6 +7,7 @@ from sqlmodel import Session
 from app.account.routes import router as account_router
 from app.admin.routes import router as admin_router
 from app.auth.deps import SessionCookieMiddleware
+from app.auth.device_routes import router as device_router
 from app.auth.routes import router as auth_router
 from app.auth.service import prune_dead_sessions
 from app.core.db import engine, init_db
@@ -38,6 +39,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="lyric", lifespan=lifespan)
 app.add_middleware(SessionCookieMiddleware)
 app.include_router(auth_router)
+app.include_router(device_router)
 app.include_router(spotify_router)
 app.include_router(lyrics_router)
 app.include_router(preferences_router)

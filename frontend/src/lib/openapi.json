@@ -546,6 +546,50 @@
         }
       }
     },
+    "/api/auth/pair/info": {
+      "get": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Pair Info",
+        "description": "Which device shows this code, for the phone to check before approving.",
+        "operationId": "pair_info_api_auth_pair_info_get",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "title": "Code"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PairInfoResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/auth/pair/approve": {
       "post": {
         "tags": [
@@ -580,6 +624,92 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/sessions": {
+      "get": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Sessions",
+        "description": "Every browser signed in to this account, most recently used first.",
+        "operationId": "sessions_api_auth_sessions_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/sessions/{sid}": {
+      "delete": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Sign Out Session",
+        "operationId": "sign_out_session_api_auth_sessions__sid__delete",
+        "parameters": [
+          {
+            "name": "sid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Sid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/logout-everywhere": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Logout Everywhere",
+        "description": "Ends every session of this account, this one included.",
+        "operationId": "logout_everywhere_api_auth_logout_everywhere_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
                 }
               }
             }
@@ -3272,6 +3402,30 @@
         ],
         "title": "PairApproveRequest"
       },
+      "PairInfoResponse": {
+        "properties": {
+          "device": {
+            "type": "string",
+            "title": "Device"
+          },
+          "location": {
+            "type": "string",
+            "title": "Location"
+          },
+          "asked_at": {
+            "type": "number",
+            "title": "Asked At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "device",
+          "location",
+          "asked_at"
+        ],
+        "title": "PairInfoResponse",
+        "description": "Which device is asking to be signed in, so nobody approves a screen that isn't theirs."
+      },
       "PairPollRequest": {
         "properties": {
           "poll_secret": {
@@ -3737,6 +3891,60 @@
           "results"
         ],
         "title": "SearchResponse"
+      },
+      "SessionInfo": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "device": {
+            "type": "string",
+            "title": "Device"
+          },
+          "via": {
+            "type": "string",
+            "title": "Via"
+          },
+          "created_at": {
+            "type": "number",
+            "title": "Created At"
+          },
+          "last_seen_at": {
+            "type": "number",
+            "title": "Last Seen At"
+          },
+          "current": {
+            "type": "boolean",
+            "title": "Current"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "device",
+          "via",
+          "created_at",
+          "last_seen_at",
+          "current"
+        ],
+        "title": "SessionInfo"
+      },
+      "SessionList": {
+        "properties": {
+          "sessions": {
+            "items": {
+              "$ref": "#/components/schemas/SessionInfo"
+            },
+            "type": "array",
+            "title": "Sessions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "sessions"
+        ],
+        "title": "SessionList"
       },
       "SourceStats": {
         "properties": {

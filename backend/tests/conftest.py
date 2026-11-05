@@ -24,6 +24,9 @@ os.environ.update(
         "OWNER_EMAIL": "owner@example.com",
         "GOOGLE_CLIENT_ID": "",
         "GOOGLE_CLIENT_SECRET": "",
+        "GITHUB_CLIENT_ID": "",
+        "GITHUB_CLIENT_SECRET": "",
+        "RESEND_API_KEY": "",
         "SPOTIFY_CLIENT_ID": "legacy-client-id",
         "SPOTIFY_CLIENT_SECRET": "legacy-client-secret",
     }

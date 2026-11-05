@@ -2,13 +2,12 @@ import re
 from urllib.parse import quote, urlsplit
 
 import httpx
-import segno
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import JSONResponse, RedirectResponse
 from sqlmodel import Session
 
 from app.auth.adapter import GitHubOAuthClient, GoogleOAuthClient, ResendMailer
-from app.auth.deps import current_user, optional_user, session_cookie_header
+from app.auth.deps import client_ip, optional_user, session_cookie_header, signed_in
 from app.auth.models import User
 from app.auth.schemas import (
     DevLoginRequest,
@@ -17,23 +16,15 @@ from app.auth.schemas import (
     EmailVerifyRequest,
     MeResponse,
     OkResponse,
-    PairApproveRequest,
-    PairPollRequest,
-    PairPollResponse,
-    PairStartResponse,
     UserSchema,
 )
+from app.auth.email_codes import EMAIL_CODE_TTL_SECONDS, EMAIL_RESEND_AFTER, TooSoon, email_codes
 from app.auth.service import (
     COOKIE_NAME,
-    EMAIL_CODE_TTL_SECONDS,
-    EMAIL_RESEND_AFTER,
-    PAIR_TTL_SECONDS,
+    AccountConflict,
     SessionError,
-    TooSoon,
     create_session,
     delete_session,
-    email_codes,
-    pairings,
     user_for_dev_login,
     user_for_email,
     user_for_github,
@@ -65,9 +56,8 @@ def _safe_next(next_path: str | None) -> str:
     return "/"
 
 
-def _signed_in(response, token: str):
-    response.headers.append("set-cookie", session_cookie_header(token))
-    return response
+def _signin_failed(err: SessionError) -> RedirectResponse:
+    return RedirectResponse("/?signin=conflict" if isinstance(err, AccountConflict) else "/?signin=failed")
 
 
 @router.get("/me", response_model=MeResponse)
@@ -104,10 +94,10 @@ async def google_callback(
     try:
         identity = await google.identify(code, GOOGLE_REDIRECT_URI)
         user = user_for_google(db, identity)
-    except SessionError:
-        return RedirectResponse("/?signin=failed")
+    except SessionError as err:
+        return _signin_failed(err)
     token = create_session(db, user.id, "google", request.headers.get("user-agent", ""))
-    return _signed_in(RedirectResponse(next_path, status_code=303), token)
+    return signed_in(RedirectResponse(next_path, status_code=303), token)
 
 
 @router.get("/github/start")
@@ -132,10 +122,12 @@ async def github_callback(
     try:
         identity = await github.identify(code, GITHUB_REDIRECT_URI)
         user = user_for_github(db, identity)
-    except (SessionError, httpx.HTTPError):
+    except SessionError as err:
+        return _signin_failed(err)
+    except httpx.HTTPError:
         return RedirectResponse("/?signin=failed")
     token = create_session(db, user.id, "github", request.headers.get("user-agent", ""))
-    return _signed_in(RedirectResponse(next_path, status_code=303), token)
+    return signed_in(RedirectResponse(next_path, status_code=303), token)
 
 
 _MAIL = {
@@ -168,7 +160,7 @@ async def email_start(body: EmailStartRequest, request: Request):
     if not mailer.enabled:
         raise HTTPException(status_code=503, detail="email sign-in is not configured")
     email = _clean_email(body.email)
-    ip = request.headers.get("cf-connecting-ip") or (request.client.host if request.client else "")
+    ip = client_ip(request)
     try:
         code = email_codes.issue(email, ip)
     except TooSoon:
@@ -189,7 +181,7 @@ def email_verify(body: EmailVerifyRequest, request: Request, db: Session = Depen
         raise HTTPException(status_code=400, detail="wrong or expired code")
     user = user_for_email(db, email)
     token = create_session(db, user.id, "email", request.headers.get("user-agent", ""))
-    return _signed_in(JSONResponse(UserSchema.model_validate(user, from_attributes=True).model_dump()), token)
+    return signed_in(JSONResponse(UserSchema.model_validate(user, from_attributes=True).model_dump()), token)
 
 
 @router.post("/dev-login", response_model=UserSchema)
@@ -198,7 +190,7 @@ def dev_login(body: DevLoginRequest, request: Request, db: Session = Depends(get
         raise HTTPException(status_code=404)
     user = user_for_dev_login(db, body.email)
     token = create_session(db, user.id, "dev", request.headers.get("user-agent", ""))
-    return _signed_in(JSONResponse(UserSchema.model_validate(user, from_attributes=True).model_dump()), token)
+    return signed_in(JSONResponse(UserSchema.model_validate(user, from_attributes=True).model_dump()), token)
 
 
 @router.post("/logout", response_model=OkResponse)
@@ -229,34 +221,4 @@ def handoff_complete(request: Request, token: str = Query(""), db: Session = Dep
     if user_id is None:
         return RedirectResponse("/", status_code=302)
     session_token = create_session(db, user_id, "handoff", request.headers.get("user-agent", ""))
-    return _signed_in(RedirectResponse("/", status_code=302), session_token)
-
-
-@router.post("/pair/start", response_model=PairStartResponse)
-def pair_start(request: Request):
-    code, poll_secret = pairings.start(request.headers.get("user-agent", ""))
-    approve_url = f"{settings.public_base_url}/pair?code={quote(code)}"
-    qr = segno.make(approve_url, error="m")
-    return PairStartResponse(
-        code=code,
-        poll_secret=poll_secret,
-        approve_url=approve_url,
-        qr_svg=qr.svg_inline(scale=1, border=2, omitsize=True, dark="#000", light="#fff"),
-        expires_in=PAIR_TTL_SECONDS,
-    )
-
-
-@router.post("/pair/poll", response_model=PairPollResponse)
-def pair_poll(body: PairPollRequest, db: Session = Depends(get_session)):
-    status, user_id, user_agent = pairings.poll(body.poll_secret)
-    if status != "approved" or user_id is None:
-        return PairPollResponse(status=status)
-    token = create_session(db, user_id, "pairing", user_agent)
-    return _signed_in(JSONResponse(PairPollResponse(status="approved").model_dump()), token)
-
-
-@router.post("/pair/approve", response_model=OkResponse)
-def pair_approve(body: PairApproveRequest, user: User = Depends(current_user)):
-    if not pairings.approve(body.code, user.id):
-        raise HTTPException(status_code=404, detail="code not found or expired")
-    return OkResponse(ok=True)
+    return signed_in(RedirectResponse("/", status_code=302), session_token)

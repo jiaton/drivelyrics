@@ -204,6 +204,9 @@ export function SettingsModal({
             <Button variant="secondary" onClick={() => navigate("/feed")}>
               {ts.feedSettings}
             </Button>
+            <Button variant="secondary" onClick={() => navigate("/devices")}>
+              {ts.devices}
+            </Button>
             {user.role === "admin" ? (
               <Button variant="secondary" onClick={() => window.location.assign("/admin")}>
                 {ts.stats}

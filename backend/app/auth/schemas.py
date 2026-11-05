@@ -47,6 +47,27 @@ class PairStartResponse(BaseModel):
     expires_in: int
 
 
+class PairInfoResponse(BaseModel):
+    """Which device is asking to be signed in, so nobody approves a screen that isn't theirs."""
+
+    device: str  # e.g. "Tesla browser", "Chrome on Windows"; "" if its browser said nothing useful
+    location: str  # e.g. "Fremont, California, US", from its IP; "" if unknown
+    asked_at: float
+
+
+class SessionInfo(BaseModel):
+    id: str
+    device: str
+    via: str  # "google" | "github" | "email" | "pairing" | "handoff" | "dev"
+    created_at: float
+    last_seen_at: float  # updated at most once a day
+    current: bool
+
+
+class SessionList(BaseModel):
+    sessions: list[SessionInfo]
+
+
 class PairPollRequest(BaseModel):
     poll_secret: str
 
